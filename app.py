@@ -1,27 +1,5 @@
-from flask import Flask, jsonify, Response
-app = Flask(__name__)
-
-@app.route('/')
-def api_root():
-    message = {
-            'status': 200,
-            'message': 'Hello World'
-    }
-    resp = jsonify(message)
-    resp.status_code = 200
-
-    return resp
-
-@app.errorhandler(404)
-def not_found(error=None):
-    message = {
-            'status': 404,
-            'message': 'Not Found'
-    }
-    resp = jsonify(message)
-    resp.status_code = 404
-
-    return resp
-
+import os
+from application import app
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='127.0.0.1', port=port)
