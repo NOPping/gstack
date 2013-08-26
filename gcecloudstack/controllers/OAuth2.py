@@ -23,7 +23,7 @@ import os
 import flask
 from flask import request
 from gcecloudstack import app
-from gcecloudstack.services.cloudstackAuthorizationProvider import cloudstackAuthorizationProvider
+from gcecloudstack.services.cloudstackAuthorizationProvider import CloudstackAuthorizationProvider
 
 # Authorization Code
 # Returns a redirect header on success
