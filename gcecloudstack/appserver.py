@@ -7,9 +7,9 @@
 # to you under the Apache License, Version 2.0 (the
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
-# 
-#      http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -17,20 +17,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys
 import os
 
-from flask import Flask
+from gcecloudstack import app
 
-app = Flask(__name__)
+def main():
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='127.0.0.1', port=port, debug=True)
 
-from gcecloudstack.controllers import *
-
-# Configuration Options
-
-app.config['API_KEY'] = 'apikey'
-app.config['SECRET_KEY'] = 'secretkey'
-app.config['PATH'] = '/client/api'
-app.config['HOST'] = 'localhost'
-app.config['PORT'] = '8080'
-app.config['PROTOCOL'] = 'http'
+if __name__ == '__main__':
+    main()

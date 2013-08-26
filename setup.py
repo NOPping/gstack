@@ -40,14 +40,17 @@ setup(name="gceloudstack",
     author_email="",
     long_description="Google Compute Engine Interface to the Apache CloudStack API",
     platforms=("Any",),
-    packages=["gcecloudstack"],
     license="LICENSE.txt",
+    packages = ["gcecloudstack", "gcecloudstack.controllers", "gcecloudstack.services"],
     install_requires=[
         "flask",
         "requests",
         "pycrypto",
         "pyoauth2"
     ],
-    py_modules=[''],
     zip_safe=False,
+    entry_points="""
+    [console_scripts]
+    gcecloudstack = gcecloudstack.appserver:main
+    """,
 )
