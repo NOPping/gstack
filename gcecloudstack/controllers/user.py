@@ -19,10 +19,11 @@
 
 import sys
 import os
-import requester
 
 from gcecloudstack import app
 from flask import jsonify, Response, request
+
+import gcecloudstack.services.requester as requester
 
 #this is just an example to show how to use different http verbs
 @app.route('/user/<uuid>', methods=['GET','DELETE','PATCH'])
