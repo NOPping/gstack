@@ -1,4 +1,4 @@
-from application import app
+from gcecloudstack import app
 from flask import jsonify, Response
 
 @app.errorhandler(404)

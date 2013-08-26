@@ -8,7 +8,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#         http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -17,10 +17,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import sys
 import os
 
 from gcecloudstack import app
+from flask import jsonify, Response, request
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='127.0.0.1', port=port, debug=True)
+@app.route('/')
+def api_root():
+    message = {
+            'status': 200,
+            'message': app.config["HOST"] + ":" + app.config['PORT'] + app.config['PATH']
+    }
+    resp = jsonify(message)
+    resp.status_code = 200
+
+    return resp
