@@ -8,7 +8,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#         http://www.apache.org/licenses/LICENSE-2.0
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -20,12 +20,13 @@
 from gcecloudstack import app
 from flask import jsonify, Response
 
+
 @app.errorhandler(404)
 def not_found(error=None):
     message = {
-            'status': 404,
-            'message': 'Not Found',
-            'test': 'yoyo'
+        'status': 404,
+        'message': 'Not Found',
+        'test': 'yoyo'
     }
     resp = jsonify(message)
     resp.status_code = 404

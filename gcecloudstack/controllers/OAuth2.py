@@ -8,7 +8,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -23,10 +23,12 @@ import os
 import flask
 from flask import request
 from gcecloudstack import app
-from gcecloudstack.services.CloudstackAuthorizationProvider import CloudstackAuthorizationProvider
+from gcecloudstack.services.cloudstackAuthorizationProvider import cloudstackAuthorizationProvider
 
 # Authorization Code
 # Returns a redirect header on success
+
+
 @app.route("/oauth2/auth", methods=["GET"])
 def authorization_code():
 
@@ -38,7 +40,7 @@ def authorization_code():
 
     # For maximum compatibility, a standard Response object is provided
     # Response has the following properties:
-    # 
+    #
     #     response.status_code        int
     #     response.text               response body
     #     response.headers            iterable dict-like object with keys and values
@@ -52,6 +54,8 @@ def authorization_code():
 
 # Token exchange
 # Returns JSON token information on success
+
+
 @app.route("/oauth2/token", methods=["POST"])
 def token():
 

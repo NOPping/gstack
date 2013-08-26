@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# encoding: utf-8
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -8,7 +8,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+#    http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -18,6 +18,7 @@
 # under the License.
 
 from pyoauth2.provider import AuthorizationProvider
+
 
 class CloudstackAuthorizationProvider(AuthorizationProvider):
 
@@ -35,7 +36,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
     def validate_redirect_uri(self, client_id, redirect_uri):
         """ Ensure the app knows the redirect_uri """
         return True
-    
+
     def validate_access(self):
         """ Related to validation of OAuth token generation
             Not sure if important for our purposes
@@ -60,18 +61,18 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
     def from_authorization_code(self, client_id, code, scope):
         """ Return stored auth code """
         return {
-            'client_id' : client_id,
-            'code' : code,
-            'scope' : scope,
+            'client_id': client_id,
+            'code': code,
+            'scope': scope,
         }
 
     def from_refresh_token(self, client_id, refresh_token, scope):
         """ return stored refresh token """
         return {
-            'client_id' : client_id,
-            'refresh_token' : refresh_token,
-            'scope' : scope,
-        } 
+            'client_id': client_id,
+            'refresh_token': refresh_token,
+            'scope': scope,
+        }
 
     def discard_authorization_code(self, client_id, code):
         """ Remove auth code """

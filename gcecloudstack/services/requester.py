@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# encoding: utf-8
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -8,7 +8,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+#    http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -33,7 +33,7 @@ try:
     import urllib
     import urllib2
 
-except ImportError, e:
+except ImportError as e:
     print "Import error in %s : %s" % (__name__, e)
     import sys
     sys.exit()
@@ -66,7 +66,7 @@ def make_request(command, args, logger, host, port,
                            for r in request])
     hashStr = "&".join(["=".join([r[0].lower(),
                        str.lower(urllib.quote_plus(str(r[1]))).replace("+",
-                       "%20")]) for r in request])
+                                                                       "%20")]) for r in request])
 
     sig = urllib.quote_plus(base64.encodestring(hmac.new(secretkey, hashStr,
                             hashlib.sha1).digest()).strip())
@@ -77,7 +77,7 @@ def make_request(command, args, logger, host, port,
         logger_debug(logger, "Request sent: %s" % request_url)
         connection = urllib2.urlopen(request_url)
         response = connection.read()
-    except Exception, e:
+    except Exception as e:
         error = str(e)
 
     logger_debug(logger, "Response received: %s" % response)
@@ -85,6 +85,7 @@ def make_request(command, args, logger, host, port,
         logger_debug(logger, error)
 
     return response, error
+
 
 def encodeURIComponent(str):
     return urllib.quote(str, safe='~()*!.\'')
@@ -103,7 +104,8 @@ def cloudLogin(hostname, username, password, tmp_name):
            '-d', login,
            '-c', tmp_name,
            'http://' + hostname + ':8080/client/api']
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc = subprocess.Popen(
+        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (output, err) = proc.communicate()
     response = json.loads(output)
     if response.get('errorresponse'):
@@ -111,15 +113,19 @@ def cloudLogin(hostname, username, password, tmp_name):
         return None
     return response['loginresponse']
 
+
 def getKeys(hostname, loginresp, tmp_name):
-    urlParam = '&response=json&id=' + loginresp['userid'] + '&sessionkey=' + encodeURIComponent(loginresp['sessionkey'])
+    urlParam = '&response=json&id=' + \
+        loginresp['userid'] + '&sessionkey=' + \
+        encodeURIComponent(loginresp['sessionkey'])
     cmd = ['curl',
            '-v',
            '-H', 'Content-Type: application/json',
            '-b', tmp_name,
            '-X', 'POST',
            'http://' + hostname + ':8080/client/api/?command=listUsers' + urlParam]
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc = subprocess.Popen(
+        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (output, err) = proc.communicate()
     response = json.loads(output)
     logging.debug(response)
@@ -130,18 +136,22 @@ def getKeys(hostname, loginresp, tmp_name):
 
 
 def registerKeys(hostname, loginresp, tmp_name):
-    urlParam = '&response=json&id=' + loginresp['userid'] + '&sessionkey=' + encodeURIComponent(loginresp['sessionkey'])
+    urlParam = '&response=json&id=' + \
+        loginresp['userid'] + '&sessionkey=' + \
+        encodeURIComponent(loginresp['sessionkey'])
     cmd = ['curl',
            '-v',
            '-H', 'Content-Type: application/json',
            '-b', tmp_name,
            '-X', 'POST',
            'http://' + hostname + ':8080/client/api/?command=registerUserKeys' + urlParam]
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc = subprocess.Popen(
+        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (output, err) = proc.communicate()
     response = json.loads(output)
     logging.debug(response)
     return response
+
 
 def getApiKey(hostname, username, password):
     tmp_cookie = tempfile.mkstemp(suffix=".cookie")

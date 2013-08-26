@@ -8,7 +8,7 @@
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
-#         http://www.apache.org/licenses/LICENSE-2.0
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
@@ -28,22 +28,25 @@ list	GET  /project/regions	         Retrieves the list of region resources avail
 
 import gcecloudstack.services.requester as requester
 
-def _to_region_id():
-   '''
-   To be implemented, get region id from region parameter from GCE
-   '''
 
-#this is just an example to show how to use different http verbs
+def _to_region_id():
+    '''
+    To be implemented, get region id from region parameter from GCE
+    '''
+
+# this is just an example to show how to use different http verbs
+
+
 @app.route('/project/regions', methods=['GET'])
 def regions(region):
-    response, error = requester.make_request('listLocations',None,None,app.config['HOST'],app.config['PORT'],app.config['API_KEY'],app.config['SECRET_KEY'],app.config['PROTOCOL'],app.config['PATH'])
+    response, error = requester.make_request('listLocations', None, None, app.config['HOST'], app.config[
+                                             'PORT'], app.config['API_KEY'], app.config['SECRET_KEY'], app.config['PROTOCOL'], app.config['PATH'])
     return response
 
 
 @app.route('/project/regions/<region>', methods=['GET'])
 def region(region):
     regionid = _to_region_id(region)
-    response, error = requester.make_request('listLocations',{'id':regionid},None,app.config['HOST'],app.config['PORT'],app.config['API_KEY'],app.config['SECRET_KEY'],app.config['PROTOCOL'],app.config['PATH'])
+    response, error = requester.make_request('listLocations', {'id': regionid}, None, app.config['HOST'], app.config[
+                                             'PORT'], app.config['API_KEY'], app.config['SECRET_KEY'], app.config['PROTOCOL'], app.config['PATH'])
     return response
-
-
