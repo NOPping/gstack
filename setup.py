@@ -33,7 +33,7 @@ import os
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read().strip()
 
-setup(name="gceloudstack",
+setup(name="gcecloudstack",
     version=VERSION,
     description="Web Server exposing a GCE interface to Apache CloudStack",
     author="",
@@ -41,12 +41,11 @@ setup(name="gceloudstack",
     long_description="Google Compute Engine Interface to the Apache CloudStack API",
     platforms=("Any",),
     license="LICENSE.txt",
-    packages = ["gcecloudstack", "gcecloudstack.controllers", "gcecloudstack.services"],
+    packages = ["gcecloudstack", "gcecloudstack.controllers", "gcecloudstack.services","pyoauth2"],
     install_requires=[
         "flask",
         "requests",
         "pycrypto",
-        "pyoauth2"
     ],
     zip_safe=False,
     entry_points="""
