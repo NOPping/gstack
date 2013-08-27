@@ -49,6 +49,7 @@ setup(name="gcecloudstack",
           "flask",
           "requests",
           "pycrypto",
+          "pyopenssl",
       ],
       zip_safe=False,
       entry_points="""
