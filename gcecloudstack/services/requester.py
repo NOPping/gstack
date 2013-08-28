@@ -32,6 +32,7 @@ try:
     import types
     import urllib
     import urllib2
+    import requests
 
 except ImportError as e:
     print "Import error in %s : %s" % (__name__, e)
@@ -92,42 +93,23 @@ def encodeURIComponent(str):
 
 
 # If needed we can use something like the three functions below
-# needs to be re-written with request module
+# needs testing
 
-def cloudLogin(hostname, username, password, tmp_name):
-    login = ("command=login&username=" + username + "&password=" + password +
-             "&response=json")
-    cmd = ['curl',
-           '-H', 'Content-Type: application/x-www-form-urlencoded',
-           '-H', 'Accept: application/json',
-           '-X', 'POST',
-           '-d', login,
-           '-c', tmp_name,
-           'http://' + hostname + ':8080/client/api']
-    proc = subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    (output, err) = proc.communicate()
-    response = json.loads(output)
+def cloud_login(hostname, username, password, tmp_name):
+    payload = {'command':'login','username':username, 'password':password, 'response':'json'}
+    headers = {'Content-Type':'application/x-www-form-urlencoded','Accept':'application/json'}
+    url = 'http://' + hostname + ':8080/client/api'
+    response = json.loads(request.post(url=url, params=payload, headers=headers, cookies=tmp_name))
     if response.get('errorresponse'):
         print response['errorresponse']['errortext']
         return None
     return response['loginresponse']
 
-
-def getKeys(hostname, loginresp, tmp_name):
-    urlParam = '&response=json&id=' + \
-        loginresp['userid'] + '&sessionkey=' + \
-        encodeURIComponent(loginresp['sessionkey'])
-    cmd = ['curl',
-           '-v',
-           '-H', 'Content-Type: application/json',
-           '-b', tmp_name,
-           '-X', 'POST',
-           'http://' + hostname + ':8080/client/api/?command=listUsers' + urlParam]
-    proc = subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    (output, err) = proc.communicate()
-    response = json.loads(output)
+def get_keys(hostname, loginresp, tmp_name):
+    payload = {'command':'listUsers','id':loginresp['userid'],'sessionkey':encodeURIComponent(loginresp['sessionkey'], 'response':'json'}
+    headers = {'Content-Type':'application/json'}
+    url = 'http://' + hostname + ':8080/client/api'
+    response = json.loads(request.post(url=url, params=payload, headers=headers, cookies=tmp_name))
     logging.debug(response)
     user = response['listusersresponse']['user'][0]
     if not 'apikey' in user:
@@ -135,38 +117,29 @@ def getKeys(hostname, loginresp, tmp_name):
     return user['apikey'], user['secretkey']
 
 
-def registerKeys(hostname, loginresp, tmp_name):
-    urlParam = '&response=json&id=' + \
-        loginresp['userid'] + '&sessionkey=' + \
-        encodeURIComponent(loginresp['sessionkey'])
-    cmd = ['curl',
-           '-v',
-           '-H', 'Content-Type: application/json',
-           '-b', tmp_name,
-           '-X', 'POST',
-           'http://' + hostname + ':8080/client/api/?command=registerUserKeys' + urlParam]
-    proc = subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    (output, err) = proc.communicate()
-    response = json.loads(output)
+def register_keys(hostname, loginresp, tmp_name):
+    payload = {'command':'registerUserKeys','id':loginresp['userid'],'sessionkey':encodeURIComponent(loginresp['sessionkey'], 'response':'json'}
+    headers = {'Content-Type':'application/json'}
+    url = 'http://' + hostname + ':8080/client/api'
+    response = json.loads(request.post(url=url, params=payload, headers=headers, cookies=tmp_name))
     logging.debug(response)
     return response
 
 
-def getApiKey(hostname, username, password):
+def get_api_key(hostname, username, password):
     tmp_cookie = tempfile.mkstemp(suffix=".cookie")
     tmp_name = tmp_cookie[1]
-    loginresp = cloudLogin(hostname, username, password, tmp_name)
+    loginresp = cloud_login(hostname, username, password, tmp_name)
     if not loginresp:
         return None
 
-    keypair = getKeys(hostname, loginresp, tmp_name)
+    keypair = get_keys(hostname, loginresp, tmp_name)
 
     if not keypair:
         response = registerKeys(hostname, loginresp, tmp_name)
         keys = response['registeruserkeysresponse']
         if 'userkeys' in keys:
-            keypair = keys['userkeys']['apikey'], keys['userkeys']['secretkey']
+            keypair = {'apikey':keys['userkeys']['apikey'], 'secretkey':keys['userkeys']['secretkey']}
 
     os.remove(tmp_name)
     return keypair
