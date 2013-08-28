@@ -106,7 +106,7 @@ def cloud_login(hostname, username, password, tmp_name):
     return response['loginresponse']
 
 def get_keys(hostname, loginresp, tmp_name):
-    payload = {'command':'listUsers','id':loginresp['userid'],'sessionkey':encodeURIComponent(loginresp['sessionkey'], 'response':'json'}
+    payload = {'command':'listUsers','id':loginresp['userid'],'sessionkey':encodeURIComponent(loginresp['sessionkey']), 'response':'json'}
     headers = {'Content-Type':'application/json'}
     url = 'http://' + hostname + ':8080/client/api'
     response = json.loads(request.post(url=url, params=payload, headers=headers, cookies=tmp_name))
@@ -118,7 +118,7 @@ def get_keys(hostname, loginresp, tmp_name):
 
 
 def register_keys(hostname, loginresp, tmp_name):
-    payload = {'command':'registerUserKeys','id':loginresp['userid'],'sessionkey':encodeURIComponent(loginresp['sessionkey'], 'response':'json'}
+    payload = {'command':'registerUserKeys','id':loginresp['userid'],'sessionkey':encodeURIComponent(loginresp['sessionkey']), 'response':'json'}
     headers = {'Content-Type':'application/json'}
     url = 'http://' + hostname + ':8080/client/api'
     response = json.loads(request.post(url=url, params=payload, headers=headers, cookies=tmp_name))
