@@ -18,24 +18,36 @@
 # under the License.
 
 from pyoauth2.provider import AuthorizationProvider
+from gcecloudstack import app
+import requester
 
 
 class CloudstackAuthorizationProvider(AuthorizationProvider):
 
     def validate_client_id(self, client_id):
         """ Can we call to Cloudstack to check if a client id exists """
-        return True
+        return client_id is not None
 
     def validate_client_secret(self, client_id, client_secret):
         """ Can we call to Cloudstack to see if their secret key exists
             A messy implementation of this would be to just call any user
             api command and check that it gives a successful response
         """
+        
+        """ Hostname currently set to ianduffy.ie for testing purposes"""
+        hostname = 'ianduffy.ie'
+        response = requester.make_request('listCapabilities', {}, None, hostname, app.config['PORT'],
+                                          client_id, client_secret, app.config['PROTOCOL'], app.config['PATH'])
+        
+        if 'HTTP Error 401: Unauthorized' in response :
+            print 'Authorization unsuccessful: invalid api key / secret combination'
+            return False
         return True
+        
 
     def validate_redirect_uri(self, client_id, redirect_uri):
         """ Ensure the app knows the redirect_uri """
-        return True
+        return redirect_uri is not None
 
     def validate_access(self):
         """ Related to validation of OAuth token generation
@@ -54,7 +66,8 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         """ Store code with expiry """
         print 'persist authorization code'
 
-    def persist_token_information(self, client_id, scope, access_token, token_type, expires_in, refresh_token, data):
+    def persist_token_information(self, client_id, scope, access_token, 
+                          token_type, expires_in, refresh_token, data):
         """ Store all token information """
         print 'persist token information'
 
@@ -76,7 +89,8 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
 
     def discard_authorization_code(self, client_id, code):
         """ Remove auth code """
-        print 'discarding auth code'
+        key = 'oauth2.authorization_code.%s:%s' % (client_id, code) 
+        self.redis.delete(key)
 
     def discard_refresh_token(self, client_id, refresh_token):
         """ Remove auth token """
@@ -84,4 +98,11 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
 
     def discard_client_user_tokens(self, client_id, user_id):
         """ remove client tokens """
-        print 'discarding user token'
+        """ seems like were going to need this regardless of what way we 
+            implement OAuth access tokens so I included it"""
+        
+        keys = 'oauth2.client_user.%s:%s' % (client_id, user_id) 
+        pipe = self.redis.pipeline() 
+        for key in self.redis.smembers(keys): 
+            pipe.delete(key) 
+            pipe.execute() 
