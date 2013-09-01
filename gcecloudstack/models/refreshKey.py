@@ -23,3 +23,7 @@ from gcecloudstack import db
 class RefreshKey(db.Model):
     refresh_key = db.Column(db.String(100), primary_key=True, unique=True)
     data = db.Column(db.String(250))
+
+def __init__(self, refresh_key, data):
+    self.refresh_key = refresh_key
+    self.data = data

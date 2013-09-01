@@ -25,3 +25,9 @@ class Client(db.Model):
     secret_key = db.Column(db.String(100), unique=True)
     access_key = db.Column(db.String(100), index=True, unique=True)
     refresh_key = db.Column(db.String(100), index=True, unique=True)
+
+def __init__(self, client_id, secret_key, access_key, refresh_key):
+    self.client_id = client_id
+    self.secret_key = secret_key
+    self.access_key = access_key
+    self.refresh_key = refresh_key
