@@ -17,30 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys
-import os
-from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
+from gcecloudstack import db
 
-app = Flask(__name__)
-
-from gcecloudstack.controllers import *
-
-basedir = os.path.abspath(os.path.dirname(__file__))
-
-# Configuration Options
-
-# Application Options
-app.config['SSLPATH'] = basedir
-
-# Cloudstack Options
-app.config['PATH'] = '/client/api'
-app.config['HOST'] = 'ianduffy.ie'
-app.config['PORT'] = '8080'
-app.config['PROTOCOL'] = 'http'
-
-# Sqlite Options
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'app.db')
-app.config['SQLALCHEMY_MIGRATE_REPO'] = os.path.join(basedir, 'db_repository')
-
-db = SQLAlchemy(app)
+class AccessKey(db.Model):
+    access_key = db.Column(db.String(100), index = True, unique = True)
+    expires_in = db.Column(db.Integer)

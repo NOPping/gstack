@@ -51,6 +51,7 @@ setup(name="gcecloudstack",
           "requests==0.14",
           "pycrypto==2.6",
           "pyopenssl",
+	  "Flask-SQLAlchemy",
       ],
       zip_safe=False,
       entry_points="""
