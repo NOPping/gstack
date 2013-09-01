@@ -19,6 +19,7 @@
 
 from gcecloudstack import db
 
+
 class RefreshKey(db.Model):
-    refresh_key = db.Column(db.String(100), index = True, unique = True)
+    refresh_key = db.Column(db.String(100), index=True, unique=True)
     data = db.Column(db.String(250))

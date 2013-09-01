@@ -40,7 +40,8 @@ app.config['PORT'] = '8080'
 app.config['PROTOCOL'] = 'http'
 
 # Sqlite Options
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'app.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+    os.path.join(basedir, 'app.db')
 app.config['SQLALCHEMY_MIGRATE_REPO'] = os.path.join(basedir, 'db_repository')
 
 db = SQLAlchemy(app)

@@ -24,7 +24,8 @@ except ImportError:
         use_setuptools()
         from setuptools import setup, find_packages
     except ImportError:
-        raise RuntimeError("python setuptools is required to build gcecloudstack")
+        raise RuntimeError(
+            "python setuptools is required to build gcecloudstack")
 
 
 VERSION = '0.0.1'
@@ -43,15 +44,16 @@ setup(name="gcecloudstack",
       long_description="Google Compute Engine Interface to the Apache CloudStack API",
       platforms=("Any",),
       license="LICENSE.txt",
-      package_data={'': ['LICENSE.txt','server.crt','server.key']},
-      packages = ["gcecloudstack", "gcecloudstack.controllers","gcecloudstack.models",
-                  "gcecloudstack.services", "pyoauth2"],
+      package_data={'': ['LICENSE.txt', 'server.crt', 'server.key']},
+      packages = [
+          "gcecloudstack", "gcecloudstack.controllers", "gcecloudstack.models",
+          "gcecloudstack.services", "pyoauth2"],
       install_requires=[
           "flask",
           "requests==0.14",
           "pycrypto==2.6",
           "pyopenssl",
-	  "Flask-SQLAlchemy",
+          "Flask-SQLAlchemy",
       ],
       zip_safe=False,
       entry_points="""

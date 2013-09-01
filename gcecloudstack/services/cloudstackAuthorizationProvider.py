@@ -28,14 +28,15 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         return client_id is not None
 
     def validate_client_secret(self, client_id, client_secret):
-        response = requester.make_request('listCapabilities', {}, None, app.config['HOST'], app.config['PORT'],
-                                          client_id, client_secret, app.config['PROTOCOL'], app.config['PATH'])
+        response = requester.make_request(
+            'listCapabilities', {}, None, app.config[
+                'HOST'], app.config['PORT'],
+            client_id, client_secret, app.config['PROTOCOL'], app.config['PATH'])
 
-        if 'HTTP Error 401: Unauthorized' in response :
+        if 'HTTP Error 401: Unauthorized' in response:
             print 'Authorization unsuccessful: invalid api key / secret combination'
             return False
         return True
-
 
     def validate_redirect_uri(self, client_id, redirect_uri):
         return redirect_uri is not None
@@ -50,7 +51,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         print 'persist authorization code'
 
     def persist_token_information(self, client_id, scope, access_token,
-                          token_type, expires_in, refresh_token, data):
+                                  token_type, expires_in, refresh_token, data):
         print 'persist token information'
 
     def from_authorization_code(self, client_id, code, scope):

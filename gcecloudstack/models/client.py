@@ -19,6 +19,7 @@
 
 from gcecloudstack import db
 
+
 class Client(db.Model):
     client_id = db.Column(db.String(100), primary_key=True, unique=True)
     secret_key = db.Column(db.String(100), unique=True)
