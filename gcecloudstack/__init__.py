@@ -25,11 +25,12 @@ app = Flask(__name__)
 
 from gcecloudstack.controllers import *
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 # Configuration Options
 
-app.config['API_KEY'] = 'apikey'
-app.config['SECRET_KEY'] = 'secretkey'
 app.config['PATH'] = '/client/api'
-app.config['HOST'] = 'localhost'
+app.config['HOST'] = 'ianduffy.ie'
 app.config['PORT'] = '8080'
 app.config['PROTOCOL'] = 'http'
+app.config['SSLPATH'] = basedir
