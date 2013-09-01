@@ -44,7 +44,7 @@ setup(name="gcecloudstack",
       platforms=("Any",),
       license="LICENSE.txt",
       package_data={'': ['LICENSE.txt','server.crt','server.key']},
-      packages = ["gcecloudstack", "gcecloudstack.controllers",
+      packages = ["gcecloudstack", "gcecloudstack.controllers","gcecloudstack.models",
                   "gcecloudstack.services", "pyoauth2"],
       install_requires=[
           "flask",
