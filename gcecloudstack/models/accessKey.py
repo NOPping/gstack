@@ -21,5 +21,5 @@ from gcecloudstack import db
 
 
 class AccessKey(db.Model):
-    access_key = db.Column(db.String(100), index=True, unique=True)
+    access_key = db.Column(db.String(100), primary_key=True, unique=True)
     expires_in = db.Column(db.Integer)

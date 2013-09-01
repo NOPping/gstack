@@ -44,7 +44,7 @@ setup(name="gcecloudstack",
       long_description="Google Compute Engine Interface to the Apache CloudStack API",
       platforms=("Any",),
       license="LICENSE.txt",
-      package_data={'': ['LICENSE.txt', 'server.crt', 'server.key']},
+      package_data={'': ['LICENSE.txt', 'server.crt', 'server.key', 'app.db']},
       packages = [
           "gcecloudstack", "gcecloudstack.controllers", "gcecloudstack.models",
           "gcecloudstack.services", "pyoauth2"],

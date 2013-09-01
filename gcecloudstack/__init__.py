@@ -45,3 +45,5 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
 app.config['SQLALCHEMY_MIGRATE_REPO'] = os.path.join(basedir, 'db_repository')
 
 db = SQLAlchemy(app)
+
+from gcecloudstack.models import *

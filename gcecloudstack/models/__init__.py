@@ -17,9 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gcecloudstack import db
-
-
-class RefreshKey(db.Model):
-    refresh_key = db.Column(db.String(100), primary_key=True, unique=True)
-    data = db.Column(db.String(250))
+import os
+import glob
+__all__ = [os.path.basename(
+    f)[:-3] for f in glob.glob(os.path.dirname(__file__) + "/*.py")]
