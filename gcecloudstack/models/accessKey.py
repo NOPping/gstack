@@ -24,6 +24,7 @@ class AccessKey(db.Model):
     access_key = db.Column(db.String(100), primary_key=True, unique=True)
     expires_in = db.Column(db.Integer)
 
+
 def __init__(self, access_key, expires_in):
     self.access_key = access_key
     self.expires_in = expires_in
