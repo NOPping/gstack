@@ -63,15 +63,15 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
                                   token_type, expires_in,
                                   refresh_token, data):
 
-        auth_code = 'ouath2.authorization_code.%s:%s' % (client_id, code)
-        user_access_key = AccessKey(auth_code, expires_in)
+        access_key = 'ouath2.access_token.%s' % access_token
+        user_access_key = AccessKey(access_key, expires_in)
 
         refresh_key = 'ouath2.refresh_token.%s:%s' % (client_id, refresh_token)
         refresh_token = RefreshKey(refresh_key, data)
 
         client_token = Client(
             client_id,
-            None,
+            data.get('code'),
             authorization_code,
             refresh_token
         )
