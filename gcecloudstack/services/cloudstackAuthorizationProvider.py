@@ -18,8 +18,6 @@
 # under the License.
 
 from gcecloudstack.models.client import Client
-from gcecloudstack.models.accessKey import AccessKey
-from gcecloudstack.models.refreshKey import RefreshKey
 from pyoauth2.provider import AuthorizationProvider
 from gcecloudstack import app, db
 from . import requester
