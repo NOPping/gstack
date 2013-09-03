@@ -26,19 +26,19 @@ import json
 
 class CloudstackAuthorizationProvider(AuthorizationProvider):
 
-    def validate_client_id(self, username):
-        return username is not None
+    def validate_client_id(self, client_id):
+        return client_id is not None
 
-    def validate_client_secret(self, username, password):
-        response = requester.cloud_login(username, password)
+    def validate_client_secret(self, client_id, client_secret):
+        response = requester.cloud_login(client_id, client_secret)
         if response:
             jsessionid = response.cookies['JSESSIONID']
 
             data = json.loads(response.text)
             sessionkey = data['loginresponse']['sessionkey']
 
-            existingData = Client.query.get(username);
-            client = Client(username=username,jsessionid=jsessionid,sessionkey=sessionkey)
+            existingData = Client.query.get(client_id);
+            client = Client(username=client_id,jsessionid=jsessionid,sessionkey=sessionkey)
             if existingData is not None:
                 existingData.jsessionid = jsessionid
                 existingData.sessionkey = sessionkey
@@ -46,6 +46,8 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
                 db.session.add(client)
 
             db.session.commit()
+
+            return True
         else:
             return False
 
@@ -64,10 +66,14 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
     def persist_token_information(self, client_id, scope, access_token,
                                   token_type, expires_in,
                                   refresh_token, data):
-        print client_id
-        print access_token
-        print refresh_token
-        print data
+        client = Client.query.get(client_id)
+        if client is not None:
+            client.access_token = access_token
+            client.refresh_token = refresh_token
+            db.session.commit()
+            return True
+        else:
+            return False
 
     def from_authorization_code(self, client_id, code, scope):
         return {

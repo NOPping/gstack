@@ -21,8 +21,8 @@ from gcecloudstack import db
 
 
 class Client(db.Model):
-    access_key = db.Column(db.String(100), index=True, unique=True)
+    access_token = db.Column(db.String(100), index=True, unique=True)
     jsessionid = db.Column(db.String(100), unique=True)
     username = db.Column(db.String(100), primary_key=True, unique=True)
-    refresh_key = db.Column(db.String(100), index=True, unique=True)
+    refresh_token = db.Column(db.String(100), index=True, unique=True)
     sessionkey = db.Column(db.String(100), unique=True)
