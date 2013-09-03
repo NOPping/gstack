@@ -95,19 +95,18 @@ def encodeURIComponent(str):
 # needs testing
 
 
-def cloud_login(hostname, username, password, tmp_name):
+def cloud_login(hostname, username, password):
     payload = {'command': 'login', 'username': username, 'password': password,
                'response': 'json'}
     headers = {'Content-Type': 'application/x-www-form-urlencoded',
                'Accept': 'application/json'}
     url = 'http://' + hostname + ':8080/client/api'
-    response = json.loads(request.post(url=url, params=payload,
-                          headers=headers, cookies=tmp_name))
-    if response.get('errorresponse'):
-        print response['errorresponse']['errortext']
-        return None
-    return response['loginresponse']
+    request = requests.post(url=url, params=payload, headers=headers)
 
+    if request.status_code == 200:
+        return request
+    else:
+        return None
 
 def get_keys(hostname, loginresp, tmp_name):
     payload = {'command': 'listUsers', 'id': loginresp['userid'],
@@ -115,7 +114,7 @@ def get_keys(hostname, loginresp, tmp_name):
                'response': 'json'}
     headers = {'Content-Type': 'application/json'}
     url = 'http://' + hostname + ':8080/client/api'
-    response = json.loads(request.post(url=url, params=payload,
+    response = json.loads(requests.post(url=url, params=payload,
                                        headers=headers, cookies=tmp_name))
     logging.debug(response)
     user = response['listusersresponse']['user'][0]

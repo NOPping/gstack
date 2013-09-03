@@ -18,11 +18,12 @@
 # under the License.
 
 import os
-
+import logging
 from gcecloudstack import app
 from OpenSSL import SSL
 
 def main():
+    logging.basicConfig(filename='example.log',level=logging.DEBUG)
     context = SSL.Context(SSL.SSLv23_METHOD)
     context.use_privatekey_file(app.config['SSLPATH'] + '/server.key')
     context.use_certificate_file(app.config['SSLPATH'] + '/server.crt')
