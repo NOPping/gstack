@@ -28,7 +28,8 @@ from flask import jsonify, Response, request
 def api_root():
     message = {
         'status': 200,
-        'message': app.config["HOST"] + ":" + app.config['PORT'] + app.config['PATH']
+        'message':
+        app.config["HOST"] + ":" + app.config['PORT'] + app.config['PATH']
     }
     resp = jsonify(message)
     resp.status_code = 200

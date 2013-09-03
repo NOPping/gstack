@@ -26,7 +26,7 @@ get	GET  /project/regions/region	 Returns the specified region resource.
 list	GET  /project/regions	         Retrieves the list of region resources available to the specified project.
 """
 
-import gcecloudstack.services.requester as requester
+from gcecloudstack.services import requester
 
 
 def _to_region_id():

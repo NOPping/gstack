@@ -24,8 +24,6 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-from gcecloudstack.controllers import *
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Configuration Options
@@ -46,4 +44,4 @@ app.config['SQLALCHEMY_MIGRATE_REPO'] = os.path.join(basedir, 'db_repository')
 
 db = SQLAlchemy(app)
 
-from gcecloudstack.models import *
+from gcecloudstack.controllers import *

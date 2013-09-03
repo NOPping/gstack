@@ -16,10 +16,3 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-import os
-import glob
-__all__ = [
-    os.path.basename(f)[:-3]
-    for f in glob.glob(os.path.dirname(__file__) + "/*.py")
-]

@@ -17,7 +17,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gcecloudstack.models import accessKey, refreshKey, client
+from gcecloudstack.models.client import Client
+from gcecloudstack.models.accessKey import AccessKey
+from gcecloudstack.models.refreshKey import RefreshKey
 from pyoauth2.provider import AuthorizationProvider
 from urllib2 import urlopen
 from gcecloudstack import app
@@ -42,12 +44,6 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         return True
 
     def validate_redirect_uri(self, client_id, redirect_uri):
-        try:
-            urllib2.urlopen(redirect_uri)
-        except Exception as e:
-            error = str(e)
-            print(error)
-            return False
         return True
 
     def validate_access(self):
