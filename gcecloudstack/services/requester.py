@@ -66,8 +66,8 @@ def make_request(command, args, logger, host, port,
     request_url = "&".join(["=".join([r[0], urllib.quote_plus(str(r[1]))])
                            for r in request])
     hashStr = "&".join(["=".join([r[0].lower(),
-                       str.lower(urllib.quote_plus(str(r[1]))).replace("+",
-                                                                       "%20")]) for r in request])
+                        str.lower(urllib.quote_plus(str(r[1])))
+                                  .replace("+", "%20")]) for r in request])
 
     sig = urllib.quote_plus(base64.encodestring(hmac.new(secretkey, hashStr,
                             hashlib.sha1).digest()).strip())
@@ -91,25 +91,32 @@ def make_request(command, args, logger, host, port,
 def encodeURIComponent(str):
     return urllib.quote(str, safe='~()*!.\'')
 
-
 # If needed we can use something like the three functions below
 # needs testing
 
+
 def cloud_login(hostname, username, password, tmp_name):
-    payload = {'command':'login','username':username, 'password':password, 'response':'json'}
-    headers = {'Content-Type':'application/x-www-form-urlencoded','Accept':'application/json'}
+    payload = {'command': 'login', 'username': username, 'password': password,
+               'response': 'json'}
+    headers = {'Content-Type': 'application/x-www-form-urlencoded',
+               'Accept': 'application/json'}
     url = 'http://' + hostname + ':8080/client/api'
-    response = json.loads(request.post(url=url, params=payload, headers=headers, cookies=tmp_name))
+    response = json.loads(request.post(url=url, params=payload,
+                          headers=headers, cookies=tmp_name))
     if response.get('errorresponse'):
         print response['errorresponse']['errortext']
         return None
     return response['loginresponse']
 
+
 def get_keys(hostname, loginresp, tmp_name):
-    payload = {'command':'listUsers','id':loginresp['userid'],'sessionkey':encodeURIComponent(loginresp['sessionkey']), 'response':'json'}
-    headers = {'Content-Type':'application/json'}
+    payload = {'command': 'listUsers', 'id': loginresp['userid'],
+               'sessionkey': encodeURIComponent(loginresp['sessionkey']),
+               'response': 'json'}
+    headers = {'Content-Type': 'application/json'}
     url = 'http://' + hostname + ':8080/client/api'
-    response = json.loads(request.post(url=url, params=payload, headers=headers, cookies=tmp_name))
+    response = json.loads(request.post(url=url, params=payload,
+                                       headers=headers, cookies=tmp_name))
     logging.debug(response)
     user = response['listusersresponse']['user'][0]
     if not 'apikey' in user:
@@ -118,10 +125,13 @@ def get_keys(hostname, loginresp, tmp_name):
 
 
 def register_keys(hostname, loginresp, tmp_name):
-    payload = {'command':'registerUserKeys','id':loginresp['userid'],'sessionkey':encodeURIComponent(loginresp['sessionkey']), 'response':'json'}
-    headers = {'Content-Type':'application/json'}
+    payload = {'command': 'registerUserKeys', 'id': loginresp['userid'],
+               'sessionkey': encodeURIComponent(loginresp['sessionkey']),
+               'response': 'json'}
+    headers = {'Content-Type': 'application/json'}
     url = 'http://' + hostname + ':8080/client/api'
-    response = json.loads(request.post(url=url, params=payload, headers=headers, cookies=tmp_name))
+    response = json.loads(request.post(url=url, params=payload,
+                                       headers=headers, cookies=tmp_name))
     logging.debug(response)
     return response
 
@@ -139,7 +149,8 @@ def get_api_key(hostname, username, password):
         response = registerKeys(hostname, loginresp, tmp_name)
         keys = response['registeruserkeysresponse']
         if 'userkeys' in keys:
-            keypair = {'apikey':keys['userkeys']['apikey'], 'secretkey':keys['userkeys']['secretkey']}
+            keypair = {'apikey': keys['userkeys']['apikey'],
+                       'secretkey': keys['userkeys']['secretkey']}
 
     os.remove(tmp_name)
     return keypair

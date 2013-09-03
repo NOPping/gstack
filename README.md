@@ -7,3 +7,9 @@ This project aims to create a new compute API set for Cloudstack that is compati
 ## Implementation
 
 The GCE APIs for Cloudstack will be supplied as a layer over the current Cloudstack API. The given application will take in a GCE based API request, pass it over to the Cloudstack API, get the required data and return it in a suitable format.
+
+##Installation
+
+    python ./setup.py install
+
+This will install a `gcecloudstack` binary in your path. Start it and it will run the app

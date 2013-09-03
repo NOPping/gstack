@@ -35,6 +35,7 @@ app.config['SSLPATH'] = basedir
 app.config['PATH'] = '/client/api'
 app.config['HOST'] = 'ianduffy.ie'
 app.config['PORT'] = '8080'
+app.config['GCEPORT'] = '5000'
 app.config['PROTOCOL'] = 'http'
 
 # Sqlite Options

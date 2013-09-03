@@ -22,12 +22,11 @@ import os
 from gcecloudstack import app
 from OpenSSL import SSL
 
-
 def main():
     context = SSL.Context(SSL.SSLv23_METHOD)
     context.use_privatekey_file(app.config['SSLPATH'] + '/server.key')
     context.use_certificate_file(app.config['SSLPATH'] + '/server.crt')
-    port = int(os.environ.get('PORT', 5000))
+    port = app.config['GCEPORT']
     app.run(host='127.0.0.1', port=port, debug=True, ssl_context=context)
 
 if __name__ == '__main__':

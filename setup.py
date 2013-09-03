@@ -27,11 +27,9 @@ except ImportError:
         raise RuntimeError(
             "python setuptools is required to build gcecloudstack")
 
-
 VERSION = '0.0.1'
 
 import os
-
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read().strip()
@@ -39,7 +37,7 @@ def read(fname):
 setup(name="gcecloudstack",
       version=VERSION,
       description="Web Server exposing a GCE interface to Apache CloudStack",
-      author="",
+      author="Ian Duffy, Darren Brogan, Sebastien Goasguen",
       author_email="",
       long_description="Google Compute Engine Interface to the Apache CloudStack API",
       platforms=("Any",),
@@ -51,13 +49,12 @@ setup(name="gcecloudstack",
       install_requires=[
           "flask",
           "requests==0.14",
-          "pycrypto==2.6",
           "pyopenssl",
           "Flask-SQLAlchemy",
       ],
       zip_safe=False,
       entry_points="""
-    [console_scripts]
-    gcecloudstack = gcecloudstack.appserver:main
-    """,
+      [console_scripts]
+      gcecloudstack = gcecloudstack.appserver:main
+      """,
       )
