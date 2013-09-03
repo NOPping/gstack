@@ -21,7 +21,7 @@ from gcecloudstack.models.client import Client
 from gcecloudstack.models.accessKey import AccessKey
 from gcecloudstack.models.refreshKey import RefreshKey
 from pyoauth2.provider import AuthorizationProvider
-from gcecloudstack import app
+from gcecloudstack import app, db
 from . import requester
 import json
 
@@ -32,10 +32,16 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         return username is not None
 
     def validate_client_secret(self, username, password):
-        response = requester.cloud_login(app.config['HOST'], username, password)
+        response = requester.cloud_login(username, password)
         if response:
-            #print response.cookies
-            print response.text
+            jsessionid = response.cookies['JSESSIONID']
+
+            data = json.loads(response.text)
+            sessionkey = data['loginresponse']['sessionkey']
+
+            client = Client(username=username,jsessionid=jsessionid,sessionkey=sessionkey)
+            db.session.add(client)
+            db.session.commit()
         else:
             print "empty"
             return False
