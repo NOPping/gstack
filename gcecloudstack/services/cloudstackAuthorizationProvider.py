@@ -37,11 +37,16 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
             data = json.loads(response.text)
             sessionkey = data['loginresponse']['sessionkey']
 
+            existingData = Client.query.get(username);
             client = Client(username=username,jsessionid=jsessionid,sessionkey=sessionkey)
-            db.session.add(client)
+            if existingData is not None:
+                existingData.jsessionid = jsessionid
+                existingData.sessionkey = sessionkey
+            else:
+                db.session.add(client)
+
             db.session.commit()
         else:
-            print "empty"
             return False
 
     def validate_redirect_uri(self, client_id, redirect_uri):
