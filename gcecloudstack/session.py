@@ -19,6 +19,8 @@
 
 from gcecloudstack.services.cloudstackResourceProvider import resource_provider
 
+
 class session:
+
     def __init__(self):
         self.authorization = resource_provider.get_authorization()

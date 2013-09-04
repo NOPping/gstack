@@ -24,6 +24,7 @@ from gcecloudstack.models.accesstoken import AccessToken
 from gcecloudstack.models.client import Client
 from gcecloudstack.services.cloudstackResourceAuthorization import CloudstackResourceAuthorization
 
+
 class CloudstackResourceProvider(ResourceProvider):
 
     @property
@@ -35,7 +36,7 @@ class CloudstackResourceProvider(ResourceProvider):
 
     def validate_access_token(self, access_token, authorization):
         found_access_token = AccessToken.query.get(access_token)
-        if found_access_token  is not None:
+        if found_access_token is not None:
             access_token_data = json.loads(found_access_token.data)
             client = Client.query.get(access_token_data.get('client_id'))
 

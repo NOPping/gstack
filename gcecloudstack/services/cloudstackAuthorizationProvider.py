@@ -27,6 +27,7 @@ from . import requester
 import json
 import urllib
 
+
 class CloudstackAuthorizationProvider(AuthorizationProvider):
 
     def validate_client_id(self, client_id):

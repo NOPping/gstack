@@ -26,6 +26,7 @@ from gcecloudstack.services import requester
 from gcecloudstack.session import session
 import urllib
 
+
 @app.route('/')
 def api_root():
     thissession = session()
