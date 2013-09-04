@@ -60,7 +60,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         return True
 
     def validate_access(self):
-        return session.user is not None
+        return True
 
     def validate_scope(self, client_id, scope):
         return True
@@ -68,15 +68,11 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
     def persist_authorization_code(self, client_id, code, scope):
         return
 
-    def persist_token_information(self, client_id, scope, access_token,
-                                  token_type, expires_in,
-                                  refresh_token, data):
+    def persist_token_information(self, client_id, scope, access_token, token_type, expires_in, refresh_token, data):
         client = Client.query.get(client_id)
         if client is not None:
-            existing_access_token = AccessToken.query.filter_by(
-                client_id=client_id).first()
-            existing_refresh_token = RefreshToken.query.filter_by(
-                client_id=client_id).first()
+            existing_access_token = AccessToken.query.filter_by(client_id=client_id).first()
+            existing_refresh_token = RefreshToken.query.filter_by(client_id=client_id).first()
 
             if existing_access_token is not None:
                 existing_access_token.access_token = access_token

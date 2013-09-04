@@ -17,21 +17,24 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys
-import os
 
 from gcecloudstack import app
-from flask import jsonify, Response
+from flask import jsonify
 from gcecloudstack.services import requester
 from gcecloudstack.session import session
-import urllib
 
 
 @app.route('/')
 def api_root():
     thissession = session()
-    print(thissession.authorization.is_oauth)
-    print(thissession.authorization.client_id)
-    print(thissession.authorization.jsessionid)
-    print(urllib.quote_plus(urllib.quote_plus(thissession.authorization.sessionkey)))
-    return requester.make_request('listZones', None, None, thissession.authorization.jsessionid, thissession.authorization.sessionkey)
+    if thissession.authorization.is_valid:
+        return requester.make_request('listZones', None, None, thissession.authorization.jsessionid, thissession.authorization.sessionkey)
+    else:
+        message = {
+        'status': 401,
+        'message': 'Authorization Required',
+        }
+        resp = jsonify(message)
+        resp.status_code = 404
+
+        return resp
