@@ -19,22 +19,20 @@
 
 import requests
 from gcecloudstack import app
+import urllib
 
-
-def make_request(command, args, logger, username, authentication_token):
+def make_request(command, args, logger, jsessionid, sessionkey):
     host = app.config['HOST']
     port = app.config['PORT']
     protocol = app.config['PROTOCOL']
     path = app.config['PATH']
-    response = None
-    error = None
 
-    if protocol != 'http' and protocol != 'https':
-        error = "Protocol must be 'http' or 'https'"
-        return None, error
+    url = app.config['PROTOCOL'] + "://" + app.config['HOST'] + ":" + app.config['PORT'] + app.config['PATH']
+    cookies = dict(jsessionid=jsessionid,sessionkey=urllib.quote_plus(sessionkey))
+    payload = {'command': command, 'response': 'json', 'sessionkey': sessionkey}
+    response = requests.get(url, cookies=cookies, params=payload)
 
-    return none
-
+    return response.text
 
 def cloud_login(username, password):
     url = app.config['PROTOCOL'] + "://" + app.config[

@@ -25,7 +25,7 @@ from gcecloudstack import db
 from flask import session
 from . import requester
 import json
-
+import urllib
 
 class CloudstackAuthorizationProvider(AuthorizationProvider):
 
@@ -45,7 +45,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
                 username=client_id, jsessionid=jsessionid, sessionkey=sessionkey)
             if existing_client is not None:
                 existing_client.jsessionid = jsessionid
-                existing_client.sessionkey = sessionkey
+                existing_client.sessionkey = urllib.quote_plus(sessionkey)
             else:
                 db.session.add(client)
 

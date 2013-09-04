@@ -22,12 +22,15 @@ import os
 
 from gcecloudstack import app
 from flask import jsonify, Response
+from gcecloudstack.services import requester
 from gcecloudstack.session import session
-
+import urllib
 
 @app.route('/')
 def api_root():
     thissession = session()
     print(thissession.authorization.is_oauth)
     print(thissession.authorization.client_id)
-    return None
+    print(thissession.authorization.jsessionid)
+    print(urllib.quote_plus(urllib.quote_plus(thissession.authorization.sessionkey)))
+    return requester.make_request('listZones', None, None, thissession.authorization.jsessionid, thissession.authorization.sessionkey)

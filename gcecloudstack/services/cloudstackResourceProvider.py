@@ -21,6 +21,7 @@ import json
 from flask import request
 from pyoauth2.provider import ResourceProvider
 from gcecloudstack.models.accesstoken import AccessToken
+from gcecloudstack.models.client import Client
 from gcecloudstack.services.cloudstackResourceAuthorization import CloudstackResourceAuthorization
 
 class CloudstackResourceProvider(ResourceProvider):
@@ -35,10 +36,13 @@ class CloudstackResourceProvider(ResourceProvider):
     def validate_access_token(self, access_token, authorization):
         found_access_token = AccessToken.query.get(access_token)
         if found_access_token  is not None:
-            data = json.loads(found_access_token.data)
-            print data
+            access_token_data = json.loads(found_access_token.data)
+            client = Client.query.get(access_token_data.get('client_id'))
+
             authorization.is_valid = True
-            authorization.client_id = data.get('client_id')
-            authorization.expires_in = data.get('expires_in')
+            authorization.client_id = access_token_data.get('client_id')
+            authorization.expires_in = access_token_data.get('expires_in')
+            authorization.jsessionid = client.jsessionid
+            authorization.sessionkey = client.sessionkey
 
 resource_provider = CloudstackResourceProvider()

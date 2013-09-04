@@ -20,4 +20,5 @@
 from pyoauth2.provider import ResourceAuthorization
 
 class CloudstackResourceAuthorization(ResourceAuthorization):
-    user_id = None
+    sessionkey = None
+    jsessionid = None
