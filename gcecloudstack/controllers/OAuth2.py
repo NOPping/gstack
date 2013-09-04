@@ -25,51 +25,28 @@ from flask import request
 from gcecloudstack import app
 from gcecloudstack.services.cloudstackAuthorizationProvider import CloudstackAuthorizationProvider
 
-# Authorization Code
-# Returns a redirect header on success
-
 
 @app.route("/oauth2/auth", methods=["GET"])
 def authorization_code():
 
-    # You can cache this instance for efficiency
     provider = CloudstackAuthorizationProvider()
 
-    # This is the important line
     response = provider.get_authorization_code_from_uri(request.url)
 
-    # For maximum compatibility, a standard Response object is provided
-    # Response has the following properties:
-    #
-    #     response.status_code        int
-    #     response.text               response body
-    #     response.headers            iterable dict-like object with keys and values
-    #
-    # This response must be converted to a type that your application
-    # framework can use and returned.
     flask_res = flask.make_response(response.text, response.status_code)
     for k, v in response.headers.iteritems():
         flask_res.headers[k] = v
     return flask_res
 
-# Token exchange
-# Returns JSON token information on success
-
 
 @app.route("/oauth2/token", methods=["POST"])
 def token():
-
-    # You can cache this instance for efficiency
     provider = CloudstackAuthorizationProvider()
 
-    # Get a dict of POSTed form data
     data = {k: request.form[k] for k in request.form.iterkeys()}
 
-    # This is the important line
     response = provider.get_token_from_post_data(data)
 
-    # The same Response object is provided, and must be converted
-    # to a type that your application framework can use and returned.
     flask_res = flask.make_response(response.text, response.status_code)
     for k, v in response.headers.iteritems():
         flask_res.headers[k] = v

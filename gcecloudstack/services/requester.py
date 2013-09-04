@@ -20,6 +20,7 @@
 import requests
 from gcecloudstack import app
 
+
 def make_request(command, args, logger, username, authentication_token):
     host = app.config['HOST']
     port = app.config['PORT']
@@ -34,8 +35,10 @@ def make_request(command, args, logger, username, authentication_token):
 
     return none
 
+
 def cloud_login(username, password):
-    url = app.config['PROTOCOL'] + "://" + app.config['HOST'] + ":" + app.config['PORT'] + app.config['PATH']
+    url = app.config['PROTOCOL'] + "://" + app.config[
+        'HOST'] + ":" + app.config['PORT'] + app.config['PATH']
     payload = {'command': 'login', 'username': username, 'password': password,
                'response': 'json'}
     headers = {'Content-Type': 'application/x-www-form-urlencoded',

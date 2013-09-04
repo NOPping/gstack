@@ -21,7 +21,7 @@ from gcecloudstack.models.client import Client
 from gcecloudstack.models.accesstoken import AccessToken
 from gcecloudstack.models.refreshtoken import RefreshToken
 from pyoauth2.provider import AuthorizationProvider
-from gcecloudstack import app, db
+from gcecloudstack import db
 from flask import session
 from . import requester
 import json
@@ -40,11 +40,12 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
             data = json.loads(response.text)
             sessionkey = data['loginresponse']['sessionkey']
 
-            existingClient = Client.query.get(client_id);
-            client = Client(username=client_id,jsessionid=jsessionid,sessionkey=sessionkey)
-            if existingClient is not None:
-                existingClient.jsessionid = jsessionid
-                existingClient.sessionkey = sessionkey
+            existing_client = Client.query.get(client_id)
+            client = Client(
+                username=client_id, jsessionid=jsessionid, sessionkey=sessionkey)
+            if existing_client is not None:
+                existing_client.jsessionid = jsessionid
+                existing_client.sessionkey = sessionkey
             else:
                 db.session.add(client)
 
@@ -71,21 +72,25 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
                                   refresh_token, data):
         client = Client.query.get(client_id)
         if client is not None:
-            existingAccessToken = AccessToken.query.filter_by(client_id=client_id).first()
-            existingRefreshToken = RefreshToken.query.filter_by(client_id=client_id).first()
+            existing_access_token = AccessToken.query.filter_by(
+                client_id=client_id).first()
+            existing_refresh_token = RefreshToken.query.filter_by(
+                client_id=client_id).first()
 
-            if existingAccessToken is not None:
-                existingAccessToken.access_token = access_token
-                existingAccessToken.data = json.dumps(data)
-                existingAccessToken.expires_in = expires_in
+            if existing_access_token is not None:
+                existing_access_token.access_token = access_token
+                existing_access_token.data = json.dumps(data)
+                existing_access_token.expires_in = expires_in
             else:
-                db.session.add(AccessToken(access_token=access_token, client_id=client_id, expires_in=expires_in, data=json.dumps(data)))
+                db.session.add(
+                    AccessToken(access_token=access_token, client_id=client_id, expires_in=expires_in, data=json.dumps(data)))
 
-            if existingRefreshToken is not None:
-                existingRefreshToken.refresh_token = refresh_token
-                existingAccessToken.data = json.dumps(data)
+            if existing_refresh_token is not None:
+                existing_refresh_token.refresh_token = refresh_token
+                existing_refresh_token.data = json.dumps(data)
             else:
-                db.session.add(RefreshToken(refresh_token=refresh_token, client_id=client_id, data=json.dumps(data)))
+                db.session.add(
+                    RefreshToken(refresh_token=refresh_token, client_id=client_id, data=json.dumps(data)))
 
             db.session.commit()
             return True
@@ -100,9 +105,9 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         }
 
     def from_refresh_token(self, client_id, refresh_token, scope):
-        refresh_token = RefreshToken.query.get(refresh_token)
-        if refresh_token is not None:
-            data = json.loads(refresh_token['data'])
+        found_refresh_token = RefreshToken.query.get(refresh_token)
+        if found_refresh_token is not None:
+            data = json.loads(found_refresh_token.data)
             if (scope == '' or scope == data.get('scope')) and client_id == data.get('client_id'):
                 return data
         else:
@@ -112,6 +117,6 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         return None
 
     def discard_refresh_token(self, client_id, refresh_token):
-        refresh_token = RefreshToken.query.get(refresh_token)
-        db.session.delete(refresh_token)
+        found_refresh_token = RefreshToken.query.get(refresh_token)
+        db.session.delete(found_refresh_token)
         db.session.commit()

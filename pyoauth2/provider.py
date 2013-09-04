@@ -10,6 +10,7 @@ from . import utils
 
 
 class Provider(object):
+
     """Base provider class for different types of OAuth 2.0 providers."""
 
     def _handle_exception(self, exc):
@@ -97,6 +98,7 @@ class Provider(object):
 
 
 class AuthorizationProvider(Provider):
+
     """OAuth 2.0 authorization provider. This class manages authorization
     codes and access tokens. Certain methods MUST be overridden in a
     subclass, thus this class cannot be directly used as a provider.
@@ -460,8 +462,9 @@ class AuthorizationProvider(Provider):
             # Verify OAuth 2.0 Parameters
             for x in ['grant_type', 'client_id', 'client_secret']:
                 if not data.get(x):
-                    raise TypeError("Missing required OAuth 2.0 POST param: {0}".format(x))
-            
+                    raise TypeError(
+                        "Missing required OAuth 2.0 POST param: {0}".format(x))
+
             # Handle get token from refresh_token
             if 'refresh_token' in data:
                 return self.refresh_token(**data)
@@ -469,7 +472,8 @@ class AuthorizationProvider(Provider):
             # Handle get token from authorization code
             for x in ['redirect_uri', 'code']:
                 if not data.get(x):
-                    raise TypeError("Missing required OAuth 2.0 POST param: {0}".format(x))            
+                    raise TypeError(
+                        "Missing required OAuth 2.0 POST param: {0}".format(x))
             return self.get_token(**data)
         except TypeError as exc:
             self._handle_exception(exc)
@@ -483,60 +487,63 @@ class AuthorizationProvider(Provider):
             return self._make_json_error_response('server_error')
 
     def validate_client_id(self, client_id):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'validate_client_id.')
 
     def validate_client_secret(self, client_id, client_secret):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'validate_client_secret.')
 
     def validate_redirect_uri(self, client_id, redirect_uri):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'validate_redirect_uri.')
 
     def validate_scope(self, client_id, scope):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'validate_scope.')
 
     def validate_access(self):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'validate_access.')
 
     def from_authorization_code(self, client_id, code, scope):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'from_authorization_code.')
 
     def from_refresh_token(self, client_id, refresh_token, scope):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'from_refresh_token.')
 
     def persist_authorization_code(self, client_id, code, scope):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'persist_authorization_code.')
 
     def persist_token_information(self, client_id, scope, access_token,
                                   token_type, expires_in, refresh_token,
                                   data):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'persist_token_information.')
 
     def discard_authorization_code(self, client_id, code):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'discard_authorization_code.')
 
     def discard_refresh_token(self, client_id, refresh_token):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'discard_refresh_token.')
 
 
 class OAuthError(Unauthorized):
+
     """OAuth error, including the OAuth error reason."""
+
     def __init__(self, reason, *args, **kwargs):
         self.reason = reason
         super(OAuthError, self).__init__(*args, **kwargs)
 
 
 class ResourceAuthorization(object):
+
     """A class containing an OAuth 2.0 authorization."""
     is_oauth = False
     is_valid = None
@@ -551,6 +558,7 @@ class ResourceAuthorization(object):
 
 
 class ResourceProvider(Provider):
+
     """OAuth 2.0 resource provider. This class provides an interface
     to validate an incoming request and authenticate resource access.
     Certain methods MUST be overridden in a subclass, thus this
@@ -587,9 +595,9 @@ class ResourceProvider(Provider):
         return auth
 
     def get_authorization_header(self):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'get_authorization_header.')
 
     def validate_access_token(self, access_token, authorization):
-        raise NotImplementedError('Subclasses must implement ' \
+        raise NotImplementedError('Subclasses must implement '
                                   'validate_token.')

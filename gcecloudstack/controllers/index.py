@@ -21,17 +21,13 @@ import sys
 import os
 
 from gcecloudstack import app
-from flask import jsonify, Response, request
+from flask import jsonify, Response
+from gcecloudstack.session import session
 
 
 @app.route('/')
 def api_root():
-    message = {
-        'status': 200,
-        'message':
-        app.config["HOST"] + ":" + app.config['PORT'] + app.config['PATH']
-    }
-    resp = jsonify(message)
-    resp.status_code = 200
-
-    return resp
+    thissession = session()
+    print(thissession.authorization.is_oauth)
+    print(thissession.authorization.client_id)
+    return None
