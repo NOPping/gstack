@@ -24,7 +24,7 @@ from flask import jsonify
 
 @app.route('/example')
 @authentication.required
-def example(projectid, authorization):
+def example(authorization):
     resp = jsonify({
             "jsessionid": authorization.jsessionid,
             "sessionkey": authorization.sessionkey,
