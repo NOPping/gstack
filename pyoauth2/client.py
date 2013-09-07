@@ -4,7 +4,7 @@ from . import utils
 
 class Client(object):
 
-    def __init__(self, client_id, client_secret, redirect_uri, \
+    def __init__(self, client_id, client_secret, redirect_uri,
                  authorization_uri, token_uri):
         """Constructor for OAuth 2.0 Client.
 
