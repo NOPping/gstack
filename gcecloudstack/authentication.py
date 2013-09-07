@@ -23,6 +23,7 @@ from gcecloudstack.oauth2provider import CloudstackResourceProvider
 
 resource_provider = CloudstackResourceProvider()
 
+
 def required(f):
     @wraps(f)
     def decorated(*args, **kwargs):

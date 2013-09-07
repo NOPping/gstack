@@ -33,6 +33,7 @@ from gcecloudstack.models.client import Client
 from gcecloudstack.models.accesstoken import AccessToken
 from gcecloudstack.models.refreshtoken import RefreshToken
 
+
 class CloudstackAuthorizationProvider(AuthorizationProvider):
 
     def validate_client_id(self, client_id):
@@ -76,8 +77,10 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
     def persist_token_information(self, client_id, scope, access_token, token_type, expires_in, refresh_token, data):
         client = Client.query.get(client_id)
         if client is not None:
-            existing_access_token = AccessToken.query.filter_by(client_id=client_id).first()
-            existing_refresh_token = RefreshToken.query.filter_by(client_id=client_id).first()
+            existing_access_token = AccessToken.query.filter_by(
+                client_id=client_id).first()
+            existing_refresh_token = RefreshToken.query.filter_by(
+                client_id=client_id).first()
 
             if existing_access_token is not None:
                 existing_access_token.access_token = access_token
@@ -123,9 +126,11 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         db.session.delete(found_refresh_token)
         db.session.commit()
 
+
 class CloudstackResourceAuthorization(ResourceAuthorization):
     jsessionid = None
     sessionkey = None
+
 
 class CloudstackResourceProvider(ResourceProvider):
 

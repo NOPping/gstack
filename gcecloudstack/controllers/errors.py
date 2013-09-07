@@ -20,9 +20,11 @@
 from gcecloudstack import app
 from flask import jsonify, Response
 
+
 @app.errorhandler(404)
 def not_found(e):
     return Response('Not Found', status=404, mimetype='text/html')
+
 
 @app.errorhandler(401)
 def unauthorized(e):
