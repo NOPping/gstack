@@ -17,32 +17,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gcecloudstack import app
-from flask import jsonify, Response
+from gcecloudstack import db
 
 
-@app.errorhandler(404)
-def not_found(e):
-    return Response('Not Found', status=404, mimetype='text/html')
-
-
-@app.errorhandler(401)
-def unauthorized(e):
-    resp = jsonify({
-        "error": {
-            "errors": [
-                {
-                    "domain": "global",
-                    "reason": "required",
-                    "message": "Login Required",
-                    "locationType": "header",
-                    "location": "Authorization",
-                },
-            ],
-        },
-        "code": 401,
-        "message": "Login Required",
-    })
-
-    resp.status_code = 401
-    return resp
+class AccessToken(db.Model):
+    access_token = db.Column(db.String(100),  primary_key=True, unique=True)
+    client_id = db.Column(db.String(100), unique=True)
+    expires_in = db.Column(db.Integer)
+    data = db.Column(db.String(500))

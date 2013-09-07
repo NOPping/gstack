@@ -4,7 +4,7 @@ import urlparse
 from Crypto.Random import random
 
 UNICODE_ASCII_CHARACTERS = (string.ascii_letters.decode('ascii') +
-    string.digits.decode('ascii'))
+                            string.digits.decode('ascii'))
 
 
 def random_ascii_string(length):

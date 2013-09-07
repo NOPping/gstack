@@ -17,17 +17,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
-
 from gcecloudstack import app
 from OpenSSL import SSL
+
 
 def main():
     context = SSL.Context(SSL.SSLv23_METHOD)
     context.use_privatekey_file(app.config['SSLPATH'] + '/server.key')
     context.use_certificate_file(app.config['SSLPATH'] + '/server.crt')
     port = app.config['GCEPORT']
-    app.run(host='127.0.0.1', port=port, debug=True, ssl_context=context)
+    app.run(host='127.0.0.1', port=int(port), debug=True, ssl_context=context)
 
 if __name__ == '__main__':
     main()

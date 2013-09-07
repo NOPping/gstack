@@ -21,6 +21,7 @@ class MockClient(Client):
 
 
 class MockAuthorizationProvider(AuthorizationProvider):
+
     """Implement an authorization pyoauth2 provider for testing purposes."""
 
     def validate_client_id(self, client_id):

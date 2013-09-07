@@ -19,11 +19,13 @@ class ClientTest(unittest.TestCase):
         uri = self.client.get_authorization_code_uri(state="app.state")
 
         # Check URI
-        self.assertTrue(uri.startswith('https://grapheffect.com/pyoauth2/auth?'))
+        self.assertTrue(
+            uri.startswith('https://grapheffect.com/pyoauth2/auth?'))
 
         # Check params
         params = utils.url_query_params(uri)
         self.assertEquals('code', params['response_type'])
         self.assertEquals('some.client', params['client_id'])
-        self.assertEquals('https://example.com/pyoauth2redirect', params['redirect_uri'])
+        self.assertEquals(
+            'https://example.com/pyoauth2redirect', params['redirect_uri'])
         self.assertEquals('app.state', params['state'])

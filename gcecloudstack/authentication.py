@@ -17,14 +17,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gcecloudstack import db
+from flask import abort
+from functools import wraps
+from gcecloudstack.oauth2provider import CloudstackResourceProvider
+
+resource_provider = CloudstackResourceProvider()
 
 
-class AccessKey(db.Model):
-    access_key = db.Column(db.String(100), primary_key=True, unique=True)
-    expires_in = db.Column(db.Integer)
+def required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        authorization = resource_provider.get_authorization()
+        if not authorization.is_valid:
+            return abort(401)
 
-
-def __init__(self, access_key, expires_in):
-    self.access_key = access_key
-    self.expires_in = expires_in
+        return f(authorization=authorization, *args, **kwargs)
+    return decorated
