@@ -20,15 +20,27 @@
 from gcecloudstack import app
 from flask import jsonify, Response
 
-
 @app.errorhandler(404)
-def not_found(error=None):
-    message = {
-        'status': 404,
-        'message': 'Not Found',
-        'test': 'yoyo'
-    }
-    resp = jsonify(message)
-    resp.status_code = 404
+def not_found(e):
+    return Response('Not Found', status=404, mimetype='text/html')
 
+@app.errorhandler(401)
+def unauthorized(e):
+    resp = jsonify({
+        "error": {
+            "errors": [
+                {
+                    "domain": "global",
+                    "reason": "required",
+                    "message": "Login Required",
+                    "locationType": "header",
+                    "location": "Authorization",
+                },
+            ],
+        },
+        "code": 401,
+        "message": "Login Required",
+    })
+
+    resp.status_code = 401
     return resp

@@ -17,8 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys
 import os
+
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 
