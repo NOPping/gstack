@@ -50,6 +50,7 @@ setup(name="gcecloudstack",
       install_requires=[
           "flask",
           "requests==0.14",
+          "pycrypto==2.6",
           "pyopenssl",
           "Flask-SQLAlchemy",
       ],
