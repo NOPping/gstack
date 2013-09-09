@@ -20,13 +20,12 @@
 import requests
 from gcecloudstack import app
 import urllib
-import json
 
 def make_request(command, args, logger, jsessionid, sessionkey):
     url = app.config['PROTOCOL'] + "://" + app.config[
         'HOST'] + ":" + app.config['PORT'] + app.config['PATH']
-    cookies = dict(jsessionid=jsessionid,
-                   sessionkey=urllib.quote_plus(sessionkey))
+    cookies = dict(JSESSIONID=jsessionid,
+                   sessionkey=urllib.quote_plus(urllib.quote_plus(sessionkey)))
     payload = {'command': command, 'response':
                'json', 'sessionkey': sessionkey}
     response = requests.get(url, cookies=cookies, params=payload)

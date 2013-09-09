@@ -22,7 +22,6 @@ from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
 from flask import jsonify
-import json
 
 @app.route('/example')
 @authentication.required
@@ -32,7 +31,6 @@ def example(authorization):
             "sessionkey": authorization.sessionkey,
         })
     resp.status_code = 200
-
     return resp
 
 @app.route('/compute/v1beta15/projects/<projectid>/zones')

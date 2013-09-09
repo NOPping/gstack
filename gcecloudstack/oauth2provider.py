@@ -52,7 +52,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
                 username=client_id, jsessionid=jsessionid, sessionkey=sessionkey)
             if existing_client is not None:
                 existing_client.jsessionid = jsessionid
-                existing_client.sessionkey = urllib.quote_plus(sessionkey)
+                existing_client.sessionkey = sessionkey
             else:
                 db.session.add(client)
 
