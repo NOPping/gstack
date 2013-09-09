@@ -22,6 +22,7 @@ from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
 from flask import jsonify
+import json
 
 @app.route('/example')
 @authentication.required
@@ -36,46 +37,14 @@ def example(authorization):
 
 @app.route('/compute/v1beta15/projects/<projectid>/zones')
 @authentication.required
-def listzones(authorization):
+def listzones(projectid,authorization):
     command = 'listZones'
     args = None
     logger = None
     response = requester.make_request(command, args, logger, authorization.jsessionid, authorization.sessionkey)
     print response
 
-    resp = {
-            "kind": "compute#zone",
-            "selfLink": string,
-            "id": response['id'],
-            "creationTimestamp": '',
-            "name": response['name'],
-            "description": '',
-            "status": response['allocationstate'],
-            "maintenanceWindows": [
-            {
-                "name": '',
-                "description": '',
-                "beginTime": '',
-                "endTime": ''
-            }
-            ],
-            "quotas": [
-            {
-                "metric": '',
-                "limit": '',
-                "usage": ''
-            }
-            ],
-            "deprecated": {
-                "state": '',
-                "replacement": '',
-                "deprecated": '',
-                "obsolete": '',
-                "deleted": ''
-            }
-           }
-
-    return resp
+    return response
 
 @app.route('/compute/v1beta15/projects/<projectid>')
 @authentication.required

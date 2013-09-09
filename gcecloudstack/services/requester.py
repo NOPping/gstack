@@ -20,7 +20,7 @@
 import requests
 from gcecloudstack import app
 import urllib
-
+import json
 
 def make_request(command, args, logger, jsessionid, sessionkey):
     url = app.config['PROTOCOL'] + "://" + app.config[
