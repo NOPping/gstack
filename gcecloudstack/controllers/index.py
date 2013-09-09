@@ -42,7 +42,7 @@ def listzones(authorization):
     logger = None
     response = requester.make_request(command, args, logger, authorization.jsessionid, authorization.sessionkey)
     print response
-    
+
     resp = {
             "kind": "compute#zone",
             "selfLink": string,
@@ -74,11 +74,12 @@ def listzones(authorization):
                 "deleted": ''
             }
            }
-    
+
     return resp
 
 @app.route('/compute/v1beta15/projects/<projectid>')
-def getProject(projectid):
+@authentication.required
+def getProject(projectid,authorization):
     resp = jsonify({
           "commonInstanceMetadata": {
             "kind": "compute#metadata"
