@@ -22,6 +22,7 @@ from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
 from flask import jsonify
+import json
 
 @app.route('/example')
 @authentication.required
@@ -41,8 +42,56 @@ def listzones(projectid,authorization):
     logger = None
     response = requester.make_request(command, args, logger, authorization.jsessionid, authorization.sessionkey)
     print response
+    response = json.loads(response)
+    response = response['listzonesresponse']['zone']
+    resp = jsonify(
+      {
+        "items": [
+          {
+            "cpus": "",
+            "creationTimestamp": "",
+            "description": "",
+            "disks": "",
+            "disks_total_gb": "",
+            "id": response[0]['id'],
+            "instances": "",
+            "kind": "compute#zone",
+            "maintenanceWindows": [
+            ],
+            "name": response[0]['name'],
+            "next_maintenance_window": "",
+            "quotas": [
+              {
+                "limit": 16.0,
+                "metric": "INSTANCES",
+                "usage": 0.0
+              },
+              {
+                "limit": 24.0,
+                "metric": "CPUS",
+                "usage": 0.0
+              },
+              {
+                "limit": 16.0,
+                "metric": "DISKS",
+                "usage": 0.0
+              },
+              {
+                "limit": 2048.0,
+                "metric": "DISKS_TOTAL_GB",
+                "usage": 0.0
+              }
+            ],
+            "region": "https://www.googleapis.com/compute/v1beta15/projects/silent-thunder-0001/regions/europe-west1",
+            "selfLink": "https://www.googleapis.com/compute/v1beta15/projects/silent-thunder-0001/zones/europe-west1-a",
+            "status": "UP"
+          }
+        ],
+        "kind": "compute#zoneList"
+      }
+    )
 
-    return response
+    return resp
 
 @app.route('/compute/v1beta15/projects/<projectid>')
 @authentication.required
