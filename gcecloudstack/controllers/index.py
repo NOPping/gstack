@@ -38,20 +38,45 @@ def example(authorization):
 @app.route('/compute/v1beta15/projects/<projectid>/zones')
 @authentication.required
 def listzones(projectid,authorization):
-    command = 'listZones'
-    args = None
-    logger = None
-    response = requester.make_request(command, args, logger, authorization.jsessionid, authorization.sessionkey)
-    print response
-    response = json.loads(response)
-    response = response['listzonesresponse']['zone']
-    basepath = os.path.dirname(__file__)
-    listzones_template = open(os.path.join(basepath,"..", "templates/listzones.json"), "r").read()
-    listzones_template = json.loads(listzones_template)
     
-    resp = jsonify(listzones_template)
-    resp.status_code = 200
-    return resp
+    command = 'listZones'
+    args = {}
+    logger = None
+    cloudstack_response = requester.make_request(command, args, logger, authorization.jsessionid, authorization.sessionkey)
+    print(cloudstack_response)
+    cloudstack_response = json.loads(cloudstack_response)
+    num_zones = cloudstack_response['listzonesresponse']['count']
+    num_zones = int(num_zones)
+    cloudstack_response = cloudstack_response['listzonesresponse']['zone']
+
+
+    zones = [] 
+    
+    current_zone = 0
+    while current_zone < num_zones:
+        for item in cloudstack_response:
+		    zones.append({
+		        'kind' : "compute#zone",
+		        'name': item['name'],
+		        'instances': '',
+			    'description': item['name'],
+			    'id' : item['id'],
+			    'status' : item['allocationstate']
+            })
+        current_zone += 1
+ 
+   
+    populated_response = {
+	   'kind' : "compute#zoneList",
+	   'id' : '',
+	   'selfLink': '',
+	   'items' : zones
+    }
+
+    
+    gcutil_responce = jsonify(populated_response)
+    gcutil_responce.status_code = 200
+    return gcutil_responce
 
 @app.route('/compute/v1beta15/projects/<projectid>')
 @authentication.required
