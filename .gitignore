@@ -2,6 +2,7 @@
 ./gcecloudstack/app.db
 
 *.py[cod]
+*~
 
 # C extensions
 *.so
