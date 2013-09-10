@@ -20,6 +20,7 @@
 import requests
 from gcecloudstack import app
 import urllib
+from flask import abort
 
 def make_request(command, args, logger, jsessionid, sessionkey):
     url = app.config['PROTOCOL'] + "://" + app.config[
@@ -29,9 +30,10 @@ def make_request(command, args, logger, jsessionid, sessionkey):
     payload = {'command': command, 'response':
                'json', 'sessionkey': sessionkey}
     response = requests.get(url, cookies=cookies, params=payload)
-
-    return response.text
-
+    if response.status_code == 200:
+      return response.text
+    else:
+      abort(response.status_code)
 
 def cloud_login(username, password):
     url = app.config['PROTOCOL'] + "://" + app.config[
