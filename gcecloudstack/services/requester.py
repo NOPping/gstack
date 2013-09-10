@@ -29,6 +29,7 @@ def make_request(command, args, logger, jsessionid, sessionkey):
                    sessionkey=urllib.quote_plus(urllib.quote_plus(sessionkey)))
     payload = {'command': command, 'response':
                'json', 'sessionkey': sessionkey}
+    payload.update(args)
     response = requests.get(url, cookies=cookies, params=payload)
     if response.status_code == 200:
       return response.text
