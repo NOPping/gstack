@@ -1,3 +1,6 @@
+./gcecloudstack/__init__.py
+./gcecloudstack/app.db
+
 *.py[cod]
 
 # C extensions
