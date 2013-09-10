@@ -1,0 +1,44 @@
+{
+    "items": [
+      {
+        "cpus": "",
+        "creationTimestamp": "",
+        "description": "",
+        "disks": "",
+        "disks_total_gb": "",
+        "id": "",
+        "instances": "",
+        "kind": "compute#zone",
+        "maintenanceWindows": [
+        ],
+        "name": "",
+        "next_maintenance_window": "",
+        "quotas": [
+          {
+            "limit": 16.0,
+            "metric": "INSTANCES",
+            "usage": 0.0
+          },
+          {
+            "limit": 24.0,
+            "metric": "CPUS",
+            "usage": 0.0
+          },
+          {
+            "limit": 16.0,
+            "metric": "DISKS",
+            "usage": 0.0
+          },
+          {
+            "limit": 2048.0,
+            "metric": "DISKS_TOTAL_GB",
+            "usage": 0.0
+          }
+        ],
+        "region": "https://www.googleapis.com/compute/v1beta15/projects/silent-thunder-0001/regions/europe-west1",
+        "selfLink": "https://www.googleapis.com/compute/v1beta15/projects/silent-thunder-0001/zones/europe-west1-a",
+        "status": "UP"
+      }
+    ],
+    "kind": "compute#zoneList"
+  }
