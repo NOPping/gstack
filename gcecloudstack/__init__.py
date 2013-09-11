@@ -27,19 +27,8 @@ app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Configuration Options
-
-# Application Options
 app.config['DATA'] = basedir + '/data'
-
-# Cloudstack Options
-app.config['CLOUDSTACK_PATH'] = '/client/api'
-app.config['CLOUDSTACK_HOST'] = 'ianduffy.ie'
-app.config['CLOUDSTACK_PORT'] = '8080'
-app.config['CLOUDSTACK_PROTOCOL'] = 'http'
-
-app.config['LISTEN_ADDRESS'] = 'localhost'
-app.config['LISTEN_PORT'] = '5000'
-app.config['PATH'] = 'compute/v1beta15/projects/'
+app.config.from_object(app.config['DATA'] + '/data/config.cfg')
 
 # Sqlite Options
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
