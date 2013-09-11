@@ -123,8 +123,9 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
 
     def discard_refresh_token(self, client_id, refresh_token):
         found_refresh_token = RefreshToken.query.get(refresh_token)
-        db.session.delete(found_refresh_token)
-        db.session.commit()
+        if found_refresh_token is not None:
+            db.session.delete(found_refresh_token)
+            db.session.commit()
 
 
 class CloudstackResourceAuthorization(ResourceAuthorization):
@@ -143,7 +144,7 @@ class CloudstackResourceProvider(ResourceProvider):
 
     def validate_access_token(self, access_token, authorization):
         found_access_token = AccessToken.query.get(access_token)
-        if found_access_token is not None:
+        if found_access_token is not None and found_access_token.data != "false":
             access_token_data = json.loads(found_access_token.data)
             client = Client.query.get(access_token_data.get('client_id'))
 
