@@ -28,7 +28,9 @@ import json
 def getProject(projectid, authorization):
 
     command = 'listAccounts'
-    args = {}
+    args = {
+        'name': projectid
+    }
     logger = None
     cloudstack_response = requester.make_request(
         command,
@@ -39,8 +41,7 @@ def getProject(projectid, authorization):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
-    cloudstack_response = cloudstack_response['listaccountsresponse']['account']
-    cloudstack_response = cloudstack_response[0]
+    cloudstack_response = cloudstack_response['listaccountsresponse']['account'][0]
 
     quotas = [{
         'limit': cloudstack_response['vmlimit'],
