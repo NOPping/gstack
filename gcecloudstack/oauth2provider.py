@@ -18,7 +18,6 @@
 # under the License.
 
 import json
-import urllib
 
 from flask import request
 
@@ -48,16 +47,15 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
             sessionkey = data['loginresponse']['sessionkey']
 
             existing_client = Client.query.get(client_id)
-            client = Client(
-                username=client_id, jsessionid=jsessionid, sessionkey=sessionkey)
+
             if existing_client is not None:
                 existing_client.jsessionid = jsessionid
                 existing_client.sessionkey = sessionkey
             else:
+                client = Client(username=client_id, jsessionid=jsessionid, sessionkey=sessionkey)
                 db.session.add(client)
 
             db.session.commit()
-
             return True
         else:
             return False
@@ -111,7 +109,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
 
     def from_refresh_token(self, client_id, refresh_token, scope):
         found_refresh_token = RefreshToken.query.get(refresh_token)
-        if found_refresh_token is not None:
+        if found_refresh_token is not None and found_refresh_token.data != "false":
             data = json.loads(found_refresh_token.data)
             if (scope == '' or scope == data.get('scope')) and client_id == data.get('client_id'):
                 return data
@@ -124,18 +122,8 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
     def discard_refresh_token(self, client_id, refresh_token):
         found_refresh_token = RefreshToken.query.get(refresh_token)
         if found_refresh_token is not None:
-            print "####################"
-            print "Removing fresh token"
             db.session.delete(found_refresh_token)
             db.session.commit()
-        else:
-            print "####################"
-            print "         DEBUG INFO            "
-            print " Refresh attempted and   "
-            print " failed to get refresh        "
-            print " token                              "
-            print "####################"
-
 
 class CloudstackResourceAuthorization(ResourceAuthorization):
     jsessionid = None
