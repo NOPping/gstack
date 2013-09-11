@@ -23,7 +23,7 @@ from gcecloudstack.services import requester
 from flask import jsonify
 import json
 
-@app.route('/compute/v1beta15/projects/<projectid>/global/images', methods=['GET'])
+@app.route('/' + app.config['PATH']  + '<projectid>/global/images', methods=['GET'])
 @authentication.required
 def listimages(projectid, authorization):
     command = 'listTemplates'
@@ -42,7 +42,7 @@ def listimages(projectid, authorization):
 
     cloudstack_response = json.loads(cloudstack_response)
     cloudstack_response = cloudstack_response['listtemplatesresponse']
-  
+
     templates = []
 
     translate_status = {
@@ -51,7 +51,7 @@ def listimages(projectid, authorization):
     }
 
     # test for empty response, i.e no templates available
-    if cloudstack_response: 
+    if cloudstack_response:
         for template in cloudstack_response['template']:
             templates.append({
                 'kind': "compute#image",

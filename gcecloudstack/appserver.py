@@ -23,10 +23,9 @@ from OpenSSL import SSL
 
 def main():
     context = SSL.Context(SSL.SSLv23_METHOD)
-    context.use_privatekey_file(app.config['SSLPATH'] + '/server.key')
-    context.use_certificate_file(app.config['SSLPATH'] + '/server.crt')
-    port = app.config['GCEPORT']
-    app.run(host='127.0.0.1', port=int(port), debug=True, ssl_context=context)
+    context.use_privatekey_file(app.config['DATA'] + '/server.key')
+    context.use_certificate_file(app.config['DATA'] + '/server.crt')
+    app.run(host=app.config['LISTEN_ADDRESS'], port=int(app.config['LISTEN_PORT']), debug=True, ssl_context=context)
 
 if __name__ == '__main__':
     main()

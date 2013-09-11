@@ -23,7 +23,7 @@ from gcecloudstack.services import requester
 from flask import jsonify
 import json
 
-@app.route('/compute/v1beta15/projects/<projectid>')
+@app.route('/' + app.config['PATH']  + '<projectid>')
 @authentication.required
 def getProject(projectid, authorization):
 

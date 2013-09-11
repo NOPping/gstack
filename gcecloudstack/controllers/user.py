@@ -28,7 +28,7 @@ from gcecloudstack.services import requester
 
 from gcecloudstack import authentication
 
-@app.route('/compute/v1beta15/projects/<project>/aggregated/machineTypes')
+@app.route('/' + app.config['PATH']  + '<project>/aggregated/machineTypes')
 @authentication.required
 def aggregatedlist(authorization, project):
     command = 'listServiceOfferings'
@@ -38,7 +38,7 @@ def aggregatedlist(authorization, project):
     print response
     response = json.loads(response)
     response = response['listserviceofferingsresponse']['serviceoffering']
-    
+
     result = []
     for res in response:
         tmp = {
@@ -50,7 +50,7 @@ def aggregatedlist(authorization, project):
                'memoryMb' : res['memory']
         }
         result.append(tmp)
-    
+
     #tmp = {'machineTypes':result}
     res = {
            'kind' : "compute#machineTypeAggregatedList",
@@ -61,13 +61,13 @@ def aggregatedlist(authorization, project):
                       'Another Zone': {'machineTypes' : result }
                      }
            }
-           
+
     for v in res['items'].values():
         print v.get('machineTypes')
-              
+
     return json.dumps(res)
-    
-@app.route('/compute/v1beta15/projects/<project>/zones/<zone>/machineTypes/<machinetype>')
+
+@app.route('/' + app.config['PATH']  + '<project>/zones/<zone>/machineTypes/<machinetype>')
 @authentication.required
 def getmachinetype(authorization, project, zone, machinetype):
     command = 'listServiceOfferings'
@@ -85,12 +85,12 @@ def getmachinetype(authorization, project, zone, machinetype):
            'guestCpus' : response['cpunumber'],
            'memoryMb' : response['memory']
           }
-    
+
     return json.dumps(res)
-    
-@app.route('/compute/v1beta15/projects/<project>/zones/<zone>/machineTypes')
+
+@app.route('/' + app.config['PATH']  + '<project>/zones/<zone>/machineTypes')
 @authentication.required
-def listmachinetype(authorization, project, zone):    
+def listmachinetype(authorization, project, zone):
     command = 'listServiceOfferings'
     args = {}
     logger = None
@@ -98,7 +98,7 @@ def listmachinetype(authorization, project, zone):
     print response
     response = json.loads(response)
     response = response['listserviceofferingsresponse']['serviceoffering']
-    
+
     result = []
     for res in response:
         tmp = {
@@ -110,14 +110,14 @@ def listmachinetype(authorization, project, zone):
                'memoryMb' : res['memory']
         }
         result.append(tmp)
-        
+
     res = {
            'kind' : "compute#machineTypeList",
            'id' : 'blah',
            'selfLink': '',
            'items' : result
            }
-              
+
     return json.dumps(res)
 
     return resp

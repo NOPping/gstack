@@ -24,7 +24,7 @@ from gcecloudstack.services import requester
 from flask import jsonify
 import json
 
-@app.route('/compute/v1beta15/projects/<projectid>/zones')
+@app.route('/' + app.config['PATH']  + '<projectid>/zones')
 @authentication.required
 def listzones(projectid, authorization):
 
@@ -45,7 +45,7 @@ def listzones(projectid, authorization):
     zones = []
 
     # test for empty response, i.e no zones available
-    if cloudstack_response: 
+    if cloudstack_response:
         for zone in cloudstack_response['zone']:
 	        zones.append({
 	            'kind': "compute#zone",

@@ -19,25 +19,21 @@
 
 
 from gcecloudstack import app
-from gcecloudstack import authentication
-from gcecloudstack.services import requester
 from flask import jsonify
 import json
-import os
 
 
 @app.route('/discovery/v1/apis/compute/v1beta15/rest')
 def discovery():
+    print app.config['DATA']
+    with open(app.config['DATA'] + '/v15beta15.json') as discovery_template_data:
+        discovery_template = json.loads(discovery_template_data.read())
 
-    basepath = os.path.dirname(__file__)
-    discovery_template = open(
-        os.path.join(
-            basepath,
-            "..",
-            "data/v15beta15.json"
-        ), "r"
-    )
-    discovery_template = json.loads(discovery_template.read())
+    discovery_template['baseUrl'] = 'https://' + app.config['LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT']  + '/' + app.config['PATH']
+    discovery_template['basePath'] = '/' + app.config['PATH']
+    discovery_template['rootUrl'] = 'https://' + app.config['LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT'] + '/'
+    discovery_template['servicePath'] = app.config['PATH']
+
     resp = jsonify(discovery_template)
 
     resp.status_code = 200

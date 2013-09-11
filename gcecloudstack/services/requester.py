@@ -23,8 +23,8 @@ import urllib
 from flask import abort
 
 def make_request(command, args, logger, jsessionid, sessionkey):
-    url = app.config['PROTOCOL'] + "://" + app.config[
-        'HOST'] + ":" + app.config['PORT'] + app.config['PATH']
+    url = app.config['CLOUDSTACK_PROTOCOL'] + "://" + app.config[
+        'CLOUDSTACK_HOST'] + ":" + app.config['CLOUDSTACK_PORT'] + app.config['CLOUDSTACK_PATH']
     cookies = dict(JSESSIONID=jsessionid,
                    sessionkey=urllib.quote_plus(urllib.quote_plus(sessionkey)))
     payload = {'command': command, 'response':
@@ -37,8 +37,8 @@ def make_request(command, args, logger, jsessionid, sessionkey):
       abort(response.status_code)
 
 def cloud_login(username, password):
-    url = app.config['PROTOCOL'] + "://" + app.config[
-        'HOST'] + ":" + app.config['PORT'] + app.config['PATH']
+    url = app.config['CLOUDSTACK_PROTOCOL'] + "://" + app.config[
+        'CLOUDSTACK_HOST'] + ":" + app.config['CLOUDSTACK_PORT'] + app.config['CLOUDSTACK_PATH']
     payload = {'command': 'login', 'username':
                username, 'password': password, 'response': 'json'}
     headers = {'Content-Type': 'application/x-www-form-urlencoded',
