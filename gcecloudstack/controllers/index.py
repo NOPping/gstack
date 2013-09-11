@@ -34,7 +34,7 @@ def discovery():
         os.path.join(
             basepath,
             "..",
-            "templates/discovery.json"
+            "data/v15beta15.json"
         ), "r"
     )
     discovery_template = json.loads(discovery_template.read())
