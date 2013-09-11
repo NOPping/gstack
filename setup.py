@@ -17,12 +17,12 @@
 # under the License.
 
 try:
-    from setuptools import setup, find_packages
+    from setuptools import setup
 except ImportError:
     try:
         from distribute_setup import use_setuptools
         use_setuptools()
-        from setuptools import setup, find_packages
+        from setuptools import setup
     except ImportError:
         raise RuntimeError(
             "python setuptools is required to build gcecloudstack")
@@ -43,7 +43,7 @@ setup(name="gcecloudstack",
       long_description="Google Compute Engine Interface to the Apache CloudStack API",
       platforms=("Any",),
       license="LICENSE.txt",
-      package_data={'': ['LICENSE.txt', 'server.crt', 'server.key', 'app.db']},
+      package_data={'': ['LICENSE.txt', 'data/*']},
       packages = [
           "gcecloudstack", "gcecloudstack.controllers", "gcecloudstack.models",
           "gcecloudstack.services", "gcecloudstack.data", "pyoauth2"],
