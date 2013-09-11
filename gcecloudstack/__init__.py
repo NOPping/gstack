@@ -28,7 +28,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Configuration Options
 app.config['DATA'] = basedir + '/data'
-app.config.from_object(app.config['DATA'] + '/data/config.cfg')
+app.config.from_pyfile(app.config['DATA'] + '/config.cfg')
 
 # Sqlite Options
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
