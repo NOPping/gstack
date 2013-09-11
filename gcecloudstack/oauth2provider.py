@@ -124,8 +124,17 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
     def discard_refresh_token(self, client_id, refresh_token):
         found_refresh_token = RefreshToken.query.get(refresh_token)
         if found_refresh_token is not None:
+            print "####################"
+            print "Removing fresh token"
             db.session.delete(found_refresh_token)
             db.session.commit()
+        else:
+            print "####################"
+            print "         DEBUG INFO            "
+            print " Refresh attempted and   "
+            print " failed to get refresh        "
+            print " token                              "
+            print "####################"
 
 
 class CloudstackResourceAuthorization(ResourceAuthorization):
