@@ -26,7 +26,7 @@ import json
 
 @app.route('/' + app.config['PATH'] + '<projectid>/regions')
 @authentication.required
-def listregion(projectid, authorization):
+def listregions(projectid, authorization):
 
     command = 'listRegions'
     args = {}
