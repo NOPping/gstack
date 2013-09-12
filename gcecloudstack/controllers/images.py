@@ -22,6 +22,7 @@ from gcecloudstack import authentication
 from gcecloudstack.services import requester
 from flask import jsonify
 import json
+import re
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/global/images',
@@ -43,47 +44,49 @@ def listimages(projectid, authorization):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
-    cloudstack_response = cloudstack_response['listtemplatesresponse']
+    cloudstack_templates = cloudstack_response['listtemplatesresponse']
 
-    templates = []
+    images = []
 
-    translate_status = {
+    translate_image_status = {
         'True': 'Ready',
         'False': 'Failed'
     }
 
-    # test for empty response, i.e no templates available
-    if cloudstack_response:
-        for template in cloudstack_response['template']:
-            templates.append({
+    # test for response, i.e are templates available
+    if cloudstack_templates:
+        for cloudstack_template in cloudstack_templates['template']:
+            images.append({
                 'kind': "compute#image",
                 'selfLink': '',
-                'id': template['id'],
-                'creationTimestamp': template['created'],
-                'name': template['name'],
-                'description': template['displaytext'],
+                'id': cloudstack_template['id'],
+                'creationTimestamp': cloudstack_template['created'],
+                'name': '',
+                'description': cloudstack_template['displaytext'],
                 'sourceType': '',
                 'preferredKernel': '',
                 'rawDisk': {
-                    'containerType': template['format'],
+                    'containerType': cloudstack_template['format'],
                     'source': '',
-                    'sha1Checksum': template['checksum'],
+                    'sha1Checksum': cloudstack_template['checksum'],
                 },
                 'deprecated': {
                     'state': '',
                     'replacement': '',
                     'deprecated': '',
                     'obsolete': '',
-                    'deleted': '',
+                    'deleted': ''
                 },
-                'status': translate_status[str(template['isready'])],
+                'status': translate_image_status[str(cloudstack_template[
+                    'isready'
+                ])],
             })
 
     populated_response = {
         'kind': 'compute#imageList',
         'selfLink': '',
         'id': 'blah',
-        'items': templates
+        'items': images
     }
     res = jsonify(populated_response)
     res.status_code = 200
@@ -94,6 +97,7 @@ def listimages(projectid, authorization):
            methods=['GET'])
 @authentication.required
 def getimage(projectid, authorization, image):
+    print(image)
     command = 'listTemplates'
     args = {
         'templatefilter': 'all',
@@ -109,38 +113,44 @@ def getimage(projectid, authorization, image):
         authorization.sessionkey
     )
 
-    response = json.loads(cloudstack_response)
-    template = response['listtemplatesresponse']['template'][0]
+    cloudstack_response = json.loads(cloudstack_response)
+    cloudstack_templates = cloudstack_response['listtemplatesresponse']
 
-    translate_status = {
+    translate_image_status = {
         'True': 'Ready',
         'False': 'Failed'
     }
 
-    # test for empty response, i.e no templates available
-    if cloudstack_response:
-        image = {'kind': "compute#image",
-                 'selfLink': '',
-                 'id': template['id'],
-                 'creationTimestamp': template['created'],
-                 'name': template['name'],
-                 'description': template['displaytext'],
-                 'sourceType': '',
-                 'preferredKernel': '',
-                 'rawDisk': {
-                     'containerType': template['format'],
-                     'source': '',
-                     'sha1Checksum': template['checksum'],
-                 },
-                 'deprecated': {
-                     'state': '',
-                     'replacement': '',
-                     'deprecated': '',
-                     'obsolete': '',
-                     'deleted': ''
-                 },
-                 'status': translate_status[str(template['isready'])],
-                 }
+    image = {}
+
+    # test for response, i.e are templates available
+    if cloudstack_templates:
+        cloudstack_template = cloudstack_templates['template'][0]
+        image = {
+            'kind': "compute#image",
+            'selfLink': '',
+            'id': cloudstack_template['id'],
+            'creationTimestamp': cloudstack_template['created'],
+            'name': '',
+            'description': cloudstack_template['displaytext'],
+            'sourceType': '',
+            'preferredKernel': '',
+            'rawDisk': {
+                'containerType': cloudstack_template['format'],
+                'source': '',
+                'sha1Checksum': cloudstack_template['checksum'],
+            },
+            'deprecated': {
+                'state': '',
+                         'replacement': '',
+                         'deprecated': '',
+                         'obsolete': '',
+                         'deleted': ''
+            },
+            'status': translate_image_status[str(cloudstack_template[
+                'isready'
+            ])],
+        }
 
     res = jsonify(image)
     res.status_code = 200
