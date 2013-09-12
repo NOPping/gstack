@@ -24,12 +24,13 @@ from flask import jsonify
 import json
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/global/images', methods=['GET'])
+@app.route('/' + app.config['PATH'] + '<projectid>/global/images',
+           methods=['GET'])
 @authentication.required
 def listimages(projectid, authorization):
     command = 'listTemplates'
     args = {
-        'templatefilter': 'self'
+        'templatefilter': 'all'
     }
     logger = None
 
@@ -84,6 +85,127 @@ def listimages(projectid, authorization):
         'id': 'blah',
         'items': templates
     }
-    gcutil_response = jsonify(populated_response)
-    gcutil_response.status_code = 200
-    return gcutil_response
+    res = jsonify(populated_response)
+    res.status_code = 200
+    return res
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>/global/images/<image>',
+           methods=['GET'])
+@authentication.required
+def getimage(projectid, authorization, image):
+    command = 'listTemplates'
+    args = {
+        'templatefilter': 'all',
+        'keyword': image
+    }
+    logger = None
+
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        logger,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+
+    response = json.loads(cloudstack_response)
+    template = response['listtemplatesresponse']['template'][0]
+
+    translate_status = {
+        'True': 'Ready',
+        'False': 'Failed'
+    }
+
+    # test for empty response, i.e no templates available
+    if cloudstack_response:
+        image = {'kind': "compute#image",
+                 'selfLink': '',
+                 'id': template['id'],
+                 'creationTimestamp': template['created'],
+                 'name': template['name'],
+                 'description': template['displaytext'],
+                 'sourceType': '',
+                 'preferredKernel': '',
+                 'rawDisk': {
+                     'containerType': template['format'],
+                     'source': '',
+                     'sha1Checksum': template['checksum'],
+                 },
+                 'deprecated': {
+                     'state': '',
+                     'replacement': '',
+                     'deprecated': '',
+                     'obsolete': '',
+                     'deleted': ''
+                 },
+                 'status': translate_status[str(template['isready'])],
+                 }
+
+    res = jsonify(image)
+    res.status_code = 200
+    return res
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>/global/images/<image>',
+           methods=['DELETE'])
+@authentication.required
+def deleteimage(projectid, authorization, image):
+    command = 'deleteTemplate'
+    imageid = _get_template_id(image)
+    args = {
+        'id': imageid
+    }
+    logger = None
+
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        logger,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+
+    res = json.loads(cloudstack_response)['deletetemplateresponse']
+
+    globalops = {"kind": "compute#operation",
+                 "id": imageid,
+                 "creationTimestamp": '',
+                 "name": image,
+                 "zone": '',
+                 "clientOperationId": '',
+                 "operationType": 'delete',
+                 "targetLink": '',
+                 "targetId": 'unsigned long',
+                 "status": res['success'],
+                 "statusMessage": res['displaytext'],
+                 "user": '',
+                 "progress": '',
+                 "insertTime": '',
+                 "startTime": '',
+                 "endTime": '',
+                 "error": {
+                     "errors": [
+                         {
+                             "code": '',
+                             "location": '',
+                             "message": ''
+                         }
+                         ]
+                 },
+                 "warnings": [
+                     {
+                         "code": '',
+                         "message": '',
+                         "data": [{"key": '', "value": ''}]
+                     }
+                     ],
+                 "httpErrorStatusCode": '',
+                 "httpErrorMessage": '',
+                 "selfLink": '',
+                 "region": ''
+                 }
+
+    res = jsonify(globalops)
+    res.status_code = 200
+    return res

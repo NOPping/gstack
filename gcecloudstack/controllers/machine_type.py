@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 # encoding: utf-8
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -22,10 +22,10 @@ import os
 import json
 
 from gcecloudstack import app
-from flask import jsonify, Response, request
+from flask import jsonify, Response, request, url_for
 
 from gcecloudstack.services import requester
-
+from gcecloudstack.controllers import zones
 from gcecloudstack import authentication
 
 
@@ -35,8 +35,9 @@ def aggregatedlist(authorization, project):
     command = 'listServiceOfferings'
     args = {}
     logger = None
-    response = requester.make_request(
-        command, args, logger, authorization.jsessionid, authorization.sessionkey)
+    response = requester.make_request(command, args, logger,
+                                      authorization.jsessionid,
+                                      authorization.sessionkey)
     print response
     response = json.loads(response)
     response = response['listserviceofferingsresponse']['serviceoffering']
@@ -70,14 +71,16 @@ def aggregatedlist(authorization, project):
     return json.dumps(res)
 
 
-@app.route('/' + app.config['PATH'] + '<project>/zones/<zone>/machineTypes/<machinetype>')
+@app.route('/' + app.config['PATH'] +
+           '<project>/zones/<zone>/machineTypes/<machinetype>')
 @authentication.required
 def getmachinetype(authorization, project, zone, machinetype):
     command = 'listServiceOfferings'
     args = {'keyword': machinetype}
     logger = None
-    response = requester.make_request(
-        command, args, logger, authorization.jsessionid, authorization.sessionkey)
+    response = requester.make_request(command, args, logger,
+                                      authorization.jsessionid,
+                                      authorization.sessionkey)
     response = json.loads(response)
     response = response['listserviceofferingsresponse']['serviceoffering'][0]
 
@@ -99,8 +102,9 @@ def listmachinetype(authorization, project, zone):
     command = 'listServiceOfferings'
     args = {}
     logger = None
-    response = requester.make_request(
-        command, args, logger, authorization.jsessionid, authorization.sessionkey)
+    response = requester.make_request(command, args, logger,
+                                      authorization.jsessionid,
+                                      authorization.sessionkey)
     print response
     response = json.loads(response)
     response = response['listserviceofferingsresponse']['serviceoffering']
