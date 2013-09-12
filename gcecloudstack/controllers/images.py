@@ -22,7 +22,6 @@ from gcecloudstack import authentication
 from gcecloudstack.services import requester
 from flask import jsonify
 import json
-import re
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/global/images',
