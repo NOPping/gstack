@@ -1,0 +1,8 @@
+language: python
+python:
+  - "2.7"
+install:
+  - pip install -e . --use-mirrors
+before_script:
+  - "pep8 --exclude=data gcecloudstack"
+  - pyflakes gcecloudstack
