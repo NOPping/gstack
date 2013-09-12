@@ -18,9 +18,11 @@
 # under the License.
 
 from gcecloudstack import app
+from gcecloudstack import authentication
 from gcecloudstack.services import requester
 from flask import jsonify
 import json
+
 
 @app.route('/' + app.config['PATH'] + '<projectid>/regions')
 @authentication.required
@@ -70,7 +72,7 @@ def listregion(projectid, authorization):
 def listregion(projectid, authorization, region):
 
     command = 'listRegions'
-    args = { 'name' : region}
+    args = {'name': region}
     logger = None
     cloudstack_response = requester.make_request(
         command,
@@ -80,16 +82,16 @@ def listregion(projectid, authorization, region):
         authorization.sessionkey
     )
 
-    cloudstack_response = json.loads(cloudstack_response)
-    cloudstack_response = cloudstack_response['listregionsresponse']['region'][0]
+    response = json.loads(cloudstack_response)
+    response = response['listregionsresponse']['region'][0]
 
     # test for empty response, i.e no region available
-    if cloudstack_response:
+    if response:
         region = {'kind': "compute#region",
-                  'name': cloudstack_response['name'],
-                  'id': cloudstack_response['id'],
-                  'selfLink': cloudstack_response['endpoint']
-                 }
+                  'name': response['name'],
+                  'id': response['id'],
+                  'selfLink': response['endpoint']
+                  }
 
     res = jsonify(region)
     res.status_code = 200
