@@ -152,7 +152,9 @@ def getimage(projectid, authorization, image):
 @authentication.required
 def deleteimage(projectid, authorization, image):
     command = 'deleteTemplate'
-    imageid = _get_template_id(image)
+    #should be something like: imageid = _get_template_id(image)
+    # this needs to call getimage() and return the image id
+    imageid = image
     args = {
         'id': imageid
     }
