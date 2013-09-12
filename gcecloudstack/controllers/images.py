@@ -73,8 +73,8 @@ def listimages(projectid, authorization):
                     'state': '',
                     'replacement': '',
                     'deprecated': '',
-                    'obsolete': '''
-                     'deleted': '''
+                    'obsolete': '',
+                    'deleted': '',
                 },
                 'status': translate_status[str(template['isready'])],
             })
@@ -152,7 +152,7 @@ def getimage(projectid, authorization, image):
 @authentication.required
 def deleteimage(projectid, authorization, image):
     command = 'deleteTemplate'
-    #should be something like: imageid = _get_template_id(image)
+    # should be something like: imageid = _get_template_id(image)
     # this needs to call getimage() and return the image id
     imageid = image
     args = {
@@ -193,7 +193,7 @@ def deleteimage(projectid, authorization, image):
                              "location": '',
                              "message": ''
                          }
-                         ]
+                     ]
                  },
                  "warnings": [
                      {
@@ -201,7 +201,7 @@ def deleteimage(projectid, authorization, image):
                          "message": '',
                          "data": [{"key": '', "value": ''}]
                      }
-                     ],
+                 ],
                  "httpErrorStatusCode": '',
                  "httpErrorMessage": '',
                  "selfLink": '',
