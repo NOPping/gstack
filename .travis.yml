@@ -2,6 +2,8 @@ language: python
 python:
   - "2.7"
 install:
+  - pip install pylint
+  - pip install pep8
   - pip install -e . --use-mirrors
 script:
   - pep8 --ignore=E501 *.py gcecloudstack
