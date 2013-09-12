@@ -97,7 +97,6 @@ def listimages(projectid, authorization):
            methods=['GET'])
 @authentication.required
 def getimage(projectid, authorization, image):
-    print(image)
     command = 'listTemplates'
     args = {
         'templatefilter': 'all',
