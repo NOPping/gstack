@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/NOPping/cloudstack-gce.png?branch=master)](https://travis-ci.org/NOPping/cloudstack-gce)
+
 # Google Compute Engine Interface For Cloudstack
 
 ## Proposal
