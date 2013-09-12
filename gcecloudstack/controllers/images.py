@@ -23,12 +23,13 @@ from gcecloudstack.services import requester
 from flask import jsonify
 import json
 
-@app.route('/' + app.config['PATH']  + '<projectid>/global/images', methods=['GET'])
+
+@app.route('/' + app.config['PATH'] + '<projectid>/global/images', methods=['GET'])
 @authentication.required
 def listimages(projectid, authorization):
     command = 'listTemplates'
     args = {
-        'templatefilter' : 'self'
+        'templatefilter': 'self'
     }
     logger = None
 
@@ -62,18 +63,18 @@ def listimages(projectid, authorization):
                 'description': template['displaytext'],
                 'sourceType': '',
                 'preferredKernel': '',
-                'rawDisk' : {
-                     'containerType': template['format'],
-                     'source': '',
-                     'sha1Checksum': template['checksum'],
-                 },
-                 'deprecated' : {
-                     'state': '',
-                     'replacement': '',
-                     'deprecated': '',
-                     'obsolete': '''
+                'rawDisk': {
+                    'containerType': template['format'],
+                    'source': '',
+                    'sha1Checksum': template['checksum'],
+                },
+                'deprecated': {
+                    'state': '',
+                    'replacement': '',
+                    'deprecated': '',
+                    'obsolete': '''
                      'deleted': '''
-                 },
+                },
                 'status': translate_status[str(template['isready'])],
             })
 
@@ -86,4 +87,3 @@ def listimages(projectid, authorization):
     gcutil_responce = jsonify(populated_response)
     gcutil_responce.status_code = 200
     return gcutil_responce
-

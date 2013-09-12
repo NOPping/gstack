@@ -21,7 +21,7 @@ from gcecloudstack import db
 
 
 class AccessToken(db.Model):
-    access_token = db.Column(db.String(100),  primary_key=True, unique=True)
+    access_token = db.Column(db.String(100), primary_key=True, unique=True)
     client_id = db.Column(db.String(100), unique=True)
     expires_in = db.Column(db.Integer)
     data = db.Column(db.String(500))

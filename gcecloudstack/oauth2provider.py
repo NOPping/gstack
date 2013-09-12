@@ -52,7 +52,8 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
                 existing_client.jsessionid = jsessionid
                 existing_client.sessionkey = sessionkey
             else:
-                client = Client(username=client_id, jsessionid=jsessionid, sessionkey=sessionkey)
+                client = Client(
+                    username=client_id, jsessionid=jsessionid, sessionkey=sessionkey)
                 db.session.add(client)
 
             db.session.commit()
@@ -124,6 +125,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         if found_refresh_token is not None:
             db.session.delete(found_refresh_token)
             db.session.commit()
+
 
 class CloudstackResourceAuthorization(ResourceAuthorization):
     jsessionid = None

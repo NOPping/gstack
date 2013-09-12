@@ -28,13 +28,15 @@ from gcecloudstack.services import requester
 
 from gcecloudstack import authentication
 
-@app.route('/' + app.config['PATH']  + '<project>/aggregated/machineTypes')
+
+@app.route('/' + app.config['PATH'] + '<project>/aggregated/machineTypes')
 @authentication.required
 def aggregatedlist(authorization, project):
     command = 'listServiceOfferings'
     args = {}
     logger = None
-    response = requester.make_request(command, args, logger, authorization.jsessionid, authorization.sessionkey)
+    response = requester.make_request(
+        command, args, logger, authorization.jsessionid, authorization.sessionkey)
     print response
     response = json.loads(response)
     response = response['listserviceofferingsresponse']['serviceoffering']
@@ -42,59 +44,63 @@ def aggregatedlist(authorization, project):
     result = []
     for res in response:
         tmp = {
-               'name': res['name'],
-               'description': res['displaytext'],
-               'id' : res['id'],
-               'creationTimestamp' : res['created'],
-               'guestCpus' : res['cpunumber'],
-               'memoryMb' : res['memory']
+            'name': res['name'],
+            'description': res['displaytext'],
+            'id': res['id'],
+            'creationTimestamp': res['created'],
+            'guestCpus': res['cpunumber'],
+            'memoryMb': res['memory']
         }
         result.append(tmp)
 
     #tmp = {'machineTypes':result}
     res = {
-           'kind' : "compute#machineTypeAggregatedList",
-           'id' : 'blah',
-           'selfLink': '',
-           'items' : {
-                      'Dummy Zone': {'machineTypes' : result },
-                      'Another Zone': {'machineTypes' : result }
-                     }
-           }
+        'kind': "compute#machineTypeAggregatedList",
+        'id': 'blah',
+        'selfLink': '',
+        'items': {
+            'Dummy Zone': {'machineTypes': result},
+            'Another Zone': {'machineTypes': result}
+        }
+    }
 
     for v in res['items'].values():
         print v.get('machineTypes')
 
     return json.dumps(res)
 
-@app.route('/' + app.config['PATH']  + '<project>/zones/<zone>/machineTypes/<machinetype>')
+
+@app.route('/' + app.config['PATH'] + '<project>/zones/<zone>/machineTypes/<machinetype>')
 @authentication.required
 def getmachinetype(authorization, project, zone, machinetype):
     command = 'listServiceOfferings'
     args = {'keyword': machinetype}
     logger = None
-    response = requester.make_request(command, args, logger, authorization.jsessionid, authorization.sessionkey)
+    response = requester.make_request(
+        command, args, logger, authorization.jsessionid, authorization.sessionkey)
     response = json.loads(response)
     response = response['listserviceofferingsresponse']['serviceoffering'][0]
 
     res = {
-           'name': response['name'],
-           'description': response['displaytext'],
-           'id' : response['id'],
-           'creationTimestamp' : response['created'],
-           'guestCpus' : response['cpunumber'],
-           'memoryMb' : response['memory']
-          }
+        'name': response['name'],
+        'description': response['displaytext'],
+        'id': response['id'],
+        'creationTimestamp': response['created'],
+        'guestCpus': response['cpunumber'],
+        'memoryMb': response['memory']
+    }
 
     return json.dumps(res)
 
-@app.route('/' + app.config['PATH']  + '<project>/zones/<zone>/machineTypes')
+
+@app.route('/' + app.config['PATH'] + '<project>/zones/<zone>/machineTypes')
 @authentication.required
 def listmachinetype(authorization, project, zone):
     command = 'listServiceOfferings'
     args = {}
     logger = None
-    response = requester.make_request(command, args, logger, authorization.jsessionid, authorization.sessionkey)
+    response = requester.make_request(
+        command, args, logger, authorization.jsessionid, authorization.sessionkey)
     print response
     response = json.loads(response)
     response = response['listserviceofferingsresponse']['serviceoffering']
@@ -102,23 +108,22 @@ def listmachinetype(authorization, project, zone):
     result = []
     for res in response:
         tmp = {
-               'name': res['name'],
-               'description': res['displaytext'],
-               'id' : res['id'],
-               'creationTimestamp' : res['created'],
-               'guestCpus' : res['cpunumber'],
-               'memoryMb' : res['memory']
+            'name': res['name'],
+            'description': res['displaytext'],
+            'id': res['id'],
+            'creationTimestamp': res['created'],
+            'guestCpus': res['cpunumber'],
+            'memoryMb': res['memory']
         }
         result.append(tmp)
 
     res = {
-           'kind' : "compute#machineTypeList",
-           'id' : 'blah',
-           'selfLink': '',
-           'items' : result
-           }
+        'kind': "compute#machineTypeList",
+        'id': 'blah',
+        'selfLink': '',
+        'items': result
+    }
 
     return json.dumps(res)
 
     return resp
-

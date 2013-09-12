@@ -22,6 +22,7 @@ from gcecloudstack import app
 import urllib
 from flask import abort
 
+
 def make_request(command, args, logger, jsessionid, sessionkey):
     url = app.config['CLOUDSTACK_PROTOCOL'] + "://" + app.config[
         'CLOUDSTACK_HOST'] + ":" + app.config['CLOUDSTACK_PORT'] + app.config['CLOUDSTACK_PATH']
@@ -32,9 +33,10 @@ def make_request(command, args, logger, jsessionid, sessionkey):
     payload.update(args)
     response = requests.get(url, cookies=cookies, params=payload)
     if response.status_code == 200:
-      return response.text
+        return response.text
     else:
-      abort(response.status_code)
+        abort(response.status_code)
+
 
 def cloud_login(username, password):
     url = app.config['CLOUDSTACK_PROTOCOL'] + "://" + app.config[

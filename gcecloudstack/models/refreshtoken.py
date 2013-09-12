@@ -21,6 +21,6 @@ from gcecloudstack import db
 
 
 class RefreshToken(db.Model):
-    refresh_token = db.Column(db.String(100),  primary_key=True, unique=True)
+    refresh_token = db.Column(db.String(100), primary_key=True, unique=True)
     client_id = db.Column(db.String(100), unique=True)
     data = db.Column(db.String(500))

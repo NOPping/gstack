@@ -23,7 +23,8 @@ from gcecloudstack.services import requester
 from flask import jsonify
 import json
 
-@app.route('/' + app.config['PATH']  + '<projectid>')
+
+@app.route('/' + app.config['PATH'] + '<projectid>')
 @authentication.required
 def getProject(projectid, authorization):
 
@@ -41,7 +42,8 @@ def getProject(projectid, authorization):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
-    cloudstack_response = cloudstack_response['listaccountsresponse']['account'][0]
+    cloudstack_response = cloudstack_response[
+        'listaccountsresponse']['account'][0]
 
     quotas = [{
         'limit': cloudstack_response['vmlimit'],
