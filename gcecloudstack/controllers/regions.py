@@ -18,35 +18,79 @@
 # under the License.
 
 from gcecloudstack import app
-from flask import jsonify, Response
-
-"""
-Method	HTTP request	                 Description
-get	GET  /project/regions/region	 Returns the specified region resource.
-list	GET  /project/regions	         Retrieves the list of region resources available to the specified project.
-"""
-
 from gcecloudstack.services import requester
+from flask import jsonify
+import json
+
+@app.route('/' + app.config['PATH'] + '<projectid>/regions')
+@authentication.required
+def listregion(projectid, authorization):
+
+    command = 'listRegions'
+    args = {}
+    logger = None
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        logger,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+
+    cloudstack_response = json.loads(cloudstack_response)
+    cloudstack_response = cloudstack_response['listregionsresponse']
+
+    regions = []
+
+    # test for empty response, i.e no zones available
+    if cloudstack_response:
+        for region in cloudstack_response['region']:
+            regions.append({
+                'kind': "compute#region",
+                'name': region['name'],
+                'description': region['name'],
+                'id': region['id'],
+                'status': region['allocationstate']
+            })
+
+    populated_response = {
+        'kind': "compute#regionList",
+        'id': '',
+        'selfLink': '',
+        'items': regions
+    }
+
+    res = jsonify(populated_response)
+    res.status_code = 200
+    return res
 
 
-def _to_region_id():
-    '''
-    To be implemented, get region id from region parameter from GCE
-    '''
+@app.route('/' + app.config['PATH'] + '<projectid>/regions/<region>')
+@authentication.required
+def listregion(projectid, authorization, region):
 
-# this is just an example to show how to use different http verbs
+    command = 'listRegions'
+    args = { 'name' : region}
+    logger = None
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        logger,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
 
+    cloudstack_response = json.loads(cloudstack_response)
+    cloudstack_response = cloudstack_response['listregionsresponse']['region'][0]
 
-@app.route('/project/regions', methods=['GET'])
-def regions(region):
-    response, error = requester.make_request('listLocations', None, None, app.config['HOST'], app.config[
-                                             'PORT'], app.config['API_KEY'], app.config['SECRET_KEY'], app.config['PROTOCOL'], app.config['PATH'])
-    return response
+    # test for empty response, i.e no region available
+    if cloudstack_response:
+        region = {'kind': "compute#region",
+                  'name': cloudstack_response['name'],
+                  'id': cloudstack_response['id'],
+                  'selfLink': cloudstack_response['endpoint']
+                 }
 
-
-@app.route('/project/regions/<region>', methods=['GET'])
-def region(region):
-    regionid = _to_region_id(region)
-    response, error = requester.make_request('listLocations', {'id': regionid}, None, app.config['HOST'], app.config[
-                                             'PORT'], app.config['API_KEY'], app.config['SECRET_KEY'], app.config['PROTOCOL'], app.config['PATH'])
-    return response
+    res = jsonify(region)
+    res.status_code = 200
+    return res

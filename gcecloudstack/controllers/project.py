@@ -108,6 +108,6 @@ def getProject(projectid, authorization):
         'quotas': quotas
     }
 
-    gcutil_responce = jsonify(populated_response)
-    gcutil_responce.status_code = 200
-    return gcutil_responce
+    gcutil_response = jsonify(populated_response)
+    gcutil_response.status_code = 200
+    return gcutil_response
