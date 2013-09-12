@@ -125,5 +125,3 @@ def listmachinetype(authorization, project, zone):
     }
 
     return json.dumps(res)
-
-    return resp
