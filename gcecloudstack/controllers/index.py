@@ -26,11 +26,11 @@ import json
 @app.route('/discovery/v1/apis/compute/v1beta15/rest')
 def discovery():
     print app.config['DATA']
-    with open(app.config['DATA'] + '/v1beta15.json') as discovery_template_data:
-        discovery_template = json.loads(discovery_template_data.read())
+    with open(app.config['DATA'] + '/v1beta15.json') as template:
+        discovery_template = json.loads(template.read())
 
-    discovery_template['baseUrl'] = 'https://' + app.config[
-        'LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT'] + '/' + app.config['PATH']
+    discovery_template['baseUrl'] = 'https://' + app.config['LISTEN_ADDRESS'] \
+        + ':' + app.config['LISTEN_PORT'] + '/' + app.config['PATH']
     discovery_template['basePath'] = '/' + app.config['PATH']
     discovery_template['rootUrl'] = 'https://' + app.config[
         'LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT'] + '/'

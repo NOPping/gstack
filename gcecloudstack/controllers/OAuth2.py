@@ -17,9 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys
-import os
-
 import flask
 from flask import request
 from gcecloudstack import app
