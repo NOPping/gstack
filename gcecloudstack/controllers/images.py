@@ -23,7 +23,6 @@ from gcecloudstack.services import requester
 from flask import jsonify, request
 import json
 
-
 def _cloudstack_image_to_gcutil(cloudstack_response):
     translate_image_status = {
         'True': 'Ready',
@@ -98,15 +97,13 @@ def listimages(projectid, authorization):
         authorization.sessionkey
     )
 
-    cloudstack_response = json.loads(cloudstack_response)
-    cloudstack_responses = cloudstack_response['listtemplatesresponse']
+    cloudstack_responses = json.loads(cloudstack_response)
 
     images = []
 
-
-    # test for response, i.e are templates available
-    if cloudstack_responses:
-        for cloudstack_response in cloudstack_responses['template']:
+    if cloudstack_responses['listtemplatesresponse']:
+        for cloudstack_response in cloudstack_responses[
+                'listtemplatesresponse']['template']:
             images.append(_cloudstack_image_to_gcutil(cloudstack_response))
 
     populated_response = {
@@ -136,13 +133,8 @@ def getimage(projectid, authorization, image):
         authorization.jsessionid,
         authorization.sessionkey
     )
-
-    translate_image_status = {
-        'True': 'Ready',
-        'False': 'Failed'
-    }
-
     cloudstack_responses = json.loads(cloudstack_response)
+
     if cloudstack_responses['listtemplatesresponse']:
         cloudstack_response = cloudstack_responses['listtemplatesresponse']['template'][0]
         image = _cloudstack_image_to_gcutil(cloudstack_response)
