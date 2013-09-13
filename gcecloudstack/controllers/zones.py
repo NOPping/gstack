@@ -21,7 +21,7 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from flask import jsonify
+from flask import jsonify, request
 import json
 
 
@@ -58,8 +58,8 @@ def listzones(projectid, authorization):
 
     populated_response = {
         'kind': "compute#zoneList",
-        'id': '',
-        'selfLink': '',
+        'id': 'projects/' + projectid + '/zones',
+        'selfLink': request.base_url,
         'items': zones
     }
 
