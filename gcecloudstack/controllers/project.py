@@ -42,7 +42,6 @@ def getProject(projectid, authorization):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
-    print cloudstack_response['listaccountsresponse']
     if cloudstack_response['listaccountsresponse']:
         cloudstack_response = cloudstack_response[
             'listaccountsresponse']['account'][0]
@@ -112,7 +111,6 @@ def getProject(projectid, authorization):
 
         res = jsonify(populated_response)
         res.status_code = 200
-        return res
     else:
         res = jsonify({
             'error': {
@@ -128,4 +126,5 @@ def getProject(projectid, authorization):
             }
         })
         res.status_code = 404
-        return res
+
+    return res

@@ -20,7 +20,7 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from flask import jsonify
+from flask import jsonify, request
 import json
 
 
@@ -52,13 +52,13 @@ def listregions(projectid, authorization):
                 'name': region['name'],
                 'description': region['name'],
                 'id': region['id'],
-                'status': region['allocationstate']
+                'status': 'UP'
             })
 
     populated_response = {
         'kind': "compute#regionList",
-        'id': '',
-        'selfLink': '',
+        'id': 'projects/' + projectid + '/regions',
+        'selfLink': request.base_url,
         'items': regions
     }
 
@@ -83,16 +83,29 @@ def listregion(projectid, authorization, region):
     )
 
     response = json.loads(cloudstack_response)
-    response = response['listregionsresponse']['region'][0]
-
-    # test for empty response, i.e no region available
-    if response:
+    if response['listregionsresponse']:
+        response = response['listregionsresponse']['region'][0]
         region = {'kind': "compute#region",
                   'name': response['name'],
+                  'description': response['name'],
                   'id': response['id'],
-                  'selfLink': response['endpoint']
+                  'selfLink': request.base_url
                   }
-
-    res = jsonify(region)
-    res.status_code = 200
+        res = jsonify(region)
+        res.status_code = 200
+    else:
+        res = jsonify({
+            'error': {
+                'errors': [
+                    {
+                        "domain": "global",
+                        "reason": "notFound",
+                        "message": 'The resource \'projects/' + projectid + '/regions/' + region + '\' was not found'
+                    }
+                ],
+                'code': 404,
+                'message': 'The resource \'projects/' + projectid + '/regions/' + region + '\' was not found'
+            }
+        })
+        res.status_code = 404
     return res
