@@ -28,7 +28,7 @@ def not_found(e):
 
 @app.errorhandler(401)
 def unauthorized(e):
-    resp = jsonify({
+    res = jsonify({
         "error": {
             "errors": [
                 {
@@ -44,5 +44,5 @@ def unauthorized(e):
         "message": "Login Required",
     })
 
-    resp.status_code = 401
-    return resp
+    res.status_code = 401
+    return res

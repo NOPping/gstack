@@ -30,10 +30,10 @@ def authorization_code():
 
     response = provider.get_authorization_code_from_uri(request.url)
 
-    flask_res = flask.make_response(response.text, response.status_code)
+    res = flask.make_response(response.text, response.status_code)
     for k, v in response.headers.iteritems():
-        flask_res.headers[k] = v
-    return flask_res
+        res.headers[k] = v
+    return res
 
 
 @app.route("/oauth2/token", methods=["POST"])
@@ -44,7 +44,7 @@ def token():
 
     response = provider.get_token_from_post_data(data)
 
-    flask_res = flask.make_response(response.text, response.status_code)
+    res = flask.make_response(response.text, response.status_code)
     for k, v in response.headers.iteritems():
-        flask_res.headers[k] = v
-    return flask_res
+        res.headers[k] = v
+    return res

@@ -36,7 +36,7 @@ def discovery():
         'LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT'] + '/'
     discovery_template['servicePath'] = app.config['PATH']
 
-    resp = jsonify(discovery_template)
+    res = jsonify(discovery_template)
 
-    resp.status_code = 200
-    return resp
+    res.status_code = 200
+    return res

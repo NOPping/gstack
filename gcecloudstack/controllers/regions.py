@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
@@ -69,8 +70,7 @@ def listregions(projectid, authorization):
 
 @app.route('/' + app.config['PATH'] + '<projectid>/regions/<region>')
 @authentication.required
-def listregion(projectid, authorization, region):
-
+def getregion(projectid, authorization, region):
     command = 'listRegions'
     args = {'name': region}
     logger = None
@@ -82,13 +82,13 @@ def listregion(projectid, authorization, region):
         authorization.sessionkey
     )
 
-    response = json.loads(cloudstack_response)
-    if response['listregionsresponse']:
-        response = response['listregionsresponse']['region'][0]
+    cloudstack_response = json.loads(cloudstack_response)
+    if cloudstack_response['listregionsresponse']:
+        cloudstack_response = cloudstack_response['listregionsresponse']['region'][0]
         region = {'kind': "compute#region",
-                  'name': response['name'],
-                  'description': response['name'],
-                  'id': response['id'],
+                  'name': cloudstack_response['name'],
+                  'description': cloudstack_response['name'],
+                  'id': cloudstack_response['id'],
                   'selfLink': request.base_url
                   }
         res = jsonify(region)

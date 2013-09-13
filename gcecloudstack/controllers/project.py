@@ -26,8 +26,7 @@ import json
 
 @app.route('/' + app.config['PATH'] + '<projectid>')
 @authentication.required
-def getProject(projectid, authorization):
-
+def getproject(projectid, authorization):
     command = 'listAccounts'
     args = {
         'name': projectid

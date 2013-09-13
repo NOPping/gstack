@@ -142,7 +142,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
      "annotations": {
       "required": [
        "compute.addresses.insert"
@@ -368,7 +368,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
      "annotations": {
       "required": [
        "compute.disks.insert"
@@ -558,7 +558,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
      "annotations": {
       "required": [
        "compute.firewalls.insert",
@@ -668,7 +668,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?"
     },
     "portRange": {
      "type": "string",
@@ -861,7 +861,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?"
     },
     "port": {
      "type": "integer",
@@ -949,7 +949,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
      "annotations": {
       "required": [
        "compute.images.insert"
@@ -1099,7 +1099,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
      "annotations": {
       "required": [
        "compute.instances.insert"
@@ -1287,7 +1287,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?"
     },
     "selfLink": {
      "type": "string",
@@ -1381,7 +1381,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?"
     },
     "scratchDisks": {
      "type": "array",
@@ -1601,7 +1601,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
      "annotations": {
       "required": [
        "compute.networks.insert"
@@ -2121,7 +2121,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
      "annotations": {
       "required": [
        "compute.routes.insert"
@@ -2315,7 +2315,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?"
     },
     "selfLink": {
      "type": "string",
@@ -2425,7 +2425,7 @@
     "name": {
      "type": "string",
      "description": "Name of the resource; provided by the client when the resource is created. The name must be 1-63 characters long, and comply with RFC1035.",
-     "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"
+     "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?"
     },
     "region": {
      "type": "string",
@@ -2710,7 +2710,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -2735,21 +2735,21 @@
        "type": "string",
        "description": "Name of the address resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -2775,21 +2775,21 @@
        "type": "string",
        "description": "Name of the address resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -2816,14 +2816,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -2870,14 +2870,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -2926,7 +2926,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -2950,21 +2950,21 @@
        "type": "string",
        "description": "Name of the persistent disk resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -2993,21 +2993,21 @@
        "type": "string",
        "description": "Name of the persistent disk resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -3033,21 +3033,21 @@
        "type": "string",
        "description": "Name of the persistent disk resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -3074,7 +3074,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "sourceImage": {
@@ -3086,7 +3086,7 @@
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -3133,14 +3133,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -3170,14 +3170,14 @@
        "type": "string",
        "description": "Name of the firewall resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3202,14 +3202,14 @@
        "type": "string",
        "description": "Name of the firewall resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3235,7 +3235,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3281,7 +3281,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3306,14 +3306,14 @@
        "type": "string",
        "description": "Name of the firewall resource to update.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3341,14 +3341,14 @@
        "type": "string",
        "description": "Name of the firewall resource to update.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3399,7 +3399,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3424,21 +3424,21 @@
        "type": "string",
        "description": "Name of the ForwardingRule resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -3464,21 +3464,21 @@
        "type": "string",
        "description": "Name of the ForwardingRule resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -3505,14 +3505,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -3559,14 +3559,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -3592,21 +3592,21 @@
        "type": "string",
        "description": "Name of the ForwardingRule resource in which target is to be set.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -3658,7 +3658,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3683,14 +3683,14 @@
        "type": "string",
        "description": "Name of the operation resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3712,14 +3712,14 @@
        "type": "string",
        "description": "Name of the operation resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3764,7 +3764,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3793,14 +3793,14 @@
        "type": "string",
        "description": "Name of the HttpHealthCheck resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3825,14 +3825,14 @@
        "type": "string",
        "description": "Name of the HttpHealthCheck resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3858,7 +3858,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3904,7 +3904,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3929,14 +3929,14 @@
        "type": "string",
        "description": "Name of the HttpHealthCheck resource to update.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -3964,14 +3964,14 @@
        "type": "string",
        "description": "Name of the HttpHealthCheck resource to update.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -4003,14 +4003,14 @@
        "type": "string",
        "description": "Name of the image resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -4035,14 +4035,14 @@
        "type": "string",
        "description": "Image name.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -4070,14 +4070,14 @@
        "type": "string",
        "description": "Name of the image resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -4103,7 +4103,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -4152,7 +4152,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -4181,7 +4181,7 @@
        "type": "string",
        "description": "Instance name.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "networkInterface": {
@@ -4194,14 +4194,14 @@
        "type": "string",
        "description": "Project name.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4249,7 +4249,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -4274,21 +4274,21 @@
        "type": "string",
        "description": "Instance name.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Project name.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4317,21 +4317,21 @@
        "type": "string",
        "description": "Name of the instance resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4363,7 +4363,7 @@
        "type": "string",
        "description": "Instance name.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "networkInterface": {
@@ -4376,14 +4376,14 @@
        "type": "string",
        "description": "Project name.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4418,21 +4418,21 @@
        "type": "string",
        "description": "Instance name.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Project name.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4459,21 +4459,21 @@
        "type": "string",
        "description": "Name of the instance resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4500,21 +4500,21 @@
        "type": "string",
        "description": "Name of the instance scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4541,14 +4541,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4595,14 +4595,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4628,21 +4628,21 @@
        "type": "string",
        "description": "Name of the instance scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4668,21 +4668,21 @@
        "type": "string",
        "description": "Name of the instance scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4711,21 +4711,21 @@
        "type": "string",
        "description": "Name of the instance scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4758,14 +4758,14 @@
        "type": "string",
        "description": "Name of the kernel resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -4810,7 +4810,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -4858,7 +4858,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -4883,21 +4883,21 @@
        "type": "string",
        "description": "Name of the machine type resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4943,14 +4943,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -4980,14 +4980,14 @@
        "type": "string",
        "description": "Name of the network resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -5012,14 +5012,14 @@
        "type": "string",
        "description": "Name of the network resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -5045,7 +5045,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -5091,7 +5091,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -5120,7 +5120,7 @@
        "type": "string",
        "description": "Name of the project resource to retrieve.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -5145,7 +5145,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -5176,21 +5176,21 @@
        "type": "string",
        "description": "Name of the operation resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5213,21 +5213,21 @@
        "type": "string",
        "description": "Name of the operation resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5273,14 +5273,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5310,14 +5310,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5362,7 +5362,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -5391,14 +5391,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "route": {
        "type": "string",
        "description": "Name of the route resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5423,14 +5423,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "route": {
        "type": "string",
        "description": "Name of the route resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5456,7 +5456,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -5502,7 +5502,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -5531,14 +5531,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "snapshot": {
        "type": "string",
        "description": "Name of the persistent disk snapshot resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5563,14 +5563,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "snapshot": {
        "type": "string",
        "description": "Name of the persistent disk snapshot resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5615,7 +5615,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -5644,21 +5644,21 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "targetPool": {
        "type": "string",
        "description": "Name of the TargetPool resource to which health_check_url is to be added.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5687,21 +5687,21 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "targetPool": {
        "type": "string",
        "description": "Name of the TargetPool resource to which instance_url is to be added.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5749,7 +5749,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },
@@ -5774,21 +5774,21 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "targetPool": {
        "type": "string",
        "description": "Name of the TargetPool resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5814,21 +5814,21 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "targetPool": {
        "type": "string",
        "description": "Name of the TargetPool resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5855,21 +5855,21 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "targetPool": {
        "type": "string",
        "description": "Name of the TargetPool resource to which the queried instance belongs.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5899,14 +5899,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5953,14 +5953,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -5986,21 +5986,21 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "targetPool": {
        "type": "string",
        "description": "Name of the TargetPool resource to which health_check_url is to be removed.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -6029,21 +6029,21 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "region": {
        "type": "string",
        "description": "Name of the region scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "targetPool": {
        "type": "string",
        "description": "Name of the TargetPool resource to which instance_url is to be removed.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -6076,21 +6076,21 @@
        "type": "string",
        "description": "Name of the operation resource to delete.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -6113,21 +6113,21 @@
        "type": "string",
        "description": "Name of the operation resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       },
       "project": {
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -6173,14 +6173,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone scoping this request.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -6210,14 +6210,14 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       },
       "zone": {
        "type": "string",
        "description": "Name of the zone resource to return.",
        "required": true,
-       "pattern": "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
+       "pattern": "[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?",
        "location": "path"
       }
      },
@@ -6262,7 +6262,7 @@
        "type": "string",
        "description": "Name of the project scoping this request.",
        "required": true,
-       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
+       "pattern": "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?):)?(?:[0-9]{1,19}|(?:[a-zA-Z](?:[-a-zA-Z0-9]{0,61}[a-zA-Z0-9])?))",
        "location": "path"
       }
      },

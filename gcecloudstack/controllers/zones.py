@@ -17,7 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
@@ -28,7 +27,6 @@ import json
 @app.route('/' + app.config['PATH'] + '<projectid>/zones')
 @authentication.required
 def listzones(projectid, authorization):
-
     command = 'listZones'
     args = {}
     logger = None
@@ -63,6 +61,6 @@ def listzones(projectid, authorization):
         'items': zones
     }
 
-    gcutil_response = jsonify(populated_response)
-    gcutil_response.status_code = 200
-    return gcutil_response
+    res = jsonify(populated_response)
+    res.status_code = 200
+    return res
