@@ -28,110 +28,125 @@ from gcecloudstack.services import requester
 from gcecloudstack.controllers import zones
 from gcecloudstack import authentication
 
+def _cloudstack_machinetype_to_gcutil(cloudstack_response):
+    return ({
+        'name': cloudstack_response['name'],
+        'description': cloudstack_response['displaytext'],
+        'id': cloudstack_response['id'],
+        'creationTimestamp': cloudstack_response['created'],
+        'guestCpus': cloudstack_response['cpunumber'],
+        'memoryMb': cloudstack_response['memory']
+    })
 
-@app.route('/' + app.config['PATH'] + '<project>/aggregated/machineTypes')
+
+@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/machineTypes')
 @authentication.required
-def aggregatedlist(authorization, project):
+def aggregatedlist(projectid, authorization):
     command = 'listServiceOfferings'
     args = {}
-    response = requester.make_request(
+    cloudstack_response = requester.make_request(
         command, 
-        args,
+        args, 
         authorization.jsessionid,
         authorization.sessionkey
-    ) 
-    response = json.loads(response)
-    response = response['listserviceofferingsresponse']['serviceoffering']
+    )
 
-    result = []
-    for res in response:
-        tmp = {
-            'name': res['name'],
-            'description': res['displaytext'],
-            'id': res['id'],
-            'creationTimestamp': res['created'],
-            'guestCpus': res['cpunumber'],
-            'memoryMb': res['memory']
-        }
-        result.append(tmp)
+    cloudstack_responses = json.loads(cloudstack_response)
 
-    #tmp = {'machineTypes':result}
-    res = {
+    machine_types = []
+    if cloudstack_responses['listserviceofferingsresponse']:
+        for cloudstack_response in cloudstack_responses[
+                'listserviceofferingsresponse']['serviceoffering']:
+            machine_types.append(_cloudstack_machinetype_to_gcutil(cloudstack_response))
+
+    populated_response = {
         'kind': "compute#machineTypeAggregatedList",
         'id': 'blah',
         'selfLink': '',
         'items': {
-            'Dummy Zone': {'machineTypes': result},
-            'Another Zone': {'machineTypes': result}
+            'Dummy Zone': {
+                'machineTypes': machine_types
+            },
+            'Another Zone': {
+                'machineTypes': machine_types
+            }
         }
     }
 
-    for v in res['items'].values():
-        print v.get('machineTypes')
-
-    return json.dumps(res)
+    res = jsonify(populated_response)
+    res.status_code = 200
+    return res
 
 
 @app.route('/' + app.config['PATH'] +
-           '<project>/zones/<zone>/machineTypes/<machinetype>')
+           '<projectid>/zones/<zone>/machineTypes/<machinetype>')
 @authentication.required
-def getmachinetype(authorization, project, zone, machinetype):
+def getmachinetype(projectid, authorization, zone, machinetype):
     command = 'listServiceOfferings'
     args = {
         'keyword': machinetype
     }
-    response = requester.make_request(
+    cloudstack_response = requester.make_request(
         command, 
         args, 
         authorization.jsessionid,
         authorization.sessionkey
     )
-    response = json.loads(response)
-    response = response['listserviceofferingsresponse']['serviceoffering'][0]
+    cloudstack_responses = json.loads(cloudstack_response)
 
-    res = {
-        'name': response['name'],
-        'description': response['displaytext'],
-        'id': response['id'],
-        'creationTimestamp': response['created'],
-        'guestCpus': response['cpunumber'],
-        'memoryMb': response['memory']
-    }
+    if cloudstack_responses['listserviceofferingsresponse']:
+        cloudstack_response = cloudstack_responses[
+            'listserviceofferingsresponse']['serviceoffering'][0]
+        machine_type = _cloudstack_machinetype_to_gcutil(cloudstack_response)
+        res = jsonify(machine_type)
+        res.status_code = 200
 
-    return json.dumps(res)
+    else:
+        res = jsonify({
+            'error': {
+                'errors': [
+                    {
+                        "domain": "global",
+                        "reason": "notFound",
+                        "message": 'The resource \'projects/' + projectid + '/zones/' + zone + '/machineTypes/' + machinetype + '\' was not found'
+                    }
+                ],
+                'code': 404,
+                "message": 'The resource \'projects/' + projectid + '/zones/' + zone + '/machineTypes/' + machinetype + '\' was not found'
+            }
+        })
+        res.status_code = 404
+
+    return res
 
 
-@app.route('/' + app.config['PATH'] + '<project>/zones/<zone>/machineTypes')
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes')
 @authentication.required
-def listmachinetypes(authorization, project, zone):
+def listmachinetype(projectid, authorization,  zone):
     command = 'listServiceOfferings'
     args = {}
-    response = requester.make_request(
+    cloudstack_response = requester.make_request(
         command, 
         args, 
         authorization.jsessionid,
         authorization.sessionkey
     )
-    response = json.loads(response)
-    response = response['listserviceofferingsresponse']['serviceoffering']
 
-    result = []
-    for res in response:
-        tmp = {
-            'name': res['name'],
-            'description': res['displaytext'],
-            'id': res['id'],
-            'creationTimestamp': res['created'],
-            'guestCpus': res['cpunumber'],
-            'memoryMb': res['memory']
-        }
-        result.append(tmp)
+    cloudstack_responses = json.loads(cloudstack_response)
 
-    res = {
+    machine_types = []
+    if cloudstack_responses['listserviceofferingsresponse']:
+        for cloudstack_response in cloudstack_responses[
+                'listserviceofferingsresponse']['serviceoffering']:
+            machine_types.append(_cloudstack_machinetype_to_gcutil(cloudstack_response))
+
+    populated_response = {
         'kind': "compute#machineTypeList",
         'id': 'blah',
         'selfLink': '',
-        'items': result
+        'items': machine_types
     }
 
-    return json.dumps(res)
+    res = jsonify(populated_response)
+    res.status_code = 200
+    return res
