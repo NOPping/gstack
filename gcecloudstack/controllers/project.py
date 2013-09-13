@@ -20,7 +20,7 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from flask import jsonify
+from flask import jsonify, request, abort
 import json
 
 
@@ -42,72 +42,90 @@ def getProject(projectid, authorization):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
-    cloudstack_response = cloudstack_response[
-        'listaccountsresponse']['account'][0]
+    print cloudstack_response['listaccountsresponse']
+    if cloudstack_response['listaccountsresponse']:
+        cloudstack_response = cloudstack_response[
+            'listaccountsresponse']['account'][0]
 
-    quotas = [{
-        'limit': cloudstack_response['vmlimit'],
-        'metric': 'Virtual Machine',
-        'usage': cloudstack_response['vmtotal'],
-    }, {
-        'limit': cloudstack_response['iplimit'],
-        'metric': 'IP',
-        'usage': cloudstack_response['iptotal'],
-    }, {
-        'limit': cloudstack_response['volumelimit'],
-        'metric': 'Volume',
-        'usage': cloudstack_response['volumetotal'],
-    }, {
-        'limit': cloudstack_response['snapshotlimit'],
-        'metric': 'Snapshot',
-        'usage': cloudstack_response['snapshottotal'],
-    }, {
-        'limit': cloudstack_response['templatelimit'],
-        'metric': 'Template',
-        'usage': cloudstack_response['templatetotal'],
-    }, {
-        'limit': cloudstack_response['projectlimit'],
-        'metric': 'Project',
-        'usage': cloudstack_response['projecttotal'],
-    }, {
-        'limit': cloudstack_response['networklimit'],
-        'metric': 'Network',
-        'usage': cloudstack_response['networktotal'],
-    }, {
-        'limit': cloudstack_response['vpclimit'],
-        'metric': 'VPC',
-        'usage': cloudstack_response['vpctotal'],
-    }, {
-        'limit': cloudstack_response['cpulimit'],
-        'metric': 'CPU',
-        'usage': cloudstack_response['cputotal'],
-    }, {
-        'limit': cloudstack_response['memorylimit'],
-        'metric': 'Memory',
-        'usage': cloudstack_response['memorytotal'],
-    }, {
-        'limit': cloudstack_response['primarystoragelimit'],
-        'metric': 'Primary storage',
-        'usage': cloudstack_response['primarystoragetotal'],
-    }, {
-        'limit': cloudstack_response['secondarystoragelimit'],
-        'metric': 'Secondary storage',
-        'usage': cloudstack_response['secondarystoragetotal'],
-    }]
+        quotas = [{
+            'limit': cloudstack_response['vmlimit'],
+            'metric': 'Virtual Machine',
+            'usage': cloudstack_response['vmtotal'],
+        }, {
+            'limit': cloudstack_response['iplimit'],
+            'metric': 'IP',
+            'usage': cloudstack_response['iptotal'],
+        }, {
+            'limit': cloudstack_response['volumelimit'],
+            'metric': 'Volume',
+            'usage': cloudstack_response['volumetotal'],
+        }, {
+            'limit': cloudstack_response['snapshotlimit'],
+            'metric': 'Snapshot',
+            'usage': cloudstack_response['snapshottotal'],
+        }, {
+            'limit': cloudstack_response['templatelimit'],
+            'metric': 'Template',
+            'usage': cloudstack_response['templatetotal'],
+        }, {
+            'limit': cloudstack_response['projectlimit'],
+            'metric': 'Project',
+            'usage': cloudstack_response['projecttotal'],
+        }, {
+            'limit': cloudstack_response['networklimit'],
+            'metric': 'Network',
+            'usage': cloudstack_response['networktotal'],
+        }, {
+            'limit': cloudstack_response['vpclimit'],
+            'metric': 'VPC',
+            'usage': cloudstack_response['vpctotal'],
+        }, {
+            'limit': cloudstack_response['cpulimit'],
+            'metric': 'CPU',
+            'usage': cloudstack_response['cputotal'],
+        }, {
+            'limit': cloudstack_response['memorylimit'],
+            'metric': 'Memory',
+            'usage': cloudstack_response['memorytotal'],
+        }, {
+            'limit': cloudstack_response['primarystoragelimit'],
+            'metric': 'Primary storage',
+            'usage': cloudstack_response['primarystoragetotal'],
+        }, {
+            'limit': cloudstack_response['secondarystoragelimit'],
+            'metric': 'Secondary storage',
+            'usage': cloudstack_response['secondarystoragetotal'],
+        }]
 
-    populated_response = {
-        'commonInstanceMetadata': {
-            'kind': 'compute#metadata'
-        },
-        'creationTimestamp': "2013-09-04T17:41:05.702-07:00",
-        'kind': 'compute#project',
-        'description': cloudstack_response['name'],
-        'name': cloudstack_response['name'],
-        'id': cloudstack_response['id'],
-        'selfLink': '',
-        'quotas': quotas
-    }
+        populated_response = {
+            'commonInstanceMetadata': {
+                'kind': 'compute#metadata'
+            },
+            'creationTimestamp': "2013-09-04T17:41:05.702-07:00",
+            'kind': 'compute#project',
+            'description': cloudstack_response['name'],
+            'name': cloudstack_response['name'],
+            'id': cloudstack_response['id'],
+            'selfLink': request.base_url,
+            'quotas': quotas
+        }
 
-    gcutil_response = jsonify(populated_response)
-    gcutil_response.status_code = 200
-    return gcutil_response
+        res = jsonify(populated_response)
+        res.status_code = 200
+        return res
+    else:
+        res = jsonify({
+            'error': {
+                'errors': [
+                    {
+                        "domain": "global",
+                        "reason": "notFound",
+                        "message": 'The resource \'projects/' + projectid + '\' was not found'
+                    }
+                ],
+                'code': 404,
+                'message': 'The resource \'projects/' + projectid + '\' was not found'
+            }
+        })
+        res.status_code = 404
+        return res
