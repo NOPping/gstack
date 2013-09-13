@@ -64,3 +64,53 @@ def listzones(projectid, authorization):
     res = jsonify(populated_response)
     res.status_code = 200
     return res
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>')
+@authentication.required
+def getzone(projectid, authorization, zone):
+    command = 'listZones'
+    args = {'name': zone}
+    logger = None
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        logger,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+
+    translate_zone_status = {
+        'Enabled': 'UP',
+        'Disabled': 'DOWN'
+    }
+
+    cloudstack_response = json.loads(cloudstack_response)
+    if cloudstack_response['listzonesresponse']:
+        cloudstack_response = cloudstack_response[
+            'listzonesresponse']['zone'][0]
+        zone = {'kind': "compute#zone",
+                'name': cloudstack_response['name'],
+                'description': cloudstack_response['name'],
+                'id': cloudstack_response['id'],
+                'selfLink': request.base_url,
+                'status': translate_zone_status[str(cloudstack_response['allocationstate'])]
+                }
+        res = jsonify(zone)
+        res.status_code = 200
+    else:
+        res = jsonify({
+            'error': {
+                'errors': [
+                    {
+                        "domain": "global",
+                        "reason": "notFound",
+                        "message": 'The resource \'projects/' + projectid + '/zones/' + zone + '\' was not found'
+                    }
+                ],
+                'code': 404,
+                'message': 'The resource \'projects/' + projectid + '/zones/' + zone + '\' was not found'
+            }
+        })
+        res.status_code = 404
+    return res
