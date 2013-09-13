@@ -20,7 +20,7 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from flask import jsonify, request, abort
+from flask import jsonify, request
 import json
 
 
