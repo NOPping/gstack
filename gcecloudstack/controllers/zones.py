@@ -39,19 +39,19 @@ def listzones(projectid, authorization):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
-    cloudstack_response = cloudstack_response['listzonesresponse']
+    cloudstack_responses = cloudstack_response['listzonesresponse']
 
     zones = []
 
     # test for empty response, i.e no zones available
     if cloudstack_response:
-        for zone in cloudstack_response['zone']:
+        for cloudstack_response in cloudstack_responses['zone']:
             zones.append({
                 'kind': "compute#zone",
-                'name': zone['name'],
-                'description': zone['name'],
-                'id': zone['id'],
-                'status': zone['allocationstate']
+                'name': cloudstack_response['name'],
+                'description': cloudstack_response['name'],
+                'id': cloudstack_response['id'],
+                'status': cloudstack_response['allocationstate']
             })
 
     populated_response = {
