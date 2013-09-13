@@ -23,7 +23,7 @@ import urllib
 from flask import abort
 
 
-def make_request(command, args, logger, jsessionid, sessionkey):
+def make_request(command, args, jsessionid, sessionkey):
     url = app.config['CLOUDSTACK_PROTOCOL'] + "://" \
         + app.config['CLOUDSTACK_HOST'] + ":" + app.config['CLOUDSTACK_PORT'] \
         + app.config['CLOUDSTACK_PATH']

@@ -29,11 +29,9 @@ import json
 def listzones(projectid, authorization):
     command = 'listZones'
     args = {}
-    logger = None
     cloudstack_response = requester.make_request(
         command,
         args,
-        logger,
         authorization.jsessionid,
         authorization.sessionkey
     )
@@ -43,7 +41,6 @@ def listzones(projectid, authorization):
 
     zones = []
 
-    # test for empty response, i.e no zones available
     if cloudstack_response:
         for cloudstack_response in cloudstack_responses['zone']:
             zones.append({
@@ -70,12 +67,12 @@ def listzones(projectid, authorization):
 @authentication.required
 def getzone(projectid, authorization, zone):
     command = 'listZones'
-    args = {'name': zone}
-    logger = None
+    args = {
+        'name': zone
+    }
     cloudstack_response = requester.make_request(
         command,
         args,
-        logger,
         authorization.jsessionid,
         authorization.sessionkey
     )
@@ -89,13 +86,14 @@ def getzone(projectid, authorization, zone):
     if cloudstack_response['listzonesresponse']:
         cloudstack_response = cloudstack_response[
             'listzonesresponse']['zone'][0]
-        zone = {'kind': "compute#zone",
-                'name': cloudstack_response['name'],
-                'description': cloudstack_response['name'],
-                'id': cloudstack_response['id'],
-                'selfLink': request.base_url,
-                'status': translate_zone_status[str(cloudstack_response['allocationstate'])]
-                }
+        zone = {
+            'kind': "compute#zone",
+            'name': cloudstack_response['name'],
+            'description': cloudstack_response['name'],
+            'id': cloudstack_response['id'],
+            'selfLink': request.base_url,
+            'status': translate_zone_status[str(cloudstack_response['allocationstate'])]
+        }
         res = jsonify(zone)
         res.status_code = 200
     else:

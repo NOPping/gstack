@@ -34,11 +34,12 @@ from gcecloudstack import authentication
 def aggregatedlist(authorization, project):
     command = 'listServiceOfferings'
     args = {}
-    logger = None
-    response = requester.make_request(command, args, logger,
-                                      authorization.jsessionid,
-                                      authorization.sessionkey)
-    print response
+    response = requester.make_request(
+        command, 
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    ) 
     response = json.loads(response)
     response = response['listserviceofferingsresponse']['serviceoffering']
 
@@ -76,11 +77,15 @@ def aggregatedlist(authorization, project):
 @authentication.required
 def getmachinetype(authorization, project, zone, machinetype):
     command = 'listServiceOfferings'
-    args = {'keyword': machinetype}
-    logger = None
-    response = requester.make_request(command, args, logger,
-                                      authorization.jsessionid,
-                                      authorization.sessionkey)
+    args = {
+        'keyword': machinetype
+    }
+    response = requester.make_request(
+        command, 
+        args, 
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
     response = json.loads(response)
     response = response['listserviceofferingsresponse']['serviceoffering'][0]
 
@@ -98,14 +103,15 @@ def getmachinetype(authorization, project, zone, machinetype):
 
 @app.route('/' + app.config['PATH'] + '<project>/zones/<zone>/machineTypes')
 @authentication.required
-def listmachinetype(authorization, project, zone):
+def listmachinetypes(authorization, project, zone):
     command = 'listServiceOfferings'
     args = {}
-    logger = None
-    response = requester.make_request(command, args, logger,
-                                      authorization.jsessionid,
-                                      authorization.sessionkey)
-    print response
+    response = requester.make_request(
+        command, 
+        args, 
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
     response = json.loads(response)
     response = response['listserviceofferingsresponse']['serviceoffering']
 

@@ -31,11 +31,9 @@ def listregions(projectid, authorization):
 
     command = 'listRegions'
     args = {}
-    logger = None
     cloudstack_response = requester.make_request(
         command,
         args,
-        logger,
         authorization.jsessionid,
         authorization.sessionkey
     )
@@ -45,7 +43,6 @@ def listregions(projectid, authorization):
 
     regions = []
 
-    # test for empty response, i.e no zones available
     if cloudstack_response:
         for region in cloudstack_response['region']:
             regions.append({
@@ -72,12 +69,12 @@ def listregions(projectid, authorization):
 @authentication.required
 def getregion(projectid, authorization, region):
     command = 'listRegions'
-    args = {'name': region}
-    logger = None
+    args = {
+        'name': region
+    }
     cloudstack_response = requester.make_request(
         command,
         args,
-        logger,
         authorization.jsessionid,
         authorization.sessionkey
     )

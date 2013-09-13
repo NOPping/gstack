@@ -58,12 +58,10 @@ def listimages(projectid, authorization):
     args = {
         'templatefilter': 'all'
     }
-    logger = None
 
     cloudstack_response = requester.make_request(
         command,
         args,
-        logger,
         authorization.jsessionid,
         authorization.sessionkey
     )
@@ -127,12 +125,10 @@ def getimage(projectid, authorization, image):
         'templatefilter': 'all',
         'keyword': image
     }
-    logger = None
 
     cloudstack_response = requester.make_request(
         command,
         args,
-        logger,
         authorization.jsessionid,
         authorization.sessionkey
     )
@@ -202,12 +198,10 @@ def deleteimage(projectid, authorization, image):
     args = {
         'id': imageid
     }
-    logger = None
 
     cloudstack_response = requester.make_request(
         command,
         args,
-        logger,
         authorization.jsessionid,
         authorization.sessionkey
     )

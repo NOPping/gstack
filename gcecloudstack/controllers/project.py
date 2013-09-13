@@ -31,11 +31,9 @@ def getproject(projectid, authorization):
     args = {
         'name': projectid
     }
-    logger = None
     cloudstack_response = requester.make_request(
         command,
         args,
-        logger,
         authorization.jsessionid,
         authorization.sessionkey
     )
