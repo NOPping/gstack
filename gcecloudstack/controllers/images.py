@@ -20,7 +20,7 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from flask import jsonify
+from flask import jsonify, request
 import json
 
 @app.route('/' + app.config['PATH'] + 'centos-cloud/global/images',
@@ -80,10 +80,10 @@ def listimages(projectid, authorization):
         for cloudstack_template in cloudstack_templates['template']:
             images.append({
                 'kind': "compute#image",
-                'selfLink': '',
+                'selfLink': request.base_url + '/' + cloudstack_template['name'],
                 'id': cloudstack_template['id'],
                 'creationTimestamp': cloudstack_template['created'],
-                'name': '',
+                'name': cloudstack_template['name'],
                 'description': cloudstack_template['displaytext'],
                 'sourceType': '',
                 'preferredKernel': '',
@@ -149,10 +149,10 @@ def getimage(projectid, authorization, image):
         cloudstack_template = cloudstack_templates['template'][0]
         image = {
             'kind': "compute#image",
-            'selfLink': '',
+            'selfLink': request.base_url,
             'id': cloudstack_template['id'],
             'creationTimestamp': cloudstack_template['created'],
-            'name': '',
+            'name': cloudstack_template['name'],
             'description': cloudstack_template['displaytext'],
             'sourceType': '',
             'preferredKernel': '',
