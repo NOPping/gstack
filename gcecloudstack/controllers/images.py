@@ -69,7 +69,7 @@ def listimages(projectid, authorization):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
-    cloudstack_templates = cloudstack_response['listtemplatesresponse']
+    cloudstack_responses = cloudstack_response['listtemplatesresponse']
 
     images = []
 
@@ -79,21 +79,21 @@ def listimages(projectid, authorization):
     }
 
     # test for response, i.e are templates available
-    if cloudstack_templates:
-        for cloudstack_template in cloudstack_templates['template']:
+    if cloudstack_responses:
+        for cloudstack_response in cloudstack_responses['template']:
             images.append({
                 'kind': "compute#image",
-                'selfLink': request.base_url + '/' + cloudstack_template['name'],
-                'id': cloudstack_template['id'],
-                'creationTimestamp': cloudstack_template['created'],
-                'name': cloudstack_template['name'],
-                'description': cloudstack_template['displaytext'],
+                'selfLink': request.base_url + '/' + cloudstack_response['name'],
+                'id': cloudstack_response['id'],
+                'creationTimestamp': cloudstack_response['created'],
+                'name': cloudstack_response['name'],
+                'description': cloudstack_response['displaytext'],
                 'sourceType': '',
                 'preferredKernel': '',
                 'rawDisk': {
-                    'containerType': cloudstack_template['format'],
+                    'containerType': cloudstack_response['format'],
                     'source': '',
-                    'sha1Checksum': cloudstack_template['checksum'],
+                    'sha1Checksum': cloudstack_response['checksum'],
                 },
                 'deprecated': {
                     'state': '',
@@ -102,15 +102,15 @@ def listimages(projectid, authorization):
                     'obsolete': '',
                     'deleted': ''
                 },
-                'status': translate_image_status[str(cloudstack_template[
+                'status': translate_image_status[str(cloudstack_response[
                     'isready'
                 ])],
             })
 
     populated_response = {
         'kind': 'compute#imageList',
-        'selfLink': '',
-        'id': 'blah',
+        'selfLink': request.base_url,
+        'id': 'projects/' + projectid + '/global/images',
         'items': images
     }
     res = jsonify(populated_response)
@@ -137,32 +137,27 @@ def getimage(projectid, authorization, image):
         authorization.sessionkey
     )
 
-    cloudstack_response = json.loads(cloudstack_response)
-    cloudstack_templates = cloudstack_response['listtemplatesresponse']
-
     translate_image_status = {
         'True': 'Ready',
         'False': 'Failed'
     }
 
-    image = {}
-
-    # test for response, i.e are templates available
-    if cloudstack_templates:
-        cloudstack_template = cloudstack_templates['template'][0]
+    cloudstack_response = json.loads(cloudstack_response)
+    if cloudstack_response['listtemplatesresponse']:
+        cloudstack_response = cloudstack_response['listtemplatesresponse']['template'][0]
         image = {
             'kind': "compute#image",
             'selfLink': request.base_url,
-            'id': cloudstack_template['id'],
-            'creationTimestamp': cloudstack_template['created'],
-            'name': cloudstack_template['name'],
-            'description': cloudstack_template['displaytext'],
+            'id': cloudstack_response['id'],
+            'creationTimestamp': cloudstack_response['created'],
+            'name': cloudstack_response['name'],
+            'description': cloudstack_response['displaytext'],
             'sourceType': '',
             'preferredKernel': '',
             'rawDisk': {
-                'containerType': cloudstack_template['format'],
+                'containerType': cloudstack_response['format'],
                 'source': '',
-                'sha1Checksum': cloudstack_template['checksum'],
+                'sha1Checksum': cloudstack_response['checksum'],
             },
             'deprecated': {
                 'state': '',
@@ -171,13 +166,28 @@ def getimage(projectid, authorization, image):
                          'obsolete': '',
                          'deleted': ''
             },
-            'status': translate_image_status[str(cloudstack_template[
+            'status': translate_image_status[str(cloudstack_response[
                 'isready'
             ])],
         }
+        res = jsonify(image)
+        res.status_code = 200
+    else:
+        res = jsonify({
+            'error': {
+                'errors': [
+                    {
+                        "domain": "global",
+                        "reason": "notFound",
+                        "message": 'The resource \'projects/' + projectid + '/global/images/' + image + '\' was not found'
+                    }
+                ],
+                'code': 404,
+                'message': 'The resource \'projects/' + projectid + '/global/images/' + image + '\' was not found'
+            }
+        })
+        res.status_code = 404
 
-    res = jsonify(image)
-    res.status_code = 200
     return res
 
 
