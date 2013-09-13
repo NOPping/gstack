@@ -23,6 +23,29 @@ from gcecloudstack.services import requester
 from flask import jsonify
 import json
 
+@app.route('/' + app.config['PATH'] + 'centos-cloud/global/images',
+           methods=['GET'])
+@authentication.required
+def listnocentoscloudimages(authorization):
+    res = jsonify({
+        "kind": "compute#imageList",
+        "selfLink": "",
+        "id": "projects/centos-cloud/global/images"
+    })
+    res.status_code = 200
+    return res
+
+@app.route('/' + app.config['PATH'] + 'debian-cloud/global/images',
+           methods=['GET'])
+@authentication.required
+def listnodebiancloudimages(authorization):
+    res = jsonify({
+        "kind": "compute#imageList",
+        "selfLink": "",
+        "id": "projects/debian-cloud/global/images"
+    })
+    res.status_code = 200
+    return res
 
 @app.route('/' + app.config['PATH'] + '<projectid>/global/images',
            methods=['GET'])
