@@ -17,16 +17,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import sys
-import os
-import json
-
 from gcecloudstack import app
-from flask import jsonify, Response, request, url_for
-
-from gcecloudstack.services import requester
-from gcecloudstack.controllers import zones
 from gcecloudstack import authentication
+from gcecloudstack.services import requester
+from flask import jsonify, request
+import json
 
 def _cloudstack_machinetype_to_gcutil(cloudstack_response):
     return ({
