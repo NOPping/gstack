@@ -24,6 +24,15 @@ from gcecloudstack.services import requester
 from flask import jsonify, request
 import json
 
+def _cloudstack_region_to_gcutil(cloudstack_response):
+    return ({
+        'kind': "compute#region",
+        'name': cloudstack_response['name'],
+        'description': cloudstack_response['name'],
+        'id': cloudstack_response['id'],
+        'status': 'UP'
+    })
+
 
 @app.route('/' + app.config['PATH'] + '<projectid>/regions')
 @authentication.required
@@ -38,20 +47,14 @@ def listregions(projectid, authorization):
         authorization.sessionkey
     )
 
-    cloudstack_response = json.loads(cloudstack_response)
-    cloudstack_response = cloudstack_response['listregionsresponse']
+    cloudstack_responses = json.loads(cloudstack_response)
+    cloudstack_responses = cloudstack_responses['listregionsresponse']
 
     regions = []
 
-    if cloudstack_response:
-        for region in cloudstack_response['region']:
-            regions.append({
-                'kind': "compute#region",
-                'name': region['name'],
-                'description': region['name'],
-                'id': region['id'],
-                'status': 'UP'
-            })
+    if cloudstack_responses:
+        for cloudstack_response in cloudstack_responses['region']:
+            regions.append(_cloudstack_region_to_gcutil(cloudstack_response))
 
     populated_response = {
         'kind': "compute#regionList",
@@ -82,12 +85,7 @@ def getregion(projectid, authorization, region):
     cloudstack_response = json.loads(cloudstack_response)
     if cloudstack_response['listregionsresponse']:
         cloudstack_response = cloudstack_response['listregionsresponse']['region'][0]
-        region = {'kind': "compute#region",
-                  'name': cloudstack_response['name'],
-                  'description': cloudstack_response['name'],
-                  'id': cloudstack_response['id'],
-                  'selfLink': request.base_url
-                  }
+        region = _cloudstack_region_to_gcutil(cloudstack_response)
         res = jsonify(region)
         res.status_code = 200
     else:

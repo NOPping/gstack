@@ -24,6 +24,38 @@ from flask import jsonify, request
 import json
 
 
+def _cloudstack_image_to_gcutil(cloudstack_response):
+    translate_image_status = {
+        'True': 'Ready',
+        'False': 'Failed'
+    }
+
+    return ({
+        'kind': "compute#image",
+        'selfLink': request.base_url + '/' + cloudstack_response['name'],
+        'id': cloudstack_response['id'],
+        'creationTimestamp': cloudstack_response['created'],
+        'name': cloudstack_response['name'],
+        'description': cloudstack_response['displaytext'],
+        'sourceType': '',
+        'preferredKernel': '',
+        'rawDisk': {
+            'containerType': cloudstack_response['format'],
+            'source': '',
+            'sha1Checksum': cloudstack_response['checksum'],
+        },
+        'deprecated': {
+            'state': '',
+            'replacement': '',
+            'deprecated': '',
+            'obsolete': '',
+            'deleted': ''
+        },
+        'status': translate_image_status[str(cloudstack_response[
+            'isready'
+        ])],
+    })
+
 @app.route('/' + app.config['PATH'] + 'centos-cloud/global/images',
            methods=['GET'])
 @authentication.required
@@ -71,39 +103,11 @@ def listimages(projectid, authorization):
 
     images = []
 
-    translate_image_status = {
-        'True': 'Ready',
-        'False': 'Failed'
-    }
 
     # test for response, i.e are templates available
     if cloudstack_responses:
         for cloudstack_response in cloudstack_responses['template']:
-            images.append({
-                'kind': "compute#image",
-                'selfLink': request.base_url + '/' + cloudstack_response['name'],
-                'id': cloudstack_response['id'],
-                'creationTimestamp': cloudstack_response['created'],
-                'name': cloudstack_response['name'],
-                'description': cloudstack_response['displaytext'],
-                'sourceType': '',
-                'preferredKernel': '',
-                'rawDisk': {
-                    'containerType': cloudstack_response['format'],
-                    'source': '',
-                    'sha1Checksum': cloudstack_response['checksum'],
-                },
-                'deprecated': {
-                    'state': '',
-                    'replacement': '',
-                    'deprecated': '',
-                    'obsolete': '',
-                    'deleted': ''
-                },
-                'status': translate_image_status[str(cloudstack_response[
-                    'isready'
-                ])],
-            })
+            images.append(_cloudstack_image_to_gcutil(cloudstack_response))
 
     populated_response = {
         'kind': 'compute#imageList',
@@ -138,34 +142,10 @@ def getimage(projectid, authorization, image):
         'False': 'Failed'
     }
 
-    cloudstack_response = json.loads(cloudstack_response)
-    if cloudstack_response['listtemplatesresponse']:
-        cloudstack_response = cloudstack_response['listtemplatesresponse']['template'][0]
-        image = {
-            'kind': "compute#image",
-            'selfLink': request.base_url,
-            'id': cloudstack_response['id'],
-            'creationTimestamp': cloudstack_response['created'],
-            'name': cloudstack_response['name'],
-            'description': cloudstack_response['displaytext'],
-            'sourceType': '',
-            'preferredKernel': '',
-            'rawDisk': {
-                'containerType': cloudstack_response['format'],
-                'source': '',
-                'sha1Checksum': cloudstack_response['checksum'],
-            },
-            'deprecated': {
-                'state': '',
-                         'replacement': '',
-                         'deprecated': '',
-                         'obsolete': '',
-                         'deleted': ''
-            },
-            'status': translate_image_status[str(cloudstack_response[
-                'isready'
-            ])],
-        }
+    cloudstack_responses = json.loads(cloudstack_response)
+    if cloudstack_responses['listtemplatesresponse']:
+        cloudstack_response = cloudstack_responses['listtemplatesresponse']['template'][0]
+        image = _cloudstack_image_to_gcutil(cloudstack_response)
         res = jsonify(image)
         res.status_code = 200
     else:

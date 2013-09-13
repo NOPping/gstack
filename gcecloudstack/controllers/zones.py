@@ -23,6 +23,19 @@ from gcecloudstack.services import requester
 from flask import jsonify, request
 import json
 
+def _cloudstack_region_to_gcutil(cloudstack_response):
+    translate_zone_status = {
+        'Enabled': 'UP',
+        'Disabled': 'DOWN'
+    }
+    return ({
+        'kind': "compute#zone",
+        'name': cloudstack_response['name'],
+        'description': cloudstack_response['name'],
+        'id': cloudstack_response['id'],
+        'status': cloudstack_response['allocationstate']
+    })
+
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones')
 @authentication.required
@@ -43,13 +56,7 @@ def listzones(projectid, authorization):
 
     if cloudstack_response:
         for cloudstack_response in cloudstack_responses['zone']:
-            zones.append({
-                'kind': "compute#zone",
-                'name': cloudstack_response['name'],
-                'description': cloudstack_response['name'],
-                'id': cloudstack_response['id'],
-                'status': cloudstack_response['allocationstate']
-            })
+            zones.append(_cloudstack_region_to_gcutil(cloudstack_response))
 
     populated_response = {
         'kind': "compute#zoneList",
@@ -77,23 +84,11 @@ def getzone(projectid, authorization, zone):
         authorization.sessionkey
     )
 
-    translate_zone_status = {
-        'Enabled': 'UP',
-        'Disabled': 'DOWN'
-    }
-
     cloudstack_response = json.loads(cloudstack_response)
     if cloudstack_response['listzonesresponse']:
         cloudstack_response = cloudstack_response[
             'listzonesresponse']['zone'][0]
-        zone = {
-            'kind': "compute#zone",
-            'name': cloudstack_response['name'],
-            'description': cloudstack_response['name'],
-            'id': cloudstack_response['id'],
-            'selfLink': request.base_url,
-            'status': translate_zone_status[str(cloudstack_response['allocationstate'])]
-        }
+        zone = _cloudstack_region_to_gcutil(cloudstack_response)
         res = jsonify(zone)
         res.status_code = 200
     else:
