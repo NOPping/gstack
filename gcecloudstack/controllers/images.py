@@ -20,6 +20,7 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
+from gcecloudstack.controllers import errors
 from flask import jsonify, request
 import json
 
@@ -76,6 +77,46 @@ def _cloudstack_image_to_gcutil(cloudstack_response):
             'isready'
         ])],
     })
+
+def _cloudstack_delete_to_gcutil(cloudstack_response):
+    return({
+        "kind": "compute#operation",
+         "id": imageid,
+         "creationTimestamp": '',
+         "name": image,
+         "zone": '',
+         "clientOperationId": '',
+         "operationType": 'delete',
+         "targetLink": '',
+         "targetId": 'unsigned long',
+         "status": cloudstack_response['success'],
+         "statusMessage": cloudstack_response['displaytext'],
+         "user": '',
+         "progress": '',
+         "insertTime": '',
+         "startTime": '',
+         "endTime": '',
+         "error": {
+             "errors": [
+                 {
+                     "code": '',
+                     "location": '',
+                     "message": ''
+                 }
+             ]
+         },
+         "warnings": [
+             {
+                 "code": '',
+                 "message": '',
+                 "data": [{"key": '', "value": ''}]
+             }
+         ],
+         "httpErrorStatusCode": '',
+         "httpErrorMessage": '',
+         "selfLink": '',
+         "region": ''
+     })
 
 
 @app.route('/' + app.config['PATH'] + 'centos-cloud/global/images',
@@ -147,7 +188,6 @@ def getimage(projectid, authorization, image):
         'templatefilter': 'all',
         'keyword': image
     }
-
     cloudstack_response = requester.make_request(
         command,
         args,
@@ -162,20 +202,8 @@ def getimage(projectid, authorization, image):
         res = jsonify(image)
         res.status_code = 200
     else:
-        res = jsonify({
-            'error': {
-                'errors': [
-                    {
-                        "domain": "global",
-                        "reason": "notFound",
-                        "message": 'The resource \'projects/' + projectid + '/global/images/' + image + '\' was not found'
-                    }
-                ],
-                'code': 404,
-                'message': 'The resource \'projects/' + projectid + '/global/images/' + image + '\' was not found'
-            }
-        })
-        res.status_code = 404
+       message = 'The resource \'projects/' + projectid + '/global/images/' + image + '\' was not found'
+       res = errors.resource_not_found(message)
 
     return res
 
@@ -187,71 +215,21 @@ def deleteimage(projectid, authorization, image):
     command = 'deleteTemplate'
     imageid = _get_template_id(image)
     if imageid is None:
-       return(jsonify({
-            'error': {
-                'errors': [
-                    {
-                        "domain": "global",
-                        "reason": "notFound",
-                        "message": 'The resource \'projects/' + projectid + '/global/images/' + image + '\' was not found'
-                    }
-                ],
-                'code': 404,
-                'message': 'The resource \'projects/' + projectid + '/global/images/' + image + '\' was not found'
-            }
-        }))
+       message = 'The resource \'projects/' + projectid + '/global/images/' + image + '\' was not found'
+       return(errors.resource_not_found(message))
 
     args = {
         'id': imageid
     }
-
     cloudstack_response = requester.make_request(
         command,
         args,
         authorization.jsessionid,
         authorization.sessionkey
     )
-
-    globalops = {
-        "kind": "compute#operation",
-         "id": imageid,
-         "creationTimestamp": '',
-         "name": image,
-         "zone": '',
-         "clientOperationId": '',
-         "operationType": 'delete',
-         "targetLink": '',
-         "targetId": 'unsigned long',
-         "status": cloudstack_response['success'],
-         "statusMessage": cloudstack_response['displaytext'],
-         "user": '',
-         "progress": '',
-         "insertTime": '',
-         "startTime": '',
-         "endTime": '',
-         "error": {
-             "errors": [
-                 {
-                     "code": '',
-                     "location": '',
-                     "message": ''
-                 }
-             ]
-         },
-         "warnings": [
-             {
-                 "code": '',
-                 "message": '',
-                 "data": [{"key": '', "value": ''}]
-             }
-         ],
-         "httpErrorStatusCode": '',
-         "httpErrorMessage": '',
-         "selfLink": '',
-         "region": ''
-     }
+    image_deleted = _cloudstack_delete_to_gcutil(cloudstack_response)
 
     
-    res = jsonify(globalops)
+    res = jsonify(image_deleted)
     res.status_code = 200
     return res
