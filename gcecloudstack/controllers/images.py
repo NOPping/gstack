@@ -23,6 +23,28 @@ from gcecloudstack.services import requester
 from flask import jsonify, request
 import json
 
+@authentication.required
+def _get_template_id(image, authorization):
+    command = 'listTemplates'
+    args = {
+        'templatefilter': 'all',
+        'keyword': image
+    }
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+    template_id = None
+    cloudstack_responses = json.loads(cloudstack_response)
+    if cloudstack_responses['listtemplatesresponse']:
+        template_id = cloudstack_responses[
+            'listtemplatesresponse']['template'][0]['id']
+    return template_id
+
+
+
 def _cloudstack_image_to_gcutil(cloudstack_response):
     translate_image_status = {
         'True': 'Ready',
@@ -54,6 +76,7 @@ def _cloudstack_image_to_gcutil(cloudstack_response):
             'isready'
         ])],
     })
+
 
 @app.route('/' + app.config['PATH'] + 'centos-cloud/global/images',
            methods=['GET'])
@@ -98,9 +121,7 @@ def listimages(projectid, authorization):
     )
 
     cloudstack_responses = json.loads(cloudstack_response)
-
     images = []
-
     if cloudstack_responses['listtemplatesresponse']:
         for cloudstack_response in cloudstack_responses[
                 'listtemplatesresponse']['template']:
@@ -164,9 +185,22 @@ def getimage(projectid, authorization, image):
 @authentication.required
 def deleteimage(projectid, authorization, image):
     command = 'deleteTemplate'
-    # should be something like: imageid = _get_template_id(image)
-    # this needs to call getimage() and return the image id
-    imageid = image
+    imageid = _get_template_id(image)
+    if imageid is None:
+       return(jsonify({
+            'error': {
+                'errors': [
+                    {
+                        "domain": "global",
+                        "reason": "notFound",
+                        "message": 'The resource \'projects/' + projectid + '/global/images/' + image + '\' was not found'
+                    }
+                ],
+                'code': 404,
+                'message': 'The resource \'projects/' + projectid + '/global/images/' + image + '\' was not found'
+            }
+        }))
+
     args = {
         'id': imageid
     }
@@ -178,46 +212,46 @@ def deleteimage(projectid, authorization, image):
         authorization.sessionkey
     )
 
-    res = json.loads(cloudstack_response)['deletetemplateresponse']
-
-    globalops = {"kind": "compute#operation",
-                 "id": imageid,
-                 "creationTimestamp": '',
-                 "name": image,
-                 "zone": '',
-                 "clientOperationId": '',
-                 "operationType": 'delete',
-                 "targetLink": '',
-                 "targetId": 'unsigned long',
-                 "status": res['success'],
-                 "statusMessage": res['displaytext'],
-                 "user": '',
-                 "progress": '',
-                 "insertTime": '',
-                 "startTime": '',
-                 "endTime": '',
-                 "error": {
-                     "errors": [
-                         {
-                             "code": '',
-                             "location": '',
-                             "message": ''
-                         }
-                     ]
-                 },
-                 "warnings": [
-                     {
-                         "code": '',
-                         "message": '',
-                         "data": [{"key": '', "value": ''}]
-                     }
-                 ],
-                 "httpErrorStatusCode": '',
-                 "httpErrorMessage": '',
-                 "selfLink": '',
-                 "region": ''
+    globalops = {
+        "kind": "compute#operation",
+         "id": imageid,
+         "creationTimestamp": '',
+         "name": image,
+         "zone": '',
+         "clientOperationId": '',
+         "operationType": 'delete',
+         "targetLink": '',
+         "targetId": 'unsigned long',
+         "status": cloudstack_response['success'],
+         "statusMessage": cloudstack_response['displaytext'],
+         "user": '',
+         "progress": '',
+         "insertTime": '',
+         "startTime": '',
+         "endTime": '',
+         "error": {
+             "errors": [
+                 {
+                     "code": '',
+                     "location": '',
+                     "message": ''
                  }
+             ]
+         },
+         "warnings": [
+             {
+                 "code": '',
+                 "message": '',
+                 "data": [{"key": '', "value": ''}]
+             }
+         ],
+         "httpErrorStatusCode": '',
+         "httpErrorMessage": '',
+         "selfLink": '',
+         "region": ''
+     }
 
+    
     res = jsonify(globalops)
     res.status_code = 200
     return res
