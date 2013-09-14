@@ -24,7 +24,7 @@ from gcecloudstack.controllers import errors
 from flask import jsonify, request
 import json
 
-@authentication.required
+
 def _get_template_id(image, authorization):
     command = 'listTemplates'
     args = {
@@ -43,7 +43,6 @@ def _get_template_id(image, authorization):
         template_id = cloudstack_responses[
             'listtemplatesresponse']['template'][0]['id']
     return template_id
-
 
 
 def _cloudstack_image_to_gcutil(cloudstack_response):
@@ -65,7 +64,7 @@ def _cloudstack_image_to_gcutil(cloudstack_response):
             'containerType': cloudstack_response['format'],
             'source': '',
             'sha1Checksum': cloudstack_response['checksum'],
-        },
+            },
         'deprecated': {
             'state': '',
             'replacement': '',
@@ -78,45 +77,46 @@ def _cloudstack_image_to_gcutil(cloudstack_response):
         ])],
     })
 
-def _cloudstack_delete_to_gcutil(cloudstack_response):
+
+def _cloudstack_delete_to_gcutil(cloudstack_response, image, imageid):
     return({
         "kind": "compute#operation",
-         "id": imageid,
-         "creationTimestamp": '',
-         "name": image,
-         "zone": '',
-         "clientOperationId": '',
-         "operationType": 'delete',
-         "targetLink": '',
-         "targetId": 'unsigned long',
-         "status": cloudstack_response['success'],
-         "statusMessage": cloudstack_response['displaytext'],
-         "user": '',
-         "progress": '',
-         "insertTime": '',
-         "startTime": '',
-         "endTime": '',
-         "error": {
-             "errors": [
-                 {
+        "id": imageid,
+        "creationTimestamp": '',
+        "name": image,
+        "zone": '',
+        "clientOperationId": '',
+        "operationType": 'delete',
+        "targetLink": '',
+        "targetId": 'unsigned long',
+        "status": cloudstack_response['success'],
+        "statusMessage": cloudstack_response['displaytext'],
+        "user": '',
+        "progress": '',
+        "insertTime": '',
+        "startTime": '',
+        "endTime": '',
+        "error": {
+            "errors": [
+                {
                      "code": '',
                      "location": '',
                      "message": ''
-                 }
-             ]
-         },
-         "warnings": [
-             {
-                 "code": '',
-                 "message": '',
-                 "data": [{"key": '', "value": ''}]
-             }
-         ],
-         "httpErrorStatusCode": '',
-         "httpErrorMessage": '',
-         "selfLink": '',
-         "region": ''
-     })
+                }
+            ]
+        },
+        "warnings": [
+            {
+                "code": '',
+                "message": '',
+                "data": [{"key": '', "value": ''}]
+            }
+        ],
+        "httpErrorStatusCode": '',
+        "httpErrorMessage": '',
+        "selfLink": '',
+        "region": ''
+    })
 
 
 @app.route('/' + app.config['PATH'] + 'centos-cloud/global/images',
@@ -197,13 +197,15 @@ def getimage(projectid, authorization, image):
     cloudstack_responses = json.loads(cloudstack_response)
 
     if cloudstack_responses['listtemplatesresponse']:
-        cloudstack_response = cloudstack_responses['listtemplatesresponse']['template'][0]
+        cloudstack_response = cloudstack_responses[
+            'listtemplatesresponse']['template'][0]
         image = _cloudstack_image_to_gcutil(cloudstack_response)
         res = jsonify(image)
         res.status_code = 200
     else:
-       message = 'The resource \'projects/' + projectid + '/global/images/' + image + '\' was not found'
-       res = errors.resource_not_found(message)
+        message = 'The resource \'projects/' + projectid + \
+            '/global/images/' + image + '\' was not found'
+        res = errors.resource_not_found(message)
 
     return res
 
@@ -213,10 +215,11 @@ def getimage(projectid, authorization, image):
 @authentication.required
 def deleteimage(projectid, authorization, image):
     command = 'deleteTemplate'
-    imageid = _get_template_id(image)
+    imageid = _get_template_id(image, authorization)
     if imageid is None:
-       message = 'The resource \'projects/' + projectid + '/global/images/' + image + '\' was not found'
-       return(errors.resource_not_found(message))
+        message = 'The resource \'projects/' + projectid + \
+            '/global/images/' + image + '\' was not found'
+        return(errors.resource_not_found(message))
 
     args = {
         'id': imageid
@@ -227,9 +230,12 @@ def deleteimage(projectid, authorization, image):
         authorization.jsessionid,
         authorization.sessionkey
     )
-    image_deleted = _cloudstack_delete_to_gcutil(cloudstack_response)
+    image_deleted = _cloudstack_delete_to_gcutil(
+        cloudstack_response,
+        image,
+        imageid
+    )
 
-    
     res = jsonify(image_deleted)
     res.status_code = 200
     return res

@@ -24,6 +24,7 @@ from gcecloudstack.controllers import errors
 from flask import jsonify, request
 import json
 
+
 def _cloudstack_zone_to_gcutil(cloudstack_response):
     translate_zone_status = {
         'Enabled': 'UP',
@@ -93,7 +94,8 @@ def getzone(projectid, authorization, zone):
         res = jsonify(zone)
         res.status_code = 200
     else:
-        message = 'The resource \'projects/' + projectid + '/zones/' + zone + '\' was not found'
+        message = 'The resource \'projects/' + \
+            projectid + '/zones/' + zone + '\' was not found'
         res = errors.resource_not_found(message)
-        
+
     return res

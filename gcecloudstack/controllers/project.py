@@ -24,57 +24,57 @@ from gcecloudstack.controllers import errors
 from flask import jsonify, request
 import json
 
+
 def _cloudstack_quotas_to_gcutil(cloudstack_response):
     return ([{
             'limit': cloudstack_response['vmlimit'],
             'metric': 'Virtual Machine',
             'usage': cloudstack_response['vmtotal'],
-        }, {
-            'limit': cloudstack_response['iplimit'],
-            'metric': 'IP',
-            'usage': cloudstack_response['iptotal'],
-        }, {
-            'limit': cloudstack_response['volumelimit'],
-            'metric': 'Volume',
-            'usage': cloudstack_response['volumetotal'],
-        }, {
-            'limit': cloudstack_response['snapshotlimit'],
-            'metric': 'Snapshot',
-            'usage': cloudstack_response['snapshottotal'],
-        }, {
-            'limit': cloudstack_response['templatelimit'],
-            'metric': 'Template',
-            'usage': cloudstack_response['templatetotal'],
-        }, {
-            'limit': cloudstack_response['projectlimit'],
-            'metric': 'Project',
-            'usage': cloudstack_response['projecttotal'],
-        }, {
-            'limit': cloudstack_response['networklimit'],
-            'metric': 'Network',
-            'usage': cloudstack_response['networktotal'],
-        }, {
-            'limit': cloudstack_response['vpclimit'],
-            'metric': 'VPC',
-            'usage': cloudstack_response['vpctotal'],
-        }, {
-            'limit': cloudstack_response['cpulimit'],
-            'metric': 'CPU',
-            'usage': cloudstack_response['cputotal'],
-        }, {
-            'limit': cloudstack_response['memorylimit'],
-            'metric': 'Memory',
-            'usage': cloudstack_response['memorytotal'],
-        }, {
-            'limit': cloudstack_response['primarystoragelimit'],
-            'metric': 'Primary storage',
-            'usage': cloudstack_response['primarystoragetotal'],
-        }, {
-            'limit': cloudstack_response['secondarystoragelimit'],
-            'metric': 'Secondary storage',
-            'usage': cloudstack_response['secondarystoragetotal'],
-        }])
-
+            }, {
+        'limit': cloudstack_response['iplimit'],
+        'metric': 'IP',
+        'usage': cloudstack_response['iptotal'],
+    }, {
+        'limit': cloudstack_response['volumelimit'],
+        'metric': 'Volume',
+        'usage': cloudstack_response['volumetotal'],
+    }, {
+        'limit': cloudstack_response['snapshotlimit'],
+        'metric': 'Snapshot',
+        'usage': cloudstack_response['snapshottotal'],
+    }, {
+        'limit': cloudstack_response['templatelimit'],
+        'metric': 'Template',
+        'usage': cloudstack_response['templatetotal'],
+    }, {
+        'limit': cloudstack_response['projectlimit'],
+        'metric': 'Project',
+        'usage': cloudstack_response['projecttotal'],
+    }, {
+        'limit': cloudstack_response['networklimit'],
+        'metric': 'Network',
+        'usage': cloudstack_response['networktotal'],
+    }, {
+        'limit': cloudstack_response['vpclimit'],
+        'metric': 'VPC',
+        'usage': cloudstack_response['vpctotal'],
+    }, {
+        'limit': cloudstack_response['cpulimit'],
+        'metric': 'CPU',
+        'usage': cloudstack_response['cputotal'],
+    }, {
+        'limit': cloudstack_response['memorylimit'],
+        'metric': 'Memory',
+        'usage': cloudstack_response['memorytotal'],
+    }, {
+        'limit': cloudstack_response['primarystoragelimit'],
+        'metric': 'Primary storage',
+        'usage': cloudstack_response['primarystoragetotal'],
+    }, {
+        'limit': cloudstack_response['secondarystoragelimit'],
+        'metric': 'Secondary storage',
+        'usage': cloudstack_response['secondarystoragetotal'],
+    }])
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>')
@@ -114,7 +114,7 @@ def getproject(projectid, authorization):
         res = jsonify(populated_response)
         res.status_code = 200
     else:
-        message =  'The resource \'projects/' + projectid + '\' was not found'
+        message = 'The resource \'projects/' + projectid + '\' was not found'
         res = errors.resource_not_found(message)
 
     return res

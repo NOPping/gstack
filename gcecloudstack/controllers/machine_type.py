@@ -24,6 +24,7 @@ from gcecloudstack.controllers import errors
 from flask import jsonify, request
 import json
 
+
 def _cloudstack_machinetype_to_gcutil(cloudstack_response):
     return ({
         'name': cloudstack_response['name'],
@@ -41,8 +42,8 @@ def aggregatedlist(projectid, authorization):
     command = 'listServiceOfferings'
     args = {}
     cloudstack_response = requester.make_request(
-        command, 
-        args, 
+        command,
+        args,
         authorization.jsessionid,
         authorization.sessionkey
     )
@@ -53,7 +54,8 @@ def aggregatedlist(projectid, authorization):
     if cloudstack_responses['listserviceofferingsresponse']:
         for cloudstack_response in cloudstack_responses[
                 'listserviceofferingsresponse']['serviceoffering']:
-            machine_types.append(_cloudstack_machinetype_to_gcutil(cloudstack_response))
+            machine_types.append(
+                _cloudstack_machinetype_to_gcutil(cloudstack_response))
 
     populated_response = {
         'kind': "compute#machineTypeAggregatedList",
@@ -83,8 +85,8 @@ def getmachinetype(projectid, authorization, zone, machinetype):
         'keyword': machinetype
     }
     cloudstack_response = requester.make_request(
-        command, 
-        args, 
+        command,
+        args,
         authorization.jsessionid,
         authorization.sessionkey
     )
@@ -98,7 +100,8 @@ def getmachinetype(projectid, authorization, zone, machinetype):
         res.status_code = 200
 
     else:
-        message = 'The resource \'projects/' + projectid + '/zones/' + zone + '/machineTypes/' + machinetype + '\' was not found'
+        message = 'The resource \'projects/' + projectid + '/zones/' + \
+            zone + '/machineTypes/' + machinetype + '\' was not found'
         res = errors.resource_not_found(message)
 
     return res
@@ -106,12 +109,12 @@ def getmachinetype(projectid, authorization, zone, machinetype):
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes')
 @authentication.required
-def listmachinetype(projectid, authorization,  zone):
+def listmachinetype(projectid, authorization, zone):
     command = 'listServiceOfferings'
     args = {}
     cloudstack_response = requester.make_request(
-        command, 
-        args, 
+        command,
+        args,
         authorization.jsessionid,
         authorization.sessionkey
     )
@@ -122,7 +125,8 @@ def listmachinetype(projectid, authorization,  zone):
     if cloudstack_responses['listserviceofferingsresponse']:
         for cloudstack_response in cloudstack_responses[
                 'listserviceofferingsresponse']['serviceoffering']:
-            machine_types.append(_cloudstack_machinetype_to_gcutil(cloudstack_response))
+            machine_types.append(
+                _cloudstack_machinetype_to_gcutil(cloudstack_response))
 
     populated_response = {
         'kind': "compute#machineTypeList",

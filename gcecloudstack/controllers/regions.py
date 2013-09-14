@@ -25,6 +25,7 @@ from gcecloudstack.controllers import errors
 from flask import jsonify, request
 import json
 
+
 def _cloudstack_region_to_gcutil(cloudstack_response):
     return ({
         'kind': "compute#region",
@@ -85,12 +86,14 @@ def getregion(projectid, authorization, region):
 
     cloudstack_response = json.loads(cloudstack_response)
     if cloudstack_response['listregionsresponse']:
-        cloudstack_response = cloudstack_response['listregionsresponse']['region'][0]
+        cloudstack_response = cloudstack_response[
+            'listregionsresponse']['region'][0]
         region = _cloudstack_region_to_gcutil(cloudstack_response)
         res = jsonify(region)
         res.status_code = 200
     else:
-        message = 'The resource \'projects/' + projectid + '/regions/' + region + '\' was not found'
+        message = 'The resource \'projects/' + projectid + \
+            '/regions/' + region + '\' was not found'
         res = errors.resource_not_found(message)
-        
+
     return res
