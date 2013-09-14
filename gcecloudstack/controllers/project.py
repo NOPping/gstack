@@ -20,30 +20,12 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
+from gcecloudstack.controllers import errors
 from flask import jsonify, request
 import json
 
-
-@app.route('/' + app.config['PATH'] + '<projectid>')
-@authentication.required
-def getproject(projectid, authorization):
-    command = 'listAccounts'
-    args = {
-        'name': projectid
-    }
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.jsessionid,
-        authorization.sessionkey
-    )
-
-    cloudstack_response = json.loads(cloudstack_response)
-    if cloudstack_response['listaccountsresponse']:
-        cloudstack_response = cloudstack_response[
-            'listaccountsresponse']['account'][0]
-
-        quotas = [{
+def _cloudstack_quotas_to_gcutil(cloudstack_response):
+    return ([{
             'limit': cloudstack_response['vmlimit'],
             'metric': 'Virtual Machine',
             'usage': cloudstack_response['vmtotal'],
@@ -91,7 +73,30 @@ def getproject(projectid, authorization):
             'limit': cloudstack_response['secondarystoragelimit'],
             'metric': 'Secondary storage',
             'usage': cloudstack_response['secondarystoragetotal'],
-        }]
+        }])
+
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>')
+@authentication.required
+def getproject(projectid, authorization):
+    command = 'listAccounts'
+    args = {
+        'name': projectid
+    }
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+
+    cloudstack_responses = json.loads(cloudstack_response)
+    if cloudstack_responses['listaccountsresponse']:
+        cloudstack_response = cloudstack_responses[
+            'listaccountsresponse']['account'][0]
+
+        quotas = _cloudstack_quotas_to_gcutil(cloudstack_response)
 
         populated_response = {
             'commonInstanceMetadata': {
@@ -109,19 +114,7 @@ def getproject(projectid, authorization):
         res = jsonify(populated_response)
         res.status_code = 200
     else:
-        res = jsonify({
-            'error': {
-                'errors': [
-                    {
-                        "domain": "global",
-                        "reason": "notFound",
-                        "message": 'The resource \'projects/' + projectid + '\' was not found'
-                    }
-                ],
-                'code': 404,
-                'message': 'The resource \'projects/' + projectid + '\' was not found'
-            }
-        })
-        res.status_code = 404
+        message =  'The resource \'projects/' + projectid + '\' was not found'
+        res = errors.resource_not_found(message)
 
     return res

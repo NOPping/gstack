@@ -21,6 +21,7 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
+from gcecloudstack.controllers import errors
 from flask import jsonify, request
 import json
 
@@ -89,18 +90,7 @@ def getregion(projectid, authorization, region):
         res = jsonify(region)
         res.status_code = 200
     else:
-        res = jsonify({
-            'error': {
-                'errors': [
-                    {
-                        "domain": "global",
-                        "reason": "notFound",
-                        "message": 'The resource \'projects/' + projectid + '/regions/' + region + '\' was not found'
-                    }
-                ],
-                'code': 404,
-                'message': 'The resource \'projects/' + projectid + '/regions/' + region + '\' was not found'
-            }
-        })
-        res.status_code = 404
+        message = 'The resource \'projects/' + projectid + '/regions/' + region + '\' was not found'
+        res = errors.resource_not_found(message)
+        
     return res

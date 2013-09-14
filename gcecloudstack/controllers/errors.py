@@ -18,13 +18,7 @@
 # under the License.
 
 from gcecloudstack import app
-from flask import jsonify, Response
-
-
-@app.errorhandler(404)
-def not_found(e):
-    return Response('Not Found', status=404, mimetype='text/html')
-
+from flask import jsonify
 
 @app.errorhandler(401)
 def unauthorized(e):
@@ -45,4 +39,22 @@ def unauthorized(e):
     })
 
     res.status_code = 401
+    return res
+
+@app.errorhandler(404)
+def resource_not_found(message):
+    res = jsonify({
+        'error': {
+            'errors': [
+                {
+                    "domain": "global",
+                    "reason": "notFound",
+                    "message": message
+                }
+            ],
+            'code': 404,
+            'message': message
+        }
+    })
+    res.status_code = 404
     return res
