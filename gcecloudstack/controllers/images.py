@@ -21,7 +21,7 @@ from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
 from gcecloudstack.controllers import errors
-from flask import jsonify, request
+from flask import jsonify, request, url_for
 import json
 
 
@@ -201,9 +201,8 @@ def getimage(projectid, authorization, image):
         res = jsonify(image)
         res.status_code = 200
     else:
-        message = 'The resource \'projects/' + projectid + \
-            '/global/images/' + image + '\' was not found'
-        res = errors.resource_not_found(message)
+        func_route = url_for('getimage', projectid=projectid, image=image)
+        res = errors.resource_not_found(func_route)
 
     return res
 
@@ -215,9 +214,8 @@ def deleteimage(projectid, authorization, image):
     command = 'deleteTemplate'
     imageid = _get_template_id(image, authorization)
     if imageid is None:
-        message = 'The resource \'projects/' + projectid + \
-            '/global/images/' + image + '\' was not found'
-        return(errors.resource_not_found(message))
+        func_route = url_for('deleteimage', projectid=projectid, image=image)
+        return(errors.resource_not_found(func_route))
 
     args = {
         'id': imageid

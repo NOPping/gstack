@@ -21,7 +21,7 @@ from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
 from gcecloudstack.controllers import errors
-from flask import jsonify, request
+from flask import jsonify, request, url_for
 import json
 
 
@@ -94,8 +94,7 @@ def getzone(projectid, authorization, zone):
         res = jsonify(zone)
         res.status_code = 200
     else:
-        message = 'The resource \'projects/' + \
-            projectid + '/zones/' + zone + '\' was not found'
-        res = errors.resource_not_found(message)
+        func_route = url_for('getzone', projectid=projectid, zone=zone)
+        res = errors.resource_not_found(func_route)
 
     return res

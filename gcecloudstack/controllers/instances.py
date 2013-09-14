@@ -22,7 +22,7 @@ from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
 from gcecloudstack.controllers import errors
-from flask import jsonify, request
+from flask import jsonify, request, url_for
 import json
 
 
@@ -214,9 +214,9 @@ def getinstance(projectid, authorization, zone, instance):
         res = jsonify(instance)
         res.status_code = 200
     else:
-        message = 'The resource \'projects/' + projectid + '/zones/' + \
-            zone + '/instances/' + instance + '\' was not found'
-        res = errors.resource_not_found(message)
+        func_route = url_for('getinstance', projectid=projectid,
+                             instance=instance, zone=zone)
+        res = errors.resource_not_found(func_route)
 
     return res
 
@@ -228,9 +228,9 @@ def deleteinstance(projectid, authorization, zone, instance):
     command = 'destroyVirtualMachine'
     instanceid = _get_virtualmachine_id(instance, authorization)
     if instanceid is None:
-        message = 'The resource \'projects/' + projectid + \
-            '/global/images/' + instance + '\' was not found'
-        return(errors.resource_not_found(message))
+        func_route = url_for('deleteinstance', projectid=projectid,
+                            instance=instance, zone=zone)
+        return(errors.resource_not_found(func_route))
 
     args = {
         'id': instanceid

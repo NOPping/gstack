@@ -48,18 +48,19 @@ def unauthorized(e):
     return res
 
 
-def resource_not_found(message):
+def resource_not_found(func_url):
     res = jsonify({
         'error': {
             'errors': [
                 {
                     "domain": "global",
                     "reason": "notFound",
-                    "message": message
+                    "message": 'The resource \'' +
+                    func_url + '\' was not found'
                 }
             ],
             'code': 404,
-            'message': message
+            'message': 'The resource \'' + func_url + '\' was not found'
         }
     })
     res.status_code = 404
