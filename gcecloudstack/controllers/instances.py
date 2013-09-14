@@ -229,7 +229,7 @@ def deleteinstance(projectid, authorization, zone, instance):
     instanceid = _get_virtualmachine_id(instance, authorization)
     if instanceid is None:
         func_route = url_for('deleteinstance', projectid=projectid,
-                            instance=instance, zone=zone)
+                             instance=instance, zone=zone)
         return(errors.resource_not_found(func_route))
 
     args = {
