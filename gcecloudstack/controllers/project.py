@@ -25,56 +25,26 @@ from flask import jsonify, request
 import json
 
 
-def _cloudstack_quotas_to_gce(response_item):
-    return ([{
-        'limit': response_item['vmlimit'],
-        'metric': 'Virtual Machine',
-        'usage': response_item['vmtotal'],
-    }, {
-        'limit': response_item['iplimit'],
-        'metric': 'IP',
-        'usage': response_item['iptotal'],
-    }, {
-        'limit': response_item['volumelimit'],
-        'metric': 'Volume',
-        'usage': response_item['volumetotal'],
-    }, {
-        'limit': response_item['snapshotlimit'],
-        'metric': 'Snapshot',
-        'usage': response_item['snapshottotal'],
-    }, {
-        'limit': response_item['templatelimit'],
-        'metric': 'Template',
-        'usage': response_item['templatetotal'],
-    }, {
-        'limit': response_item['projectlimit'],
-        'metric': 'Project',
-        'usage': response_item['projecttotal'],
-    }, {
-        'limit': response_item['networklimit'],
-        'metric': 'Network',
-        'usage': response_item['networktotal'],
-    }, {
-        'limit': response_item['vpclimit'],
-        'metric': 'VPC',
-        'usage': response_item['vpctotal'],
-    }, {
-        'limit': response_item['cpulimit'],
-        'metric': 'CPU',
-        'usage': response_item['cputotal'],
-    }, {
-        'limit': response_item['memorylimit'],
-        'metric': 'Memory',
-        'usage': response_item['memorytotal'],
-    }, {
-        'limit': response_item['primarystoragelimit'],
-        'metric': 'Primary storage',
-        'usage': response_item['primarystoragetotal'],
-    }, {
-        'limit': response_item['secondarystoragelimit'],
-        'metric': 'Secondary storage',
-        'usage': response_item['secondarystoragetotal'],
-    }])
+def _format_quota(limit, metric, usage):
+    return ({
+        'limit': limit,
+        'metric': metric,
+        'usage': usage,
+    })
+
+
+def _cloudstack_quotas_to_gce(quotas):
+
+    names = {
+        'vm', 'ip', 'volume', 'snapshot', 'template', 'project', 'network', 'vpc',
+        'cpu', 'memory', 'primarystorage', 'secondarystorage'
+    }
+    gce_quotas = []
+    for name in names:
+        gce_quotas.append(
+            _format_quota(quotas[name + 'limit'], name, quotas[name + 'total'])
+        )
+    return gce_quotas
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>')
