@@ -25,17 +25,17 @@ from flask import jsonify, request
 import json
 
 
-def _cloudstack_zone_to_gcutil(cloudstack_response):
+def _cloudstack_zone_to_gce(response_item):
     translate_zone_status = {
         'Enabled': 'UP',
         'Disabled': 'DOWN'
     }
     return ({
         'kind': "compute#zone",
-        'name': cloudstack_response['name'],
-        'description': cloudstack_response['name'],
-        'id': cloudstack_response['id'],
-        'status': cloudstack_response['allocationstate']
+        'name': response_item['name'],
+        'description': response_item['name'],
+        'id': response_item['id'],
+        'status': response_item['allocationstate']
     })
 
 
@@ -52,13 +52,13 @@ def listzones(projectid, authorization):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
-    cloudstack_responses = cloudstack_response['listzonesresponse']
+    cloudstack_response = cloudstack_response['listzonesresponse']
 
     zones = []
 
     if cloudstack_response:
-        for cloudstack_response in cloudstack_responses['zone']:
-            zones.append(_cloudstack_zone_to_gcutil(cloudstack_response))
+        for response_item in cloudstack_response['zone']:
+            zones.append(_cloudstack_zone_to_gce(response_item))
 
     populated_response = {
         'kind': "compute#zoneList",
@@ -88,9 +88,9 @@ def getzone(projectid, authorization, zone):
 
     cloudstack_response = json.loads(cloudstack_response)
     if cloudstack_response['listzonesresponse']:
-        cloudstack_response = cloudstack_response[
+        response_item = cloudstack_response[
             'listzonesresponse']['zone'][0]
-        zone = _cloudstack_zone_to_gcutil(cloudstack_response)
+        zone = _cloudstack_zone_to_gce(response_item)
         res = jsonify(zone)
         res.status_code = 200
     else:

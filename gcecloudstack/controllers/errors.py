@@ -18,7 +18,8 @@
 # under the License.
 
 from gcecloudstack import app
-from flask import jsonify
+from flask import jsonify, Response
+
 
 @app.errorhandler(404)
 def not_found(e):

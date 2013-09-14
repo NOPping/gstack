@@ -45,7 +45,7 @@ def _get_template_id(image, authorization):
     return template_id
 
 
-def _cloudstack_image_to_gcutil(cloudstack_response):
+def _cloudstack_image_to_gce(response_item):
     translate_image_status = {
         'True': 'Ready',
         'False': 'Failed'
@@ -53,17 +53,17 @@ def _cloudstack_image_to_gcutil(cloudstack_response):
 
     return ({
         'kind': "compute#image",
-        'selfLink': request.base_url + '/' + cloudstack_response['name'],
-        'id': cloudstack_response['id'],
-        'creationTimestamp': cloudstack_response['created'],
-        'name': cloudstack_response['name'],
-        'description': cloudstack_response['displaytext'],
+        'selfLink': request.base_url + '/' + response_item['name'],
+        'id': response_item['id'],
+        'creationTimestamp': response_item['created'],
+        'name': response_item['name'],
+        'description': response_item['displaytext'],
         'sourceType': '',
         'preferredKernel': '',
         'rawDisk': {
-            'containerType': cloudstack_response['format'],
+            'containerType': response_item['format'],
             'source': '',
-            'sha1Checksum': cloudstack_response['checksum'],
+            'sha1Checksum': response_item['checksum'],
             },
         'deprecated': {
             'state': '',
@@ -72,13 +72,11 @@ def _cloudstack_image_to_gcutil(cloudstack_response):
             'obsolete': '',
             'deleted': ''
         },
-        'status': translate_image_status[str(cloudstack_response[
-            'isready'
-        ])],
+        'status': translate_image_status[str(response_item['isready'])],
     })
 
 
-def _cloudstack_delete_to_gcutil(cloudstack_response, image, imageid):
+def _cloudstack_delete_to_gce(cloudstack_response, image, imageid):
     return({
         "kind": "compute#operation",
         "id": imageid,
@@ -161,12 +159,12 @@ def listimages(projectid, authorization):
         authorization.sessionkey
     )
 
-    cloudstack_responses = json.loads(cloudstack_response)
+    cloudstack_response = json.loads(cloudstack_response)
     images = []
-    if cloudstack_responses['listtemplatesresponse']:
-        for cloudstack_response in cloudstack_responses[
+    if cloudstack_response['listtemplatesresponse']:
+        for response_item in cloudstack_response[
                 'listtemplatesresponse']['template']:
-            images.append(_cloudstack_image_to_gcutil(cloudstack_response))
+            images.append(_cloudstack_image_to_gce(response_item))
 
     populated_response = {
         'kind': 'compute#imageList',
@@ -194,12 +192,12 @@ def getimage(projectid, authorization, image):
         authorization.jsessionid,
         authorization.sessionkey
     )
-    cloudstack_responses = json.loads(cloudstack_response)
+    cloudstack_response = json.loads(cloudstack_response)
 
-    if cloudstack_responses['listtemplatesresponse']:
-        cloudstack_response = cloudstack_responses[
+    if cloudstack_response['listtemplatesresponse']:
+        response_item = cloudstack_response[
             'listtemplatesresponse']['template'][0]
-        image = _cloudstack_image_to_gcutil(cloudstack_response)
+        image = _cloudstack_image_to_gce(response_item)
         res = jsonify(image)
         res.status_code = 200
     else:
@@ -230,7 +228,7 @@ def deleteimage(projectid, authorization, image):
         authorization.jsessionid,
         authorization.sessionkey
     )
-    image_deleted = _cloudstack_delete_to_gcutil(
+    image_deleted = _cloudstack_delete_to_gce(
         cloudstack_response,
         image,
         imageid

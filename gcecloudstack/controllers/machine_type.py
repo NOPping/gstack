@@ -25,14 +25,14 @@ from flask import jsonify, request
 import json
 
 
-def _cloudstack_machinetype_to_gcutil(cloudstack_response):
+def _cloudstack_machinetype_to_gce(response_item):
     return ({
-        'name': cloudstack_response['name'],
-        'description': cloudstack_response['displaytext'],
-        'id': cloudstack_response['id'],
-        'creationTimestamp': cloudstack_response['created'],
-        'guestCpus': cloudstack_response['cpunumber'],
-        'memoryMb': cloudstack_response['memory']
+        'name': response_item['name'],
+        'description': response_item['displaytext'],
+        'id': response_item['id'],
+        'creationTimestamp': response_item['created'],
+        'guestCpus': response_item['cpunumber'],
+        'memoryMb': response_item['memory']
     })
 
 
@@ -48,14 +48,14 @@ def aggregatedlist(projectid, authorization):
         authorization.sessionkey
     )
 
-    cloudstack_responses = json.loads(cloudstack_response)
+    cloudstack_response = json.loads(cloudstack_response)
 
     machine_types = []
-    if cloudstack_responses['listserviceofferingsresponse']:
-        for cloudstack_response in cloudstack_responses[
+    if cloudstack_response['listserviceofferingsresponse']:
+        for response_item in cloudstack_response[
                 'listserviceofferingsresponse']['serviceoffering']:
             machine_types.append(
-                _cloudstack_machinetype_to_gcutil(cloudstack_response))
+                _cloudstack_machinetype_to_gce(response_item))
 
     populated_response = {
         'kind': "compute#machineTypeAggregatedList",
@@ -90,12 +90,12 @@ def getmachinetype(projectid, authorization, zone, machinetype):
         authorization.jsessionid,
         authorization.sessionkey
     )
-    cloudstack_responses = json.loads(cloudstack_response)
+    cloudstack_response = json.loads(cloudstack_response)
 
-    if cloudstack_responses['listserviceofferingsresponse']:
-        cloudstack_response = cloudstack_responses[
+    if cloudstack_response['listserviceofferingsresponse']:
+        response_item = cloudstack_response[
             'listserviceofferingsresponse']['serviceoffering'][0]
-        machine_type = _cloudstack_machinetype_to_gcutil(cloudstack_response)
+        machine_type = _cloudstack_machinetype_to_gce(response_item)
         res = jsonify(machine_type)
         res.status_code = 200
 
@@ -119,14 +119,14 @@ def listmachinetype(projectid, authorization, zone):
         authorization.sessionkey
     )
 
-    cloudstack_responses = json.loads(cloudstack_response)
+    cloudstack_response = json.loads(cloudstack_response)
 
     machine_types = []
-    if cloudstack_responses['listserviceofferingsresponse']:
-        for cloudstack_response in cloudstack_responses[
+    if cloudstack_response['listserviceofferingsresponse']:
+        for response_item in cloudstack_response[
                 'listserviceofferingsresponse']['serviceoffering']:
             machine_types.append(
-                _cloudstack_machinetype_to_gcutil(cloudstack_response))
+                _cloudstack_machinetype_to_gce(response_item))
 
     populated_response = {
         'kind': "compute#machineTypeList",

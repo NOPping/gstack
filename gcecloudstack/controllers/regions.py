@@ -26,12 +26,12 @@ from flask import jsonify, request
 import json
 
 
-def _cloudstack_region_to_gcutil(cloudstack_response):
+def _cloudstack_region_to_gce(response_item):
     return ({
         'kind': "compute#region",
-        'name': cloudstack_response['name'],
-        'description': cloudstack_response['name'],
-        'id': cloudstack_response['id'],
+        'name': response_item['name'],
+        'description': response_item['name'],
+        'id': response_item['id'],
         'status': 'UP'
     })
 
@@ -49,14 +49,14 @@ def listregions(projectid, authorization):
         authorization.sessionkey
     )
 
-    cloudstack_responses = json.loads(cloudstack_response)
-    cloudstack_responses = cloudstack_responses['listregionsresponse']
+    cloudstack_response = json.loads(cloudstack_response)
+    cloudstack_response = cloudstack_response['listregionsresponse']
 
     regions = []
 
-    if cloudstack_responses:
-        for cloudstack_response in cloudstack_responses['region']:
-            regions.append(_cloudstack_region_to_gcutil(cloudstack_response))
+    if cloudstack_response:
+        for response_item in cloudstack_response['region']:
+            regions.append(_cloudstack_region_to_gce(response_item))
 
     populated_response = {
         'kind': "compute#regionList",
@@ -86,9 +86,9 @@ def getregion(projectid, authorization, region):
 
     cloudstack_response = json.loads(cloudstack_response)
     if cloudstack_response['listregionsresponse']:
-        cloudstack_response = cloudstack_response[
+        response_item = cloudstack_response[
             'listregionsresponse']['region'][0]
-        region = _cloudstack_region_to_gcutil(cloudstack_response)
+        region = _cloudstack_region_to_gce(response_item)
         res = jsonify(region)
         res.status_code = 200
     else:

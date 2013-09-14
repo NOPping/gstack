@@ -25,55 +25,55 @@ from flask import jsonify, request
 import json
 
 
-def _cloudstack_quotas_to_gcutil(cloudstack_response):
+def _cloudstack_quotas_to_gce(response_item):
     return ([{
-            'limit': cloudstack_response['vmlimit'],
-            'metric': 'Virtual Machine',
-            'usage': cloudstack_response['vmtotal'],
-            }, {
-        'limit': cloudstack_response['iplimit'],
+        'limit': response_item['vmlimit'],
+        'metric': 'Virtual Machine',
+        'usage': response_item['vmtotal'],
+    }, {
+        'limit': response_item['iplimit'],
         'metric': 'IP',
-        'usage': cloudstack_response['iptotal'],
+        'usage': response_item['iptotal'],
     }, {
-        'limit': cloudstack_response['volumelimit'],
+        'limit': response_item['volumelimit'],
         'metric': 'Volume',
-        'usage': cloudstack_response['volumetotal'],
+        'usage': response_item['volumetotal'],
     }, {
-        'limit': cloudstack_response['snapshotlimit'],
+        'limit': response_item['snapshotlimit'],
         'metric': 'Snapshot',
-        'usage': cloudstack_response['snapshottotal'],
+        'usage': response_item['snapshottotal'],
     }, {
-        'limit': cloudstack_response['templatelimit'],
+        'limit': response_item['templatelimit'],
         'metric': 'Template',
-        'usage': cloudstack_response['templatetotal'],
+        'usage': response_item['templatetotal'],
     }, {
-        'limit': cloudstack_response['projectlimit'],
+        'limit': response_item['projectlimit'],
         'metric': 'Project',
-        'usage': cloudstack_response['projecttotal'],
+        'usage': response_item['projecttotal'],
     }, {
-        'limit': cloudstack_response['networklimit'],
+        'limit': response_item['networklimit'],
         'metric': 'Network',
-        'usage': cloudstack_response['networktotal'],
+        'usage': response_item['networktotal'],
     }, {
-        'limit': cloudstack_response['vpclimit'],
+        'limit': response_item['vpclimit'],
         'metric': 'VPC',
-        'usage': cloudstack_response['vpctotal'],
+        'usage': response_item['vpctotal'],
     }, {
-        'limit': cloudstack_response['cpulimit'],
+        'limit': response_item['cpulimit'],
         'metric': 'CPU',
-        'usage': cloudstack_response['cputotal'],
+        'usage': response_item['cputotal'],
     }, {
-        'limit': cloudstack_response['memorylimit'],
+        'limit': response_item['memorylimit'],
         'metric': 'Memory',
-        'usage': cloudstack_response['memorytotal'],
+        'usage': response_item['memorytotal'],
     }, {
-        'limit': cloudstack_response['primarystoragelimit'],
+        'limit': response_item['primarystoragelimit'],
         'metric': 'Primary storage',
-        'usage': cloudstack_response['primarystoragetotal'],
+        'usage': response_item['primarystoragetotal'],
     }, {
-        'limit': cloudstack_response['secondarystoragelimit'],
+        'limit': response_item['secondarystoragelimit'],
         'metric': 'Secondary storage',
-        'usage': cloudstack_response['secondarystoragetotal'],
+        'usage': response_item['secondarystoragetotal'],
     }])
 
 
@@ -90,13 +90,13 @@ def getproject(projectid, authorization):
         authorization.jsessionid,
         authorization.sessionkey
     )
+    cloudstack_response = json.loads(cloudstack_response)
 
-    cloudstack_responses = json.loads(cloudstack_response)
-    if cloudstack_responses['listaccountsresponse']:
-        cloudstack_response = cloudstack_responses[
+    if cloudstack_response['listaccountsresponse']:
+        response_item = cloudstack_response[
             'listaccountsresponse']['account'][0]
 
-        quotas = _cloudstack_quotas_to_gcutil(cloudstack_response)
+        quotas = _cloudstack_quotas_to_gce(response_item)
 
         populated_response = {
             'commonInstanceMetadata': {
@@ -104,9 +104,9 @@ def getproject(projectid, authorization):
             },
             'creationTimestamp': "2013-09-04T17:41:05.702-07:00",
             'kind': 'compute#project',
-            'description': cloudstack_response['name'],
-            'name': cloudstack_response['name'],
-            'id': cloudstack_response['id'],
+            'description': response_item['name'],
+            'name': response_item['name'],
+            'id': response_item['id'],
             'selfLink': request.base_url,
             'quotas': quotas
         }
