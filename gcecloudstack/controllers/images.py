@@ -52,7 +52,7 @@ def _cloudstack_image_to_gce(response_item):
     }
 
     return ({
-        'kind': "compute#image",
+        'kind': 'compute#image',
         'selfLink': request.base_url + '/' + response_item['name'],
         'id': response_item['id'],
         'creationTimestamp': response_item['created'],
@@ -78,42 +78,42 @@ def _cloudstack_image_to_gce(response_item):
 
 def _cloudstack_delete_to_gce(cloudstack_response, image, imageid):
     return({
-        "kind": "compute#operation",
-        "id": imageid,
-        "creationTimestamp": '',
-        "name": image,
-        "zone": '',
-        "clientOperationId": '',
-        "operationType": 'delete',
-        "targetLink": '',
-        "targetId": 'unsigned long',
-        "status": cloudstack_response['success'],
-        "statusMessage": cloudstack_response['displaytext'],
-        "user": '',
-        "progress": '',
-        "insertTime": '',
-        "startTime": '',
-        "endTime": '',
-        "error": {
-            "errors": [
+        'kind': 'compute#operation',
+        'id': imageid,
+        'creationTimestamp': '',
+        'name': image,
+        'zone': '',
+        'clientOperationId': '',
+        'operationType': 'delete',
+        'targetLink': '',
+        'targetId': 'unsigned long',
+        'status': cloudstack_response['success'],
+        'statusMessage': cloudstack_response['displaytext'],
+        'user': '',
+        'progress': '',
+        'insertTime': '',
+        'startTime': '',
+        'endTime': '',
+        'error': {
+            'errors': [
                 {
-                     "code": '',
-                     "location": '',
-                     "message": ''
+                     'code': '',
+                     'location': '',
+                     'message': ''
                 }
             ]
         },
-        "warnings": [
+        'warnings': [
             {
-                "code": '',
-                "message": '',
-                "data": [{"key": '', "value": ''}]
+                'code': '',
+                'message': '',
+                'data': [{'key': '', 'value': ''}]
             }
         ],
-        "httpErrorStatusCode": '',
-        "httpErrorMessage": '',
-        "selfLink": '',
-        "region": ''
+        'httpErrorStatusCode': '',
+        'httpErrorMessage': '',
+        'selfLink': '',
+        'region': ''
     })
 
 
@@ -122,9 +122,9 @@ def _cloudstack_delete_to_gce(cloudstack_response, image, imageid):
 @authentication.required
 def listnocentoscloudimages(authorization):
     res = jsonify({
-        "kind": "compute#imageList",
-        "selfLink": "",
-        "id": "projects/centos-cloud/global/images"
+        'kind': 'compute#imageList',
+        'selfLink': '',
+        'id': 'projects/centos-cloud/global/images'
     })
     res.status_code = 200
     return res
@@ -135,9 +135,9 @@ def listnocentoscloudimages(authorization):
 @authentication.required
 def listnodebiancloudimages(authorization):
     res = jsonify({
-        "kind": "compute#imageList",
-        "selfLink": "",
-        "id": "projects/debian-cloud/global/images"
+        'kind': 'compute#imageList',
+        'selfLink': '',
+        'id': 'projects/debian-cloud/global/images'
     })
     res.status_code = 200
     return res

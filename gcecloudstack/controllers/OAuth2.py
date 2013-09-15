@@ -23,7 +23,7 @@ from gcecloudstack import app
 from gcecloudstack.oauth2provider import CloudstackAuthorizationProvider
 
 
-@app.route("/oauth2/auth", methods=["GET"])
+@app.route('/oauth2/auth', methods=['GET'])
 def authorization_code():
 
     provider = CloudstackAuthorizationProvider()
@@ -36,7 +36,7 @@ def authorization_code():
     return res
 
 
-@app.route("/oauth2/token", methods=["POST"])
+@app.route('/oauth2/token', methods=['POST'])
 def token():
     provider = CloudstackAuthorizationProvider()
 

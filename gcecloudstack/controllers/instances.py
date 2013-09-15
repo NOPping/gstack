@@ -45,119 +45,120 @@ def _get_virtualmachine_id(virtualmachine, authorization):
 
 def _cloudstack_virtualmachine_to_gce(response_item):
     return ({
-        "kind": "compute#instance",
-        "id": '',
-        "creationTimestamp": '',
-        "zone": '',
-        "status": '',
-        "statusMessage": '',
-        "name": '',
-        "description": '',
-        "tags": {
-            "items": [
+        'kind': 'compute#instance',
+        'id': '',
+        'creationTimestamp': '',
+        'zone': '',
+        'status': '',
+        'statusMessage': '',
+        'name': '',
+        'description': '',
+        'tags': {
+            'items': [
                 ''
             ],
-            "fingerprint": ''
+            'fingerprint': ''
             },
-        "machineType": '',
-        "image": '',
-        "kernel": '',
-        "canIpForward": '',
-        "networkInterfaces": [
+        'machineType': '',
+        'image': '',
+        'kernel': '',
+        'canIpForward': '',
+        'networkInterfaces': [
             {
-                "network": '',
-                "networkIP": '',
-                "name": '',
-                "accessConfigs": [
+                'network': '',
+                'networkIP': '',
+                'name': '',
+                'accessConfigs': [
                     {
-                        "kind": "compute#accessConfig",
-                        "type": '',
-                        "name": '',
-                        "natIP": ''
+                        'kind': 'compute#accessConfig',
+                        'type': '',
+                        'name': '',
+                        'natIP': ''
                     }
                 ]
             }
         ],
-        "disks": [
+        'disks': [
             {
-                "kind": "compute#attachedDisk",
-                "index": 0,
-                "type": '',
-                "mode": '',
-                "source": '',
-                "deviceName": '',
-                "boot": 'true'
+                'kind': 'compute#attachedDisk',
+                'index': 0,
+                'type': '',
+                'mode': '',
+                'source': '',
+                'deviceName': '',
+                'boot': 'true'
             }
         ],
-        "metadata": {
-            "kind": "compute#metadata",
-            "fingerprint": '',
-            "items": [
+        'metadata': {
+            'kind': 'compute#metadata',
+            'fingerprint': '',
+            'items': [
                 {
-                    "key": '',
-                    "value": ''
+                    'key': '',
+                    'value': ''
                 }
             ]
         },
-        "serviceAccounts": [
+        'serviceAccounts': [
             {
-                "email": '',
-                "scopes": [
+                'email': '',
+                'scopes': [
                     ''
                 ]
             }
         ],
-        "selfLink": ''
+        'selfLink': ''
     })
 
 
 def _cloudstack_delete_to_gce(cloudstack_response, instance, instanceid):
     return({
-        "kind": "compute#operation",
-        "id": 0,
-        "creationTimestamp": '',
-        "name": '',
-        "zone": '',
-        "clientOperationId": '',
-        "operationType": '',
-        "targetLink": '',
-        "targetId": 0,
-        "status": '',
-        "statusMessage": '',
-        "user": '',
-        "progress": '',
-        "insertTime": '',
-        "startTime": '',
-        "endTime": '',
-        "error": {
-            "errors": [
+        'kind': 'compute#operation',
+        'id': 0,
+        'creationTimestamp': '',
+        'name': '',
+        'zone': '',
+        'clientOperationId': '',
+        'operationType': '',
+        'targetLink': '',
+        'targetId': 0,
+        'status': '',
+        'statusMessage': '',
+        'user': '',
+        'progress': '',
+        'insertTime': '',
+        'startTime': '',
+        'endTime': '',
+        'error': {
+            'errors': [
                 {
-                  "code": '',
-                    "location": '',
-                    "message": ''
+                  'code': '',
+                    'location': '',
+                    'message': ''
                 }
             ]
         },
-        "warnings": [
+        'warnings': [
             {
-                "code": '',
-                "message": '',
-                "data": [
+                'code': '',
+                'message': '',
+                'data': [
                     {
-                        "key": '',
-                        "value": ''
+                        'key': '',
+                        'value': ''
                     }
                 ]
             }
         ],
-        "httpErrorStatusCode": 0,
-        "httpErrorMessage": '',
-        "selfLink": '',
-        "region": ''
+        'httpErrorStatusCode': 0,
+        'httpErrorMessage': '',
+        'selfLink': '',
+        'region': ''
     })
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances')
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances',
+           methods=['GET'])
 @authentication.required
 def listinstances(projectid, authorization, zone):
     command = 'listVirtualMachines'
@@ -179,11 +180,11 @@ def listinstances(projectid, authorization, zone):
                 _cloudstack_virtualmachine_to_gce(response_item))
 
     populated_response = {
-        'kind': "compute#instanceList",
+        'kind': 'compute#instanceList',
         'id': 'projects/' + projectid + '/instances',
-        'selfLink': '',
+        'selfLink': request.base_url,
         'items': instances,
-        "nextPageToken": ''
+        'nextPageToken': ''
     }
 
     res = jsonify(populated_response)

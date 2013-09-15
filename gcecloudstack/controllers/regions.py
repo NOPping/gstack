@@ -28,7 +28,7 @@ import json
 
 def _cloudstack_region_to_gce(response_item):
     return ({
-        'kind': "compute#region",
+        'kind': 'compute#region',
         'name': response_item['name'],
         'description': response_item['name'],
         'id': response_item['id'],
@@ -36,7 +36,7 @@ def _cloudstack_region_to_gce(response_item):
     })
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/regions')
+@app.route('/' + app.config['PATH'] + '<projectid>/regions', methods=['GET'])
 @authentication.required
 def listregions(projectid, authorization):
 
@@ -59,7 +59,7 @@ def listregions(projectid, authorization):
             regions.append(_cloudstack_region_to_gce(response_item))
 
     populated_response = {
-        'kind': "compute#regionList",
+        'kind': 'compute#regionList',
         'id': 'projects/' + projectid + '/regions',
         'selfLink': request.base_url,
         'items': regions
@@ -70,7 +70,8 @@ def listregions(projectid, authorization):
     return res
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/regions/<region>')
+@app.route('/' + app.config['PATH'] + '<projectid>/regions/<region>',
+           methods=['GET'])
 @authentication.required
 def getregion(projectid, authorization, region):
     command = 'listRegions'

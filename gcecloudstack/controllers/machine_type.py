@@ -36,7 +36,8 @@ def _cloudstack_machinetype_to_gce(response_item):
     })
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/machineTypes')
+@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/machineTypes',
+           methods=['GET'])
 @authentication.required
 def aggregatedlist(projectid, authorization):
     command = 'listServiceOfferings'
@@ -58,9 +59,9 @@ def aggregatedlist(projectid, authorization):
                 _cloudstack_machinetype_to_gce(response_item))
 
     populated_response = {
-        'kind': "compute#machineTypeAggregatedList",
-        'id': 'blah',
-        'selfLink': '',
+        'kind': 'compute#machineTypeAggregatedList',
+        'id': 'projects/' + projectid + '/aggregated/machineTypes',
+        'selfLink': request.base_url,
         'items': {
             'Dummy Zone': {
                 'machineTypes': machine_types
@@ -77,7 +78,8 @@ def aggregatedlist(projectid, authorization):
 
 
 @app.route('/' + app.config['PATH'] +
-           '<projectid>/zones/<zone>/machineTypes/<machinetype>')
+           '<projectid>/zones/<zone>/machineTypes/<machinetype>',
+           methods=['GET'])
 @authentication.required
 def getmachinetype(projectid, authorization, zone, machinetype):
     command = 'listServiceOfferings'
@@ -107,7 +109,8 @@ def getmachinetype(projectid, authorization, zone, machinetype):
     return res
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes')
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes',
+           methods=['GET'])
 @authentication.required
 def listmachinetype(projectid, authorization, zone):
     command = 'listServiceOfferings'
@@ -129,9 +132,9 @@ def listmachinetype(projectid, authorization, zone):
                 _cloudstack_machinetype_to_gce(response_item))
 
     populated_response = {
-        'kind': "compute#machineTypeList",
-        'id': 'blah',
-        'selfLink': '',
+        'kind': 'compute#machineTypeList',
+        'id': 'projects/' + projectid + '/zones/' + zone + '/machineTypes',
+        'selfLink': request.base_url,
         'items': machine_types
     }
 

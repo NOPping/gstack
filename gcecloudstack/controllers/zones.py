@@ -31,15 +31,16 @@ def _cloudstack_zone_to_gce(response_item):
         'Disabled': 'DOWN'
     }
     return ({
-        'kind': "compute#zone",
+        'kind': 'compute#zone',
         'name': response_item['name'],
         'description': response_item['name'],
         'id': response_item['id'],
-        'status': response_item['allocationstate']
+        'status': translate_zone_status[str(response_item['allocationstate'])]
     })
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones')
+@app.route('/' + app.config['PATH'] + '<projectid>/zones',
+           methods=['GET'])
 @authentication.required
 def listzones(projectid, authorization):
     command = 'listZones'
@@ -61,7 +62,7 @@ def listzones(projectid, authorization):
             zones.append(_cloudstack_zone_to_gce(response_item))
 
     populated_response = {
-        'kind': "compute#zoneList",
+        'kind': 'compute#zoneList',
         'id': 'projects/' + projectid + '/zones',
         'selfLink': request.base_url,
         'items': zones
@@ -72,7 +73,8 @@ def listzones(projectid, authorization):
     return res
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>')
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>',
+           methods=['GET'])
 @authentication.required
 def getzone(projectid, authorization, zone):
     command = 'listZones'

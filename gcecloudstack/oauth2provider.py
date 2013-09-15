@@ -53,7 +53,9 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
                 existing_client.sessionkey = sessionkey
             else:
                 client = Client(
-                    username=client_id, jsessionid=jsessionid, sessionkey=sessionkey)
+                    username=client_id, jsessionid=jsessionid,
+                    sessionkey=sessionkey
+                )
                 db.session.add(client)
 
             db.session.commit()
@@ -73,7 +75,8 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
     def persist_authorization_code(self, client_id, code, scope):
         return
 
-    def persist_token_information(self, client_id, scope, access_token, token_type, expires_in, refresh_token, data):
+    def persist_token_information(self, client_id, scope, access_token,
+                                  token_type, expires_in, refresh_token, data):
         client = Client.query.get(client_id)
         if client is not None:
             existing_access_token = AccessToken.query.filter_by(
@@ -87,14 +90,22 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
                 existing_access_token.expires_in = expires_in
             else:
                 db.session.add(
-                    AccessToken(access_token=access_token, client_id=client_id, expires_in=expires_in, data=json.dumps(data)))
+                    AccessToken(
+                        access_token=access_token, client_id=client_id,
+                        expires_in=expires_in, data=json.dumps(data)
+                    )
+                )
 
             if existing_refresh_token is not None:
                 existing_refresh_token.refresh_token = refresh_token
                 existing_refresh_token.data = json.dumps(data)
             else:
                 db.session.add(
-                    RefreshToken(refresh_token=refresh_token, client_id=client_id, data=json.dumps(data)))
+                    RefreshToken(
+                        refresh_token=refresh_token, client_id=client_id,
+                        data=json.dumps(data)
+                    )
+                )
 
             db.session.commit()
             return True
@@ -110,9 +121,15 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
 
     def from_refresh_token(self, client_id, refresh_token, scope):
         found_refresh_token = RefreshToken.query.get(refresh_token)
-        if found_refresh_token is not None and found_refresh_token.data != "false":
+        if (
+            found_refresh_token is not None and
+            found_refresh_token.data != 'false'
+        ):
             data = json.loads(found_refresh_token.data)
-            if (scope == '' or scope == data.get('scope')) and client_id == data.get('client_id'):
+            if (
+                (scope == '' or scope == data.get('scope'))
+                and client_id == data.get('client_id')
+            ):
                 return data
         else:
             return False
@@ -143,7 +160,10 @@ class CloudstackResourceProvider(ResourceProvider):
 
     def validate_access_token(self, access_token, authorization):
         found_access_token = AccessToken.query.get(access_token)
-        if found_access_token is not None and found_access_token.data != "false":
+        if (
+            found_access_token is not None and
+            found_access_token.data != 'false'
+        ):
             access_token_data = json.loads(found_access_token.data)
             client = Client.query.get(access_token_data.get('client_id'))
 

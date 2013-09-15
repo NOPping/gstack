@@ -35,10 +35,10 @@ def _format_quota(limit, metric, usage):
 
 def _cloudstack_quotas_to_gce(quotas):
 
-    names = {
-        'vm', 'ip', 'volume', 'snapshot', 'template', 'project', 'network', 'vpc',
-        'cpu', 'memory', 'primarystorage', 'secondarystorage'
-    }
+    names = {'vm', 'ip', 'volume', 'snapshot', 'template', 'project',
+             'network', 'vpc', 'cpu', 'memory',
+             'primarystorage', 'secondarystorage'
+             }
     gce_quotas = []
     for name in names:
         gce_quotas.append(
@@ -47,7 +47,7 @@ def _cloudstack_quotas_to_gce(quotas):
     return gce_quotas
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>')
+@app.route('/' + app.config['PATH'] + '<projectid>', methods=['GET'])
 @authentication.required
 def getproject(projectid, authorization):
     command = 'listAccounts'
@@ -72,7 +72,7 @@ def getproject(projectid, authorization):
             'commonInstanceMetadata': {
                 'kind': 'compute#metadata'
             },
-            'creationTimestamp': "2013-09-04T17:41:05.702-07:00",
+            'creationTimestamp': '2013-09-04T17:41:05.702-07:00',
             'kind': 'compute#project',
             'description': response_item['name'],
             'name': response_item['name'],

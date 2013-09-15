@@ -29,19 +29,19 @@ def not_found(e):
 @app.errorhandler(401)
 def unauthorized(e):
     res = jsonify({
-        "error": {
-            "errors": [
+        'error': {
+            'errors': [
                 {
-                    "domain": "global",
-                    "reason": "required",
-                    "message": "Login Required",
-                    "locationType": "header",
-                    "location": "Authorization",
+                    'domain': 'global',
+                    'reason': 'required',
+                    'message': 'Login Required',
+                    'locationType': 'header',
+                    'location': 'Authorization',
                 },
             ],
         },
-        "code": 401,
-        "message": "Login Required",
+        'code': 401,
+        'message': 'Login Required',
     })
 
     res.status_code = 401
@@ -53,9 +53,9 @@ def resource_not_found(func_url):
         'error': {
             'errors': [
                 {
-                    "domain": "global",
-                    "reason": "notFound",
-                    "message": 'The resource \'' +
+                    'domain': 'global',
+                    'reason': 'notFound',
+                    'message': 'The resource \'' +
                     func_url + '\' was not found'
                 }
             ],

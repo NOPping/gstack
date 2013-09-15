@@ -24,8 +24,8 @@ from flask import abort
 
 
 def make_request(command, args, jsessionid, sessionkey):
-    url = app.config['CLOUDSTACK_PROTOCOL'] + "://" \
-        + app.config['CLOUDSTACK_HOST'] + ":" + app.config['CLOUDSTACK_PORT'] \
+    url = app.config['CLOUDSTACK_PROTOCOL'] + '://' \
+        + app.config['CLOUDSTACK_HOST'] + ':' + app.config['CLOUDSTACK_PORT'] \
         + app.config['CLOUDSTACK_PATH']
     cookies = dict(JSESSIONID=jsessionid,
                    sessionkey=urllib.quote_plus(urllib.quote_plus(sessionkey)))
@@ -40,8 +40,8 @@ def make_request(command, args, jsessionid, sessionkey):
 
 
 def cloud_login(username, password):
-    url = app.config['CLOUDSTACK_PROTOCOL'] + "://" \
-        + app.config['CLOUDSTACK_HOST'] + ":" + app.config['CLOUDSTACK_PORT'] \
+    url = app.config['CLOUDSTACK_PROTOCOL'] + '://' \
+        + app.config['CLOUDSTACK_HOST'] + ':' + app.config['CLOUDSTACK_PORT'] \
         + app.config['CLOUDSTACK_PATH']
     payload = {'command': 'login', 'username':
                username, 'password': password, 'response': 'json'}

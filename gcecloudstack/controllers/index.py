@@ -23,7 +23,7 @@ from flask import jsonify
 import json
 
 
-@app.route('/discovery/v1/apis/compute/v1beta15/rest')
+@app.route('/discovery/v1/apis/compute/v1beta15/rest', methods=['GET'])
 def discovery():
     print app.config['DATA']
     with open(app.config['DATA'] + '/v1beta15.json') as template:
