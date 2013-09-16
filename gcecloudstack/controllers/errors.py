@@ -65,3 +65,21 @@ def resource_not_found(func_url):
     })
     res.status_code = 404
     return res
+
+
+def no_results_found(scope):
+    res = jsonify({
+        "warning": {
+            "code": "NO_RESULTS_ON_PAGE",
+            "message": "There are no results for scope" +
+            scope + "on this page.",
+            "data": [
+                {
+                    "key": "scope",
+                    "value": scope
+                }
+            ]
+        }
+    })
+
+    return res
