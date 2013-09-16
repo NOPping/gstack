@@ -53,6 +53,13 @@ def listzones(projectid, authorization):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        'Processing request for listzones\n'
+        'Project: ' + projectid + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     cloudstack_response = cloudstack_response['listzonesresponse']
 
     zones = []
@@ -70,6 +77,7 @@ def listzones(projectid, authorization):
 
     res = jsonify(populated_response)
     res.status_code = 200
+
     return res
 
 
@@ -89,6 +97,14 @@ def getzone(projectid, authorization, zone):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        'Processing request for getzone\n' +
+        'Project: ' + projectid + '\n'
+        'Zone: ' + zone + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     if cloudstack_response['listzonesresponse']:
         response_item = cloudstack_response[
             'listzonesresponse']['zone'][0]

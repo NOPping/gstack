@@ -51,6 +51,12 @@ def aggregatedlist(projectid, authorization):
 
     cloudstack_response = json.loads(cloudstack_response)
 
+    app.logger.debug(
+        'Processing request for aggregated list machine type\n'
+        'Project: ' + projectid + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     machine_types = []
     if cloudstack_response['listserviceofferingsresponse']:
         for response_item in cloudstack_response[
@@ -94,6 +100,14 @@ def getmachinetype(projectid, authorization, zone, machinetype):
     )
     cloudstack_response = json.loads(cloudstack_response)
 
+    app.logger.debug(
+        'Processing request for get machine type\n'
+        'Project: ' + projectid + '\n' +
+        'Zone: ' + zone + '\n' +
+        'Machine Type:' + machinetype + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     if cloudstack_response['listserviceofferingsresponse']:
         response_item = cloudstack_response[
             'listserviceofferingsresponse']['serviceoffering'][0]
@@ -123,6 +137,13 @@ def listmachinetype(projectid, authorization, zone):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        'Processing request for list machine type\n'
+        'Project: ' + projectid + '\n' +
+        'Zone: ' + zone + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
 
     machine_types = []
     if cloudstack_response['listserviceofferingsresponse']:

@@ -160,6 +160,13 @@ def listimages(projectid, authorization):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        'Processing request for list images\n'
+        'Project: ' + projectid + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     images = []
     if cloudstack_response['listtemplatesresponse']:
         for response_item in cloudstack_response[
@@ -193,6 +200,13 @@ def getimage(projectid, authorization, image):
         authorization.sessionkey
     )
     cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        'Processing request for get image\n'
+        'Project: ' + projectid + '\n' +
+        'Image: ' + image + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
 
     if cloudstack_response['listtemplatesresponse']:
         response_item = cloudstack_response[

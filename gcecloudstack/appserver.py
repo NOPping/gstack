@@ -22,6 +22,7 @@ from OpenSSL import SSL
 
 
 def main():
+    app.logger.debug('Starting Cloudstack GCE')
     context = SSL.Context(SSL.SSLv23_METHOD)
     context.use_privatekey_file(app.config['DATA'] + '/server.key')
     context.use_certificate_file(app.config['DATA'] + '/server.crt')

@@ -50,6 +50,13 @@ def listregions(projectid, authorization):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        'Processing request for listregions\n'
+        'Project: ' + projectid + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     cloudstack_response = cloudstack_response['listregionsresponse']
 
     regions = []
@@ -86,6 +93,14 @@ def getregion(projectid, authorization, region):
     )
 
     cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        'Processing request for getregion\n'
+        'Project: ' + projectid + '\n' +
+        'Region: ' + region + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     if cloudstack_response['listregionsresponse']:
         response_item = cloudstack_response[
             'listregionsresponse']['region'][0]
