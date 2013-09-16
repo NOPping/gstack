@@ -184,11 +184,14 @@ def aggregatedlistinstances(projectid, authorization):
     items = {}
     for zone in zonelist:
         zone_instances = []
-        for instance in instances:
-            instance['zone'] = zone
-            instance['selfLink'] = request.base_url + \
-                '/' + instance['name']
-            zone_instances.append(instance)
+        if instances:
+            for instance in instances:
+                instance['zone'] = zone
+                instance['selfLink'] = request.base_url + \
+                    '/' + instance['name']
+                zone_instances.append(instance)
+        else:
+            zone_instances.append(errors.no_results_found(zone))
 
         items['zone/' + zone] = {}
         items['zone/' + zone]['zone'] = zone

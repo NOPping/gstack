@@ -70,11 +70,14 @@ def aggregatedlistmachinetypes(projectid, authorization):
     items = {}
     for zone in zonelist:
         zone_machine_types = []
-        for machineType in machine_types:
-            machineType['zone'] = zone
-            machineType['selfLink'] = request.base_url + \
-                '/' + machineType['name']
-            zone_machine_types.append(machineType)
+        if machine_types:
+            for machineType in machine_types:
+                machineType['zone'] = zone
+                machineType['selfLink'] = request.base_url + \
+                    '/' + machineType['name']
+                zone_machine_types.append(machineType)
+        else:
+            zone_machine_types.append(errors.no_results_found(zone))
 
         items['zone/' + zone] = {}
         items['zone/' + zone]['zone'] = zone
