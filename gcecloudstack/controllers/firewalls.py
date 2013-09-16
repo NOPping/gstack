@@ -25,23 +25,40 @@ from flask import jsonify, request, url_for
 import json
 
 
-def _cloudstack_machinetype_to_gce(response_item):
+def _cloudstack_securitygroup_to_gce(response_item):
+    rules = response_item['ingressrule']
+    allowed = []
+    sourceranges = []
+    for rule in rules:
+        ports = []
+        for i in range():
+            ports.append(i)
+        allowed.append({
+                       "IPProtocol": rule['protocol'],
+                       "ports": ports
+                       })
+        sourceranges.append(rule['cidr'])	
     return ({
-        "kind": "compute#machineType",
-        'name': response_item['name'],
-        'description': response_item['displaytext'],
-        'id': response_item['id'],
-        'creationTimestamp': response_item['created'],
-        'guestCpus': response_item['cpunumber'],
-        'memoryMb': response_item['memory']
-    })
+            "kind": "compute#firewall",
+            "selfLink": '',
+            "id": response_item['id'],
+            "creationTimestamp": '',
+            "name": response_item['name'],
+            "description": response_item['description'],
+            "network": '',
+            "sourceRanges": sourceranges,
+             "sourceTags": [
+                 ''
+             ],
+             "targetTags": response_item['tags'],
+             "allowed": allowed
+             })
 
-
-@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/machineTypes',
+@app.route('/' + app.config['PATH'] + '<projectid>/global/firewalls',
            methods=['GET'])
 @authentication.required
 def listsecuritygroups(projectid, authorization):
-    command = 'listZones'
+    command = 'listSecurityGroups'
     args = {}
     cloudstack_response = requester.make_request(
         command,
@@ -53,56 +70,23 @@ def listsecuritygroups(projectid, authorization):
     cloudstack_response = json.loads(cloudstack_response)
 
     app.logger.debug(
-        'Processing request for aggregated list machine type\n'
+        'Processing request for aggregated list Firewalls\n'
         'Project: ' + projectid + '\n' +
         json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
     )
 
-    zones = []
-    if cloudstack_response['listzonesresponse']:
-        for response_item in cloudstack_response['listzonesresponse']['zone']:
-            zones.append(response_item['name'])
+    firewalls = []
+    if cloudstack_response['listsecuritygroupsresponse']:
+        for response_item in cloudstack_response['listsecuritygroupsresponse']['securitygroup']:
+            firewalls.append(response_item)
 
-    command = 'listServiceOfferings'
-    args = {}
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.jsessionid,
-        authorization.sessionkey
-    )
-
-    cloudstack_response = json.loads(cloudstack_response)
-
-    app.logger.debug(
-        'Processing request for aggregated list machine type\n'
-        'Project: ' + projectid + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
-    )
-
-    machine_types = []
-    if cloudstack_response['listserviceofferingsresponse']:
-        for response_item in cloudstack_response[
-                'listserviceofferingsresponse']['serviceoffering']:
-            machine_types.append(
-                _cloudstack_machinetype_to_gce(response_item))
-
-    items = {}
-    for zone in zones:
-        zone_machine_types = []
-        for machineType in machine_types:
-            machineType['zone'] = zone
-            machineType['selfLink'] = request.base_url + \
-                '/' + machineType['name']
-            zone_machine_types.append(machineType)
-
-        items['zone/' + zone] = {}
-        items['zone/' + zone]['zone'] = zone
-        items['zone/' + zone]['machineTypes'] = zone_machine_types
+    items = []
+    for fw in firewalls:
+        items.append(_cloudstack_securitygroup_to_gce(fw))
 
     populated_response = {
-        'kind': 'compute#machineTypeAggregatedList',
-        'id': 'projects/' + projectid + '/aggregated/machineTypes',
+        'kind': 'compute#firewallList',
+        'id': 'projects/' + projectid + '/global/firewalls',
         'selfLink': request.base_url,
         'items': items
     }
@@ -113,13 +97,13 @@ def listsecuritygroups(projectid, authorization):
 
 
 @app.route('/' + app.config['PATH'] +
-           '<projectid>/zones/<zone>/machineTypes/<machinetype>',
+           '<projectid>/global/firewalls/<firewall>',
            methods=['GET'])
 @authentication.required
-def getsecuritygroup(projectid, authorization, zone, machinetype):
-    command = 'listServiceOfferings'
+def getsecuritygroup(projectid, authorization, firewall):
+    command = 'listSecurityGroups'
     args = {
-        'keyword': machinetype
+        'securitygroupname': firewall
     }
     cloudstack_response = requester.make_request(
         command,
@@ -130,34 +114,33 @@ def getsecuritygroup(projectid, authorization, zone, machinetype):
     cloudstack_response = json.loads(cloudstack_response)
 
     app.logger.debug(
-        'Processing request for get machine type\n'
+        'Processing request for get Firewall\n'
         'Project: ' + projectid + '\n' +
-        'Zone: ' + zone + '\n' +
-        'Machine Type:' + machinetype + '\n' +
+        'Firewall: ' + firewall + '\n' +
         json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
     )
 
-    if cloudstack_response['listserviceofferingsresponse']:
+    if cloudstack_response['listsecuritygroupsresponse']:
         response_item = cloudstack_response[
-            'listserviceofferingsresponse']['serviceoffering'][0]
-        machine_type = _cloudstack_machinetype_to_gce(response_item)
-        res = jsonify(machine_type)
+            'listsecuritygroupsresponse']['securitygroup'][0]
+        firewall = _cloudstack_securitygroup_to_gce(response_item)
+        res = jsonify(firewall)
         res.status_code = 200
 
     else:
-        func_route = url_for('getmachinetype', projectid=projectid,
-                             machinetype=machinetype, zone=zone)
+        func_route = url_for('getsecuritygroup', projectid=projectid,
+                             firewall=firewall)
         res = errors.resource_not_found(func_route)
 
     return res
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes',
+@app.route('/' + app.config['PATH'] + '<projectid>/global/firewalls/<firewall>',
            methods=['DELETE'])
 @authentication.required
-def deletesecuritygroup(projectid, authorization, zone):
-    command = 'listServiceOfferings'
-    args = {}
+def deletesecuritygroup(projectid, authorization, firewall):
+    command = 'deleteSecurityGroup'
+    args = {'name': firewall}
     cloudstack_response = requester.make_request(
         command,
         args,
@@ -168,32 +151,13 @@ def deletesecuritygroup(projectid, authorization, zone):
     cloudstack_response = json.loads(cloudstack_response)
 
     app.logger.debug(
-        'Processing request for list machine type\n'
+        'Processing request for deleting a Firewall \n'
         'Project: ' + projectid + '\n' +
-        'Zone: ' + zone + '\n' +
+        'Firewall: ' + firewall + '\n' +
         json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
     )
 
-    machine_types = []
-    if cloudstack_response['listserviceofferingsresponse']:
-        for response_item in cloudstack_response[
-                'listserviceofferingsresponse']['serviceoffering']:
-            machine_types.append(
-                _cloudstack_machinetype_to_gce(response_item))
-
-        zone_machine_types = []
-        for machineType in machine_types:
-            machineType['zone'] = zone
-            machineType['selfLink'] = request.base_url + \
-                '/' + machineType['name']
-            zone_machine_types.append(machineType)
-
-    populated_response = {
-        'kind': 'compute#machineTypeList',
-        'id': 'projects/' + projectid + '/zones/' + zone + '/machineTypes',
-        'selfLink': request.base_url,
-        'items': zone_machine_types
-    }
+    # return Global Operations
 
     res = jsonify(populated_response)
     res.status_code = 200
