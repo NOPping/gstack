@@ -37,7 +37,7 @@ def _cloudstack_securitygroup_to_gce(response_item):
                        "IPProtocol": rule['protocol'],
                        "ports": ports
                        })
-        sourceranges.append(rule['cidr'])	
+        sourceranges.append(rule['cidr'])
     return ({
             "kind": "compute#firewall",
             "selfLink": '',
@@ -47,12 +47,13 @@ def _cloudstack_securitygroup_to_gce(response_item):
             "description": response_item['description'],
             "network": '',
             "sourceRanges": sourceranges,
-             "sourceTags": [
-                 ''
-             ],
-             "targetTags": response_item['tags'],
-             "allowed": allowed
-             })
+            "sourceTags": [
+                ''
+            ],
+            "targetTags": response_item['tags'],
+            "allowed": allowed
+            })
+
 
 @app.route('/' + app.config['PATH'] + '<projectid>/global/firewalls',
            methods=['GET'])
@@ -135,8 +136,9 @@ def getsecuritygroup(projectid, authorization, firewall):
     return res
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/global/firewalls/<firewall>',
-           methods=['DELETE'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/global/firewalls/<firewall>',
+    methods=['DELETE'])
 @authentication.required
 def deletesecuritygroup(projectid, authorization, firewall):
     command = 'deleteSecurityGroup'
@@ -158,6 +160,7 @@ def deletesecuritygroup(projectid, authorization, firewall):
     )
 
     # return Global Operations
+    populated_response = {}
 
     res = jsonify(populated_response)
     res.status_code = 200

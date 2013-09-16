@@ -26,20 +26,20 @@ import json
 
 
 def _cloudstack_volume_to_gce(response_item):
-	return {
-	  "kind": "compute#disk",
-	  "selfLink": request.base_url + '/' + response_item['name'],
-	  "id": response_item['id'],
-	  "creationTimestamp": response_item['created'],
-	  "zone": response_item['zonename'],
-	  "status": response_item['state'],
-	  "name": response_item['name'],
-	  "description": response_item['name'],
-	  "sizeGb": response_item['size'],
-	  "sourceSnapshot": '',
-	  "sourceSnapshotId": '',
-	  "sourceImage": ''
-	}
+    return {
+        "kind": "compute#disk",
+        "selfLink": request.base_url + '/' + response_item['name'],
+        "id": response_item['id'],
+        "creationTimestamp": response_item['created'],
+        "zone": response_item['zonename'],
+        "status": response_item['state'],
+        "name": response_item['name'],
+        "description": response_item['name'],
+        "sizeGb": response_item['size'],
+        "sourceSnapshot": '',
+        "sourceSnapshotId": '',
+        "sourceImage": ''
+    }
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/disks',
@@ -81,8 +81,8 @@ def listdisks(projectid, authorization, zone):
     return res
 
 
-@app.route('/' + app.config['PATH'] + 
-    '<projectid>/zones/<zone>/disks', methods=['POST'])
+@app.route('/' + app.config['PATH'] +
+           '<projectid>/zones/<zone>/disks', methods=['POST'])
 @authentication.required
 def insertdisk(projectid, authorization, zone):
     image_url = (json.loads(request.data))['description']
@@ -94,7 +94,8 @@ def insertdisk(projectid, authorization, zone):
         'name': image_name
     }
 
-    # At the minute we're returning a spoofed response without creating a volume
+    # At the minute we're returning a spoofed response without creating a
+    # volume
 
     # cloudstack_response = requester.make_request(
     #    command,
