@@ -27,6 +27,7 @@ import json
 
 def _cloudstack_machinetype_to_gce(response_item):
     return ({
+        "kind": "compute#machineType",
         'name': response_item['name'],
         'description': response_item['displaytext'],
         'id': response_item['id'],
@@ -40,6 +41,28 @@ def _cloudstack_machinetype_to_gce(response_item):
            methods=['GET'])
 @authentication.required
 def aggregatedlist(projectid, authorization):
+    command = 'listZones'
+    args = {}
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+
+    cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        'Processing request for aggregated list machine type\n'
+        'Project: ' + projectid + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
+    zones = []
+    if cloudstack_response['listzonesresponse']:
+        for response_item in cloudstack_response['listzonesresponse']['zone']:
+            zones.append(response_item['name'])
+
     command = 'listServiceOfferings'
     args = {}
     cloudstack_response = requester.make_request(
@@ -51,6 +74,12 @@ def aggregatedlist(projectid, authorization):
 
     cloudstack_response = json.loads(cloudstack_response)
 
+    app.logger.debug(
+        'Processing request for aggregated list machine type\n'
+        'Project: ' + projectid + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     machine_types = []
     if cloudstack_response['listserviceofferingsresponse']:
         for response_item in cloudstack_response[
@@ -58,18 +87,24 @@ def aggregatedlist(projectid, authorization):
             machine_types.append(
                 _cloudstack_machinetype_to_gce(response_item))
 
+    items = {}
+    for zone in zones:
+        zone_machine_types = []
+        for machineType in machine_types:
+            machineType['zone'] = zone
+            machineType['selfLink'] = request.base_url + \
+                '/' + machineType['name']
+            zone_machine_types.append(machineType)
+
+        items['zone/' + zone] = {}
+        items['zone/' + zone]['zone'] = zone
+        items['zone/' + zone]['machineTypes'] = zone_machine_types
+
     populated_response = {
         'kind': 'compute#machineTypeAggregatedList',
         'id': 'projects/' + projectid + '/aggregated/machineTypes',
         'selfLink': request.base_url,
-        'items': {
-            'Dummy Zone': {
-                'machineTypes': machine_types
-            },
-            'Another Zone': {
-                'machineTypes': machine_types
-            }
-        }
+        'items': items
     }
 
     res = jsonify(populated_response)
@@ -93,6 +128,14 @@ def getmachinetype(projectid, authorization, zone, machinetype):
         authorization.sessionkey
     )
     cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        'Processing request for get machine type\n'
+        'Project: ' + projectid + '\n' +
+        'Zone: ' + zone + '\n' +
+        'Machine Type:' + machinetype + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
 
     if cloudstack_response['listserviceofferingsresponse']:
         response_item = cloudstack_response[
@@ -124,6 +167,13 @@ def listmachinetype(projectid, authorization, zone):
 
     cloudstack_response = json.loads(cloudstack_response)
 
+    app.logger.debug(
+        'Processing request for list machine type\n'
+        'Project: ' + projectid + '\n' +
+        'Zone: ' + zone + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     machine_types = []
     if cloudstack_response['listserviceofferingsresponse']:
         for response_item in cloudstack_response[
@@ -131,11 +181,18 @@ def listmachinetype(projectid, authorization, zone):
             machine_types.append(
                 _cloudstack_machinetype_to_gce(response_item))
 
+        zone_machine_types = []
+        for machineType in machine_types:
+            machineType['zone'] = zone
+            machineType['selfLink'] = request.base_url + \
+                '/' + machineType['name']
+            zone_machine_types.append(machineType)
+
     populated_response = {
         'kind': 'compute#machineTypeList',
         'id': 'projects/' + projectid + '/zones/' + zone + '/machineTypes',
         'selfLink': request.base_url,
-        'items': machine_types
+        'items': zone_machine_types
     }
 
     res = jsonify(populated_response)

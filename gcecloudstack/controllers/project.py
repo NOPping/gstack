@@ -62,6 +62,12 @@ def getproject(projectid, authorization):
     )
     cloudstack_response = json.loads(cloudstack_response)
 
+    app.logger.debug(
+        'Processing request for listzones\n'
+        'Project: ' + projectid + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     if cloudstack_response['listaccountsresponse']:
         response_item = cloudstack_response[
             'listaccountsresponse']['account'][0]
