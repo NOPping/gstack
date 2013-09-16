@@ -21,7 +21,7 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import errors
+from gcecloudstack.controllers import errors, zones
 from flask import jsonify, request, url_for
 import json
 
@@ -155,6 +155,56 @@ def _cloudstack_delete_to_gce(cloudstack_response, instance, instanceid):
         'selfLink': '',
         'region': ''
     })
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/instances',
+           methods=['GET'])
+@authentication.required
+def aggregatedlistinstances(projectid, authorization):
+    command = 'listVirtualMachines'
+    args = {}
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+
+    cloudstack_response = json.loads(cloudstack_response)
+
+    instances = []
+    if cloudstack_response['listvirtualmachinesresponse']:
+        for response_item in cloudstack_response[
+                'listvirtualmachinesresponse']['virtualmachine']:
+            instances.append(
+                _cloudstack_virtualmachine_to_gce(response_item))
+
+        zonelist = zones.get_zone_names(authorization)
+
+    items = {}
+    for zone in zonelist:
+        zone_instances = []
+        for instance in instances:
+            instance['zone'] = zone
+            instance['selfLink'] = request.base_url + \
+                '/' + instance['name']
+            zone_instances.append(instance)
+
+        items['zone/' + zone] = {}
+        items['zone/' + zone]['zone'] = zone
+        items['zone/' + zone]['instances'] = zone_instances
+
+    populated_response = {
+        'kind': 'compute#instanceAggregatedList',
+        'id': 'projects/' + projectid + '/instances',
+        'selfLink': request.base_url,
+        'items': items,
+        'nextPageToken': ''
+    }
+
+    res = jsonify(populated_response)
+    res.status_code = 200
+    return res
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances',
