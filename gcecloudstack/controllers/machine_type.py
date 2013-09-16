@@ -40,7 +40,7 @@ def _cloudstack_machinetype_to_gce(response_item):
 @app.route('/' + app.config['PATH'] + '<projectid>/aggregated/machineTypes',
            methods=['GET'])
 @authentication.required
-def aggregatedlist(projectid, authorization):
+def aggregatedlistmachinetypes(projectid, authorization):
     command = 'listServiceOfferings'
     args = {}
     cloudstack_response = requester.make_request(

@@ -20,7 +20,7 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import errors, machine_type
+from gcecloudstack.controllers import errors, zones
 from flask import jsonify, request, url_for
 import json
 
@@ -40,6 +40,60 @@ def _cloudstack_volume_to_gce(response_item):
         "sourceSnapshotId": '',
         "sourceImage": ''
     }
+
+@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/disks',
+           methods=['GET'])
+@authentication.required
+def aggregatedlistdisks(projectid, authorization):
+    command = 'listVolumes'
+    args = {}
+
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+
+    cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        'Processing request for list disks\n'
+        'Project: ' + projectid + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
+    disks = []
+    if cloudstack_response['listvolumesresponse']:
+        for response_item in cloudstack_response[
+                'listvolumesresponse']['volume']:
+            disks.append(_cloudstack_volume_to_gce(response_item))
+
+    zonelist = zones.get_zone_names(authorization)
+
+
+    items = {}
+    for zone in zonelist:
+        zone_disks = []
+        for disk in disks:
+            disk['zone'] = zone
+            disk['selfLink'] = request.base_url + \
+                '/' + disk['name']
+            zone_disks.append(disk)
+
+        items['zone/' + zone] = {}
+        items['zone/' + zone]['zone'] = zone
+        items['zone/' + zone]['disks'] = zone_disks
+
+    populated_response = {
+        'kind': 'compute#diskAggregatedList',
+        'selfLink': request.base_url,
+        'id': 'projects/' + projectid + '/global/images',
+        'items': items
+    }
+    res = jsonify(populated_response)
+    res.status_code = 200
+    return res
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/disks',
