@@ -92,6 +92,8 @@ def aggregatedlist(projectid, authorization):
         zone_machine_types = []
         for machineType in machine_types:
             machineType['zone'] = zone
+            machineType['selfLink'] = request.base_url + \
+                '/' + machineType['name']
             zone_machine_types.append(machineType)
 
         items['zone/' + zone] = {}
@@ -179,11 +181,18 @@ def listmachinetype(projectid, authorization, zone):
             machine_types.append(
                 _cloudstack_machinetype_to_gce(response_item))
 
+        zone_machine_types = []
+        for machineType in machine_types:
+            machineType['zone'] = zone
+            machineType['selfLink'] = request.base_url + \
+                '/' + machineType['name']
+            zone_machine_types.append(machineType)
+
     populated_response = {
         'kind': 'compute#machineTypeList',
         'id': 'projects/' + projectid + '/zones/' + zone + '/machineTypes',
         'selfLink': request.base_url,
-        'items': machine_types
+        'items': zone_machine_types
     }
 
     res = jsonify(populated_response)
