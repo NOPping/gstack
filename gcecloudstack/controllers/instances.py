@@ -48,10 +48,10 @@ def _cloudstack_virtualmachine_to_gce(response_item):
         'kind': 'compute#instance',
         'id': '',
         'creationTimestamp': '',
-        'zone': '',
-        'status': '',
+        'zone': response_item['zonename'],
+        'status': response_item['state'],
         'statusMessage': '',
-        'name': '',
+        'name': response_item['name'],
         'description': '',
         'tags': {
             'items': [
@@ -65,8 +65,8 @@ def _cloudstack_virtualmachine_to_gce(response_item):
         'canIpForward': '',
         'networkInterfaces': [
             {
-                'network': '',
-                'networkIP': '',
+                'network': response_item['nic'][0]['networkname'],
+                'networkIP': response_item['nic'][0]['ipaddress'],
                 'name': '',
                 'accessConfigs': [
                     {
