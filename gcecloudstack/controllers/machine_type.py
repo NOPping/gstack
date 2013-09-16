@@ -20,7 +20,7 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import errors
+from gcecloudstack.controllers import errors, zones
 from flask import jsonify, request, url_for
 import json
 
@@ -41,28 +41,6 @@ def _cloudstack_machinetype_to_gce(response_item):
            methods=['GET'])
 @authentication.required
 def aggregatedlist(projectid, authorization):
-    command = 'listZones'
-    args = {}
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.jsessionid,
-        authorization.sessionkey
-    )
-
-    cloudstack_response = json.loads(cloudstack_response)
-
-    app.logger.debug(
-        'Processing request for aggregated list machine type\n'
-        'Project: ' + projectid + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
-    )
-
-    zones = []
-    if cloudstack_response['listzonesresponse']:
-        for response_item in cloudstack_response['listzonesresponse']['zone']:
-            zones.append(response_item['name'])
-
     command = 'listServiceOfferings'
     args = {}
     cloudstack_response = requester.make_request(
@@ -87,8 +65,10 @@ def aggregatedlist(projectid, authorization):
             machine_types.append(
                 _cloudstack_machinetype_to_gce(response_item))
 
+    zonelist = zones.get_zone_names(authorization)
+
     items = {}
-    for zone in zones:
+    for zone in zonelist:
         zone_machine_types = []
         for machineType in machine_types:
             machineType['zone'] = zone

@@ -38,6 +38,25 @@ def _cloudstack_zone_to_gce(response_item):
         'status': translate_zone_status[str(response_item['allocationstate'])]
     })
 
+def get_zone_names(authorization):
+    command = 'listZones'
+    args = {}
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+
+    cloudstack_response = json.loads(cloudstack_response)
+
+    zones = []
+    if cloudstack_response['listzonesresponse']:
+        for response_item in cloudstack_response['listzonesresponse']['zone']:
+            zones.append(response_item['name'])
+
+    return zones
+
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones',
            methods=['GET'])
