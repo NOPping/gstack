@@ -58,19 +58,12 @@ def _cloudstack_image_to_gce(response_item):
         'creationTimestamp': response_item['created'],
         'name': response_item['name'],
         'description': response_item['displaytext'],
-        'sourceType': '',
+        'sourceType': 'RAW',
         'preferredKernel': '',
         'rawDisk': {
-            'containerType': response_item['format'],
-            'source': '',
-            'sha1Checksum': response_item['checksum'],
-            },
-        'deprecated': {
-            'state': '',
-            'replacement': '',
-            'deprecated': '',
-            'obsolete': '',
-            'deleted': ''
+                'containerType': response_item['format'],
+                'source': '',
+                'sha1Checksum': response_item['checksum'],
         },
         'status': translate_image_status[str(response_item['isready'])],
     })
@@ -123,7 +116,7 @@ def _cloudstack_delete_to_gce(cloudstack_response, image, imageid):
 def listnocentoscloudimages(authorization):
     res = jsonify({
         'kind': 'compute#imageList',
-        'selfLink': '',
+        'selfLink': request.base_url,
         'id': 'projects/centos-cloud/global/images'
     })
     res.status_code = 200
@@ -136,7 +129,7 @@ def listnocentoscloudimages(authorization):
 def listnodebiancloudimages(authorization):
     res = jsonify({
         'kind': 'compute#imageList',
-        'selfLink': '',
+        'selfLink': request.base_url,
         'id': 'projects/debian-cloud/global/images'
     })
     res.status_code = 200
