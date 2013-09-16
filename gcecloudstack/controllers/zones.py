@@ -38,6 +38,7 @@ def _cloudstack_zone_to_gce(response_item):
         'status': translate_zone_status[str(response_item['allocationstate'])]
     })
 
+
 def get_zone_names(authorization):
     command = 'listZones'
     args = {}

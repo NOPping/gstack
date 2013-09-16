@@ -41,6 +41,7 @@ def _cloudstack_volume_to_gce(response_item):
         "sourceImage": ''
     }
 
+
 @app.route('/' + app.config['PATH'] + '<projectid>/aggregated/disks',
            methods=['GET'])
 @authentication.required
@@ -70,7 +71,6 @@ def aggregatedlistdisks(projectid, authorization):
             disks.append(_cloudstack_volume_to_gce(response_item))
 
     zonelist = zones.get_zone_names(authorization)
-
 
     items = {}
     for zone in zonelist:
