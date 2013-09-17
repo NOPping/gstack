@@ -305,3 +305,22 @@ def deleteinstance(projectid, authorization, zone, instance):
     res = jsonify(instance_deleted)
     res.status_code = 200
     return res
+
+
+@app.route('/' + app.config['PATH'] +
+           '<projectid>/zones/<zone>/instances', methods=['POST'])
+@authentication.required
+def addinstance(projectid, authorization, zone):
+    data = json.loads(request.data)
+    service_offering = data['machineType'].rsplit('/', 1)[1]
+    instance_name = data['name']
+    template_name = data['image'].rsplit('/', 1)[1]
+
+    app.logger.debug(
+        projectid + '\n' +
+        zone + '\n' +
+        service_offering + '\n' +
+        instance_name + '\n' +
+        template_name
+    )
+    return None
