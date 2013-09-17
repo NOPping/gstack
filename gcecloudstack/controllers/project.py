@@ -94,3 +94,26 @@ def getproject(projectid, authorization):
         res = errors.resource_not_found(func_route)
 
     return res
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>/setCommonInstanceMetadata',
+           methods=['POST'])
+@authentication.required
+def setglobalmetadata(projectid, authorization):
+
+    res = jsonify({
+        "kind": "compute#operation",
+        "id": '',
+        'name': '',
+        'operationType': 'setMetadata',
+        'targetLink': '',
+        'targetId': '',
+        'status': '',
+        'user': projectid,
+        'progress': 0,
+        'insertTime': '',
+        'startTime': '',
+        'selfLink': request.base_url
+    })
+    res.status_code = 200
+    return res
