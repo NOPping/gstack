@@ -25,7 +25,7 @@ from flask import jsonify, request, url_for
 import json
 
 
-def _get_template_id(image, authorization):
+def get_template_id(image, authorization):
     command = 'listTemplates'
     args = {
         'templatefilter': 'all',
@@ -219,7 +219,7 @@ def getimage(projectid, authorization, image):
 @authentication.required
 def deleteimage(projectid, authorization, image):
     command = 'deleteTemplate'
-    imageid = _get_template_id(image, authorization)
+    imageid = get_template_id(image, authorization)
     if imageid is None:
         func_route = url_for('deleteimage', projectid=projectid, image=image)
         return(errors.resource_not_found(func_route))

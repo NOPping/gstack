@@ -21,7 +21,7 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import errors, zones
+from gcecloudstack.controllers import errors, zones, images, machine_type
 from flask import jsonify, request, url_for
 import json
 
@@ -312,15 +312,21 @@ def deleteinstance(projectid, authorization, zone, instance):
 @authentication.required
 def addinstance(projectid, authorization, zone):
     data = json.loads(request.data)
-    service_offering = data['machineType'].rsplit('/', 1)[1]
+    service_offering_id = machine_type.get_service_offering_id(
+        data['machineType'].rsplit('/', 1)[1],
+        authorization
+    )
+    template_id = images.get_template_id(
+        data['image'].rsplit('/', 1)[1],
+        authorization
+    )
     instance_name = data['name']
-    template_name = data['image'].rsplit('/', 1)[1]
 
     app.logger.debug(
         projectid + '\n' +
         zone + '\n' +
-        service_offering + '\n' +
         instance_name + '\n' +
-        template_name
+        service_offering_id + '\n' +
+        template_id
     )
     return None

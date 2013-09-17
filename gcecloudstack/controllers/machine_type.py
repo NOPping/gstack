@@ -25,6 +25,25 @@ from flask import jsonify, request, url_for
 import json
 
 
+def get_service_offering_id(service_offering, authorization):
+    command = 'listServiceOfferings'
+    args = {
+        'keyword': service_offering
+    }
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+    service_offering_id = None
+    cloudstack_responses = json.loads(cloudstack_response)
+    if cloudstack_responses['listserviceofferingsresponse']:
+        service_offering_id = cloudstack_responses[
+            'listserviceofferingsresponse']['serviceoffering'][0]['id']
+    return service_offering_id
+
+
 def _cloudstack_machinetype_to_gce(response_item):
     return ({
         "kind": "compute#machineType",
