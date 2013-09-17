@@ -31,7 +31,7 @@ def _cloudstack_securitygroup_to_gce(response_item):
     sourceranges = []
     for rule in rules:
         ports = []
-        for i in range(rule['startport'], rule['endport']+1):
+        for i in range(rule['startport'], rule['endport'] + 1):
             ports.append(str(i))
         allowed.append({
                        "IPProtocol": rule['protocol'],
