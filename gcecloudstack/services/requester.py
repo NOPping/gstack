@@ -36,7 +36,11 @@ def make_request(command, args, jsessionid, sessionkey):
     if response.status_code == 200:
         return response.text
     else:
-        app.logger.debug('Failed request to cloudstack')
+        app.logger.debug(
+            'Failed request to cloudstack\n' +
+            'status code:' + str(response.status_code) + '\n'
+            'text: ' + str(response.text)
+        )
         abort(response.status_code)
 
 

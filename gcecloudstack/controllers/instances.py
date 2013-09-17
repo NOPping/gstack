@@ -311,6 +311,7 @@ def deleteinstance(projectid, authorization, zone, instance):
            '<projectid>/zones/<zone>/instances', methods=['POST'])
 @authentication.required
 def addinstance(projectid, authorization, zone):
+    # TODO: Clean this up
     data = json.loads(request.data)
     service_offering_id = machine_type.get_service_offering_id(
         data['machineType'].rsplit('/', 1)[1],
@@ -331,4 +332,45 @@ def addinstance(projectid, authorization, zone):
         template_id + '\n' +
         zone_id
     )
+
+    command = 'deployVirtualMachine'
+    args = {
+        'zoneId': zone_id,
+        'templateId': template_id,
+        'serviceofferingid': service_offering_id,
+        'displayname': instance_name,
+        'name': instance_name
+    }
+
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+
+    cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
+    command = 'queryAsyncJobResult'
+    args = {
+        'jobId': cloudstack_response['deployvirtualmachineresponse']['jobid']
+    }
+
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+
+    cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     return None
