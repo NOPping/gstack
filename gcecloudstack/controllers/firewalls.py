@@ -31,8 +31,8 @@ def _cloudstack_securitygroup_to_gce(response_item):
     sourceranges = []
     for rule in rules:
         ports = []
-        for i in range():
-            ports.append(i)
+        for i in range(rule['startport'], rule['endport'] + 1):
+            ports.append(str(i))
         allowed.append({
                        "IPProtocol": rule['protocol'],
                        "ports": ports
@@ -78,7 +78,8 @@ def listsecuritygroups(projectid, authorization):
 
     firewalls = []
     if cloudstack_response['listsecuritygroupsresponse']:
-        for response_item in cloudstack_response['listsecuritygroupsresponse']['securitygroup']:
+        res = cloudstack_response['listsecuritygroupsresponse']
+        for response_item in res['securitygroup']:
             firewalls.append(response_item)
 
     items = []
@@ -162,6 +163,67 @@ def deletesecuritygroup(projectid, authorization, firewall):
     # return Global Operations
     populated_response = {}
 
+    res = jsonify(populated_response)
+    res.status_code = 200
+    return res
+
+
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/global/firewalls',
+    methods=['POST'])
+@authentication.required
+def createsecuritygroup(projectid, authorization):
+    command = 'createSecurityGroup'
+    res = json.loads(request.data)
+    args = {'name': res['name'],
+            'description': res['description']}
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+
+    cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        'Processing request for creating a Firewall \n'
+        'Project: ' + projectid + '\n' +
+        'Firewall: ' + res['name'] + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
+    net_protocol_codes = {'1': 'icmp', '6': 'tcp', '17': 'udp'}
+
+    rules = res['allowed']
+    if rules is not []:
+        for rule in rules:
+            command = 'authorizeSecurityGroupIngress'
+            args = {'securitygroupname': res['name'],
+                    'protocol': net_protocol_codes[str(rule['IPProtocol'])],
+                    'startport': rule['ports'][0],
+                    'endport': rule['ports'][0],
+                    'cidrlist': ','.join([cidr for cidr in
+                                          res['sourceRanges']])}
+            cloudstack_response = requester.make_request(
+                command,
+                args,
+                authorization.jsessionid,
+                authorization.sessionkey
+            )
+
+            cloudstack_response = json.loads(cloudstack_response)
+
+            app.logger.debug(
+                'Processing request for adding a rule to a Firewall \n'
+                'Project: ' + projectid + '\n' +
+                'Firewall: ' + res['name'] + '\n' +
+                json.dumps(cloudstack_response,
+                           indent=4, separators=(',', ': '))
+            )
+
+    # return Global Operations
+    populated_response = {}
     res = jsonify(populated_response)
     res.status_code = 200
     return res
