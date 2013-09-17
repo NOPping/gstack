@@ -25,6 +25,25 @@ from flask import jsonify, request, url_for
 import json
 
 
+def get_zone_id(zone, authorization):
+    command = 'listZones'
+    args = {
+        'keyword': zone
+    }
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
+    zone_id = None
+    cloudstack_responses = json.loads(cloudstack_response)
+    if cloudstack_responses['listzonesresponse']:
+        zone_id = cloudstack_responses[
+            'listzonesresponse']['zone'][0]['id']
+    return zone_id
+
+
 def _cloudstack_zone_to_gce(response_item):
     translate_zone_status = {
         'Enabled': 'UP',

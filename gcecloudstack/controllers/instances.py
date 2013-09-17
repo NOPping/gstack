@@ -320,6 +320,7 @@ def addinstance(projectid, authorization, zone):
         data['image'].rsplit('/', 1)[1],
         authorization
     )
+    zone_id = zones.get_zone_id(zone, authorization)
     instance_name = data['name']
 
     app.logger.debug(
@@ -327,6 +328,7 @@ def addinstance(projectid, authorization, zone):
         zone + '\n' +
         instance_name + '\n' +
         service_offering_id + '\n' +
-        template_id
+        template_id + '\n' +
+        zone_id
     )
     return None
