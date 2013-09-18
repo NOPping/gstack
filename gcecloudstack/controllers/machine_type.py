@@ -26,6 +26,10 @@ import json
 
 
 def get_service_offering_id(service_offering, authorization):
+
+    print authorization.client_id
+    print authorization.client_secret
+
     command = 'listServiceOfferings'
     args = {
         'keyword': service_offering

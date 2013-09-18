@@ -26,30 +26,39 @@ from flask import abort
 from gcecloudstack import app
 
 
-def _create_url(url, args, client_id, client_secret):
-    args['apiKey'] = client_id
-    params = []
-    keys = sorted(args.keys())
-    for key in keys:
-        params.append(key + '=' + urllib.quote_plus(args[key]))
-    query = '&'.join(params)
-    digest = hmac.new(
-        client_secret,
-        msg=query.lower(),
-        digestmod=hashlib.sha1).digest()
-    signature = base64.b64encode(digest)
-    query += '&signature=' + urllib.quote_plus(signature)
-    return url + '?' + query
-
-
 def make_request(command, args, client_id, client_secret):
-    url = app.config['CLOUDSTACK_PROTOCOL'] + '://' \
-        + app.config['CLOUDSTACK_HOST'] + ':' + app.config['CLOUDSTACK_PORT'] \
-        + app.config['CLOUDSTACK_PATH']
     args['command'] = command
+    args['apiKey'] = client_id
     args['response'] = 'json'
-    url = _create_url(url, args, client_id, client_secret)
-    response = requests.get(url)
+
+    request = zip(args.keys(), args.values())
+    request.sort(key=lambda x: x[0].lower())
+
+    request_url = "&".join(
+        ["=".join([r[0], urllib.quote_plus(str(r[1]))]) for r in request]
+    )
+
+    hashStr = "&".join(["=".join([r[0].lower(),
+                        str.lower(urllib.quote_plus(str(r[1]))
+                                  ).replace("+", "%20")]) for r in request])
+
+    sig = urllib.quote_plus(
+        base64.encodestring(
+            hmac.new(client_secret, hashStr, hashlib.sha1).digest()
+        ).strip())
+
+    request_url += "&signature=%s" % sig
+
+    request_url = "%s://%s:%s%s?%s" % (
+        app.config['CLOUDSTACK_PROTOCOL'],
+        app.config['CLOUDSTACK_HOST'],
+        app.config['CLOUDSTACK_PORT'],
+        app.config['CLOUDSTACK_PATH'],
+        request_url
+    )
+
+    response = requests.get(request_url)
+    print request_url
     if response.status_code == 200:
         return response.text
     else:

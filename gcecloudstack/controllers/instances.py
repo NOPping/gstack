@@ -311,6 +311,7 @@ def deleteinstance(projectid, authorization, zone, instance):
            '<projectid>/zones/<zone>/instances', methods=['POST'])
 @authentication.required
 def addinstance(projectid, authorization, zone):
+
     # TODO: Clean this up
     data = json.loads(request.data)
     service_offering_id = machine_type.get_service_offering_id(
