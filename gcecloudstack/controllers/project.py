@@ -36,8 +36,7 @@ def _format_quota(limit, metric, usage):
 def _cloudstack_quotas_to_gce(quotas):
 
     names = {'vm', 'ip', 'volume', 'snapshot', 'template', 'project',
-             'network', 'vpc', 'cpu', 'memory',
-             'primarystorage', 'secondarystorage'
+             'network'
              }
     gce_quotas = []
     for name in names:

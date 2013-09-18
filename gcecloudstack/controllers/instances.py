@@ -5,14 +5,14 @@
 # distributed with this work for additional information
 # regarding copyright ownership.  The ASF licenses this file
 # to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
+# 'License'); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
 #
 #   http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
@@ -370,8 +370,33 @@ def addinstance(projectid, authorization, zone):
 
     cloudstack_response = json.loads(cloudstack_response)
 
+    cloudstack_response = cloudstack_response['queryasyncjobresultresponse']
+
     app.logger.debug(
         json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
     )
 
-    return None
+    populated_response = {
+        'kind': 'compute#operation',
+        'id': cloudstack_response['jobid'],
+        'name': cloudstack_response['jobid'],
+        'zone': url_for('getzone', projectid=projectid, zone=zone),
+        'operationType': 'insert',
+        'targetLink': url_for(
+            'getinstance',
+            projectid=projectid,
+            zone=zone,
+            instance=instance_name
+        ),
+        'status': 'PENDING',
+        'user': cloudstack_response['userid'],
+        'progress': 0,
+        'insertTime': cloudstack_response['created'],
+        'startTime': cloudstack_response['created'],
+        'selfLink': ''
+    }
+
+    res = jsonify(populated_response)
+    res.status_code = 200
+
+    return res
