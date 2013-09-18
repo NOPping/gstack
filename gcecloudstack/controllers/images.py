@@ -34,8 +34,8 @@ def get_template_id(image, authorization):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
     template_id = None
     cloudstack_responses = json.loads(cloudstack_response)
@@ -148,8 +148,8 @@ def listimages(projectid, authorization):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)
@@ -189,8 +189,8 @@ def getimage(projectid, authorization, image):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
     cloudstack_response = json.loads(cloudstack_response)
 
@@ -230,8 +230,8 @@ def deleteimage(projectid, authorization, image):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
     image_deleted = _cloudstack_delete_to_gce(
         cloudstack_response,

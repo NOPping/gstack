@@ -39,22 +39,24 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         return client_id is not None
 
     def validate_client_secret(self, client_id, client_secret):
-        response = requester.cloud_login(client_id, client_secret)
-        if response:
-            jsessionid = response.cookies['JSESSIONID']
+        command = 'listCapabilities'
+        args = {}
+        cloudstack_response = requester.make_request(
+            command,
+            args,
+            client_id,
+            client_secret
+        )
 
-            data = json.loads(response.text)
-            sessionkey = data['loginresponse']['sessionkey']
-
+        if cloudstack_response:
             existing_client = Client.query.get(client_id)
 
             if existing_client is not None:
-                existing_client.jsessionid = jsessionid
-                existing_client.sessionkey = sessionkey
+                existing_client.client_secret = client_secret
             else:
                 client = Client(
-                    username=client_id, jsessionid=jsessionid,
-                    sessionkey=sessionkey
+                    client_id=client_id,
+                    client_secret=client_secret
                 )
                 db.session.add(client)
 
@@ -145,8 +147,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
 
 
 class CloudstackResourceAuthorization(ResourceAuthorization):
-    jsessionid = None
-    sessionkey = None
+    client_secret = None
 
 
 class CloudstackResourceProvider(ResourceProvider):
@@ -170,5 +171,4 @@ class CloudstackResourceProvider(ResourceProvider):
             authorization.is_valid = True
             authorization.client_id = access_token_data.get('client_id')
             authorization.expires_in = access_token_data.get('expires_in')
-            authorization.jsessionid = client.jsessionid
-            authorization.sessionkey = client.sessionkey
+            authorization.client_secret = client.client_secret

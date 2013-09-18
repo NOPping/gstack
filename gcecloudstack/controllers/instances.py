@@ -32,8 +32,8 @@ def _get_virtualmachine_id(virtualmachine, authorization):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
     virtualmachine_id = None
     cloudstack_response = json.loads(cloudstack_response)
@@ -166,8 +166,8 @@ def aggregatedlistinstances(projectid, authorization):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)
@@ -219,8 +219,8 @@ def listinstances(projectid, authorization, zone):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)
@@ -256,8 +256,8 @@ def getinstance(projectid, authorization, zone, instance):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)
@@ -292,8 +292,8 @@ def deleteinstance(projectid, authorization, zone, instance):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     instance_deleted = _cloudstack_delete_to_gce(
@@ -345,8 +345,8 @@ def addinstance(projectid, authorization, zone):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)
@@ -363,8 +363,8 @@ def addinstance(projectid, authorization, zone):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)

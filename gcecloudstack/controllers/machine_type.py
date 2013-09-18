@@ -33,8 +33,8 @@ def get_service_offering_id(service_offering, authorization):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
     service_offering_id = None
     cloudstack_responses = json.loads(cloudstack_response)
@@ -65,8 +65,8 @@ def aggregatedlistmachinetypes(projectid, authorization):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)
@@ -126,8 +126,8 @@ def getmachinetype(projectid, authorization, zone, machinetype):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
     cloudstack_response = json.loads(cloudstack_response)
 
@@ -163,8 +163,8 @@ def listmachinetype(projectid, authorization, zone):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)

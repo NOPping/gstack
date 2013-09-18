@@ -21,6 +21,5 @@ from gcecloudstack import db
 
 
 class Client(db.Model):
-    jsessionid = db.Column(db.String(100), unique=True)
-    username = db.Column(db.String(100), primary_key=True, unique=True)
-    sessionkey = db.Column(db.String(100), unique=True)
+    client_id = db.Column(db.String(100), primary_key=True, unique=True)
+    client_secret = db.Column(db.String(100), unique=True)

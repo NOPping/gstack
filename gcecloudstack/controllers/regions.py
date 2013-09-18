@@ -45,8 +45,8 @@ def listregions(projectid, authorization):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)
@@ -88,8 +88,8 @@ def getregion(projectid, authorization, region):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)

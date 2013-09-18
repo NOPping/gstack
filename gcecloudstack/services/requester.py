@@ -17,22 +17,39 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import requests
-from gcecloudstack import app
+import hashlib
+import hmac
+import base64
 import urllib
+import requests
 from flask import abort
+from gcecloudstack import app
 
 
-def make_request(command, args, jsessionid, sessionkey):
+def _create_url(url, args, client_id, client_secret):
+    args['apiKey'] = client_id
+    params = []
+    keys = sorted(args.keys())
+    for key in keys:
+        params.append(key + '=' + urllib.quote_plus(args[key]))
+    query = '&'.join(params)
+    digest = hmac.new(
+        client_secret,
+        msg=query.lower(),
+        digestmod=hashlib.sha1).digest()
+    signature = base64.b64encode(digest)
+    query += '&signature=' + urllib.quote_plus(signature)
+    return url + '?' + query
+
+
+def make_request(command, args, client_id, client_secret):
     url = app.config['CLOUDSTACK_PROTOCOL'] + '://' \
         + app.config['CLOUDSTACK_HOST'] + ':' + app.config['CLOUDSTACK_PORT'] \
         + app.config['CLOUDSTACK_PATH']
-    cookies = dict(JSESSIONID=jsessionid,
-                   sessionkey=urllib.quote_plus(urllib.quote_plus(sessionkey)))
-    payload = {'command': command, 'response':
-               'json', 'sessionkey': sessionkey}
-    payload.update(args)
-    response = requests.get(url, cookies=cookies, params=payload)
+    args['command'] = command
+    args['response'] = 'json'
+    url = _create_url(url, args, client_id, client_secret)
+    response = requests.get(url)
     if response.status_code == 200:
         return response.text
     else:
@@ -42,19 +59,3 @@ def make_request(command, args, jsessionid, sessionkey):
             'text: ' + str(response.text)
         )
         abort(response.status_code)
-
-
-def cloud_login(username, password):
-    url = app.config['CLOUDSTACK_PROTOCOL'] + '://' \
-        + app.config['CLOUDSTACK_HOST'] + ':' + app.config['CLOUDSTACK_PORT'] \
-        + app.config['CLOUDSTACK_PATH']
-    payload = {'command': 'login', 'username':
-               username, 'password': password, 'response': 'json'}
-    headers = {'Content-Type': 'application/x-www-form-urlencoded',
-               'Accept': 'application/json'}
-    request = requests.post(url=url, params=payload, headers=headers)
-
-    if request.status_code == 200:
-        return request
-    else:
-        return None

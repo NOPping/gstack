@@ -64,8 +64,8 @@ def listsecuritygroups(projectid, authorization):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)
@@ -110,8 +110,8 @@ def getsecuritygroup(projectid, authorization, firewall):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
     cloudstack_response = json.loads(cloudstack_response)
 
@@ -147,8 +147,8 @@ def deletesecuritygroup(projectid, authorization, firewall):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)
@@ -180,8 +180,8 @@ def createsecuritygroup(projectid, authorization):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)
@@ -208,8 +208,8 @@ def createsecuritygroup(projectid, authorization):
             cloudstack_response = requester.make_request(
                 command,
                 args,
-                authorization.jsessionid,
-                authorization.sessionkey
+                authorization.client_id,
+                authorization.client_secret
             )
 
             cloudstack_response = json.loads(cloudstack_response)
