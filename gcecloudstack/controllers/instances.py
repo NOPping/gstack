@@ -96,18 +96,12 @@ def _cloudstack_virtualmachine_to_gce(response_item):
         'canIpForward': 'true',
         'networkInterfaces': [
             {
-                'network': response_item['nic'][0]['networkname'],
+                'network': '',
                 'networkIP': response_item['nic'][0]['ipaddress'],
-                'name': response_item['nic'][0]['networkname']
+                'name': response_item['nic'][0]['id']
             }
             ],
-        'disks': [
-            {
-                'kind': 'compute#attachedDisk',
-                'type': 'PERSISTENT',
-                'deviceName': ''
-            }
-        ],
+
         'selfLink': request.base_url
     })
 
@@ -298,17 +292,17 @@ def deleteinstance(projectid, authorization, zone, instance):
            '<projectid>/zones/<zone>/instances', methods=['POST'])
 @authentication.required
 def addinstance(projectid, authorization, zone):
+
     # TODO: Clean this up
     data = json.loads(request.data)
-    service_offering_id = machine_type.get_service_offering_id(
-        data['machineType'].rsplit('/', 1)[1],
-        authorization
-    )
-    template_id = images.get_template_id(
+    print data['machineType'].rsplit('/', 1)[1]
+    service_offering_id = data['machineType'].rsplit('/', 1)[1]
+
+    template_id = str(images.get_template_id(
         data['image'].rsplit('/', 1)[1],
         authorization
-    )
-    zone_id = zones.get_zone_id(zone, authorization)
+    ))
+    zone_id = str(zones.get_zone_id(zone, authorization))
     instance_name = data['name']
 
     app.logger.debug(
@@ -342,22 +336,82 @@ def addinstance(projectid, authorization, zone):
         json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
     )
 
+    res = jsonify(operations(
+        projectid=projectid,
+        operationid=cloudstack_response['deployvirtualmachineresponse']['jobid'],
+        authorization=authorization)
+    )
+    res.status_code = 200
+
+    return res
+
+
+@app.route('/' + app.config['PATH'] +
+           '<projectid>/global/operations/<operationid>', methods=['GET'])
+@authentication.required
+def getoperations(projectid, operationid, authorization):
+    res = jsonify(operations(
+        projectid=projectid,
+        operationid=operationid,
+        authorization=authorization
+    ))
+    res.status_code = 200
+
+    return res
+
+
+def operations(projectid, operationid, authorization):
+    url_root = 'https://' + app.config['LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT']
+
     command = 'queryAsyncJobResult'
     args = {
-        'jobId': cloudstack_response['deployvirtualmachineresponse']['jobid']
+        'jobId': operationid
     }
 
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.jsessionid,
-        authorization.sessionkey
+        authorization.client_id,
+        authorization.client_secret
     )
 
     cloudstack_response = json.loads(cloudstack_response)
+
+    cloudstack_response = cloudstack_response['queryasyncjobresultresponse']
 
     app.logger.debug(
         json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
     )
 
-    return None
+    if cloudstack_response['jobstatus'] is 1:
+        populated_response = {
+            'kind': 'compute#operation',
+            'id': cloudstack_response['jobid'],
+            'name': cloudstack_response['jobid'],
+            'zone': url_root + url_for('getzone', projectid=projectid, zone=cloudstack_response['jobresult']['virtualmachine']['zonename']),
+            'operationType': 'insert',
+            'targetLink': url_root + url_for('getinstance', projectid=projectid, zone=cloudstack_response['jobresult']['virtualmachine']['zonename'], instance=cloudstack_response['jobresult']['virtualmachine']['displayname']),
+            'targetId': cloudstack_response['jobresult']['virtualmachine']['id'],
+            'status': 'DONE',
+            'user': cloudstack_response['userid'],
+            'progress': 100,
+            'insertTime': cloudstack_response['created'],
+            'startTime': cloudstack_response['created'],
+            'selfLink': url_root + url_for('getoperations', projectid=projectid, operationid=operationid),
+        }
+    else:
+        populated_response = {
+            'kind': 'compute#operation',
+            'id': cloudstack_response['jobid'],
+            'name': cloudstack_response['jobid'],
+            'operationType': 'insert',
+            'targetLink': '',
+            'status': 'PENDING',
+            'user': cloudstack_response['userid'],
+            'progress': 0,
+            'insertTime': cloudstack_response['created'],
+            'startTime': cloudstack_response['created'],
+            'selfLink': url_root + url_for('getoperations', projectid=projectid, operationid=operationid),
+        }
+
+    return populated_response
