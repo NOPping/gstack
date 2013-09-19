@@ -68,18 +68,16 @@ def resource_not_found(func_url):
 
 
 def no_results_found(scope):
-    res = jsonify({
+    return ({
         "warning": {
             "code": "NO_RESULTS_ON_PAGE",
             "message": "There are no results for scope" +
-            scope + "on this page.",
+            scope + " on this page.",
             "data": [
                 {
                     "key": "scope",
                     "value": scope
                 }
             ]
-        }
+            }
     })
-
-    return res
