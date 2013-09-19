@@ -1,19 +1,19 @@
 #!/usr/bin/env python
 # encoding: utf-8
 # Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
+# or more contributor license agreements. See the NOTICE file
 # distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
+# regarding copyright ownership. The ASF licenses this file
 # to you under the Apache License, Version 2.0 (the
-# 'License'); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
+# "License"); you may not use this file except in compliance
+# with the License. You may obtain a copy of the License at
 #
-#   http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
-# 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-# KIND, either express or implied.  See the License for the
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations
 # under the License.
 
@@ -26,17 +26,49 @@ from flask import jsonify, request, url_for
 import json
 
 
-def _get_virtualmachine_id(virtualmachine, authorization):
+def _get_instance_from_name(projectid, authorization, zone, instance):
     command = 'listVirtualMachines'
-    args = {}
+    args = {
+        'keyword': instance
+    }
     cloudstack_response = requester.make_request(
         command,
         args,
         authorization.client_id,
         authorization.client_secret
     )
+    cloudstack_response = json.loads(cloudstack_response)
+    app.logger.debug(
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+    instance = {}
+    if cloudstack_response['listvirtualmachinesresponse']:
+        instance = _cloudstack_virtualmachine_to_gce(
+            cloudstack_response['listvirtualmachinesresponse'][
+                'virtualmachine'][0]
+        )
+    return instance
+
+
+def _get_virtualmachine_id(virtualmachine, authorization):
+    command = 'listVirtualMachines'
+    args = {
+        'keyword': virtualmachine
+    }
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.jsessionid,
+        authorization.sessionkey
+    )
     virtualmachine_id = None
     cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        virtualmachine + ' getvirtualid\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     if cloudstack_response['listvirtualmachinesresponse']:
         virtualmachine_id = cloudstack_response[
             'listvirtualmachinesresponse']['virtualmachine'][0]['id']
@@ -44,70 +76,39 @@ def _get_virtualmachine_id(virtualmachine, authorization):
 
 
 def _cloudstack_virtualmachine_to_gce(response_item):
+    def crop_image_length(image):
+        if len(image) > 18:
+            image = (image[:13]) + '...' + (image[-2:])
+        return image
+
     return ({
         'kind': 'compute#instance',
-        'id': '',
-        'creationTimestamp': '',
+        'id': response_item['id'],
+        'creationTimestamp': response_item['created'],
         'zone': response_item['zonename'],
         'status': response_item['state'],
-        'statusMessage': '',
-        'name': response_item['name'],
-        'description': '',
-        'tags': {
-            'items': [
-                ''
-            ],
-            'fingerprint': ''
-            },
-        'machineType': '',
-        'image': '',
+        'statusMessage': 'VM is ' + response_item['state'],
+        'name': response_item['displayname'],
+        'description': response_item['displayname'],
+        'machineType': response_item['serviceofferingname'],
+        'image': crop_image_length(str(response_item['templatename'])),
         'kernel': '',
-        'canIpForward': '',
+        'canIpForward': 'true',
         'networkInterfaces': [
             {
                 'network': response_item['nic'][0]['networkname'],
                 'networkIP': response_item['nic'][0]['ipaddress'],
-                'name': '',
-                'accessConfigs': [
-                    {
-                        'kind': 'compute#accessConfig',
-                        'type': '',
-                        'name': '',
-                        'natIP': ''
-                    }
-                ]
+                'name': response_item['nic'][0]['networkname']
             }
-        ],
+            ],
         'disks': [
             {
                 'kind': 'compute#attachedDisk',
-                'index': 0,
-                'type': '',
-                'mode': '',
-                'source': '',
-                'deviceName': '',
-                'boot': 'true'
+                'type': 'PERSISTENT',
+                'deviceName': ''
             }
         ],
-        'metadata': {
-            'kind': 'compute#metadata',
-            'fingerprint': '',
-            'items': [
-                {
-                    'key': '',
-                    'value': ''
-                }
-            ]
-        },
-        'serviceAccounts': [
-            {
-                'email': '',
-                'scopes': [
-                    ''
-                ]
-            }
-        ],
-        'selfLink': ''
+        'selfLink': request.base_url
     })
 
 
@@ -129,27 +130,6 @@ def _cloudstack_delete_to_gce(cloudstack_response, instance, instanceid):
         'insertTime': '',
         'startTime': '',
         'endTime': '',
-        'error': {
-            'errors': [
-                {
-                  'code': '',
-                    'location': '',
-                    'message': ''
-                }
-            ]
-        },
-        'warnings': [
-            {
-                'code': '',
-                'message': '',
-                'data': [
-                    {
-                        'key': '',
-                        'value': ''
-                    }
-                ]
-            }
-        ],
         'httpErrorStatusCode': 0,
         'httpErrorMessage': '',
         'selfLink': '',
@@ -177,9 +157,15 @@ def aggregatedlistinstances(projectid, authorization):
         for response_item in cloudstack_response[
                 'listvirtualmachinesresponse']['virtualmachine']:
             instances.append(
-                _cloudstack_virtualmachine_to_gce(response_item))
+                _cloudstack_virtualmachine_to_gce(response_item)
+            )
 
-        zonelist = zones.get_zone_names(authorization)
+    zonelist = zones.get_zone_names(authorization)
+
+    app.logger.debug(
+        projectid + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
 
     items = {}
     for zone in zonelist:
@@ -191,7 +177,7 @@ def aggregatedlistinstances(projectid, authorization):
                     '/' + instance['name']
                 zone_instances.append(instance)
         else:
-            zone_instances.append(errors.no_results_found(zone))
+            items[zone] = errors.no_results_found(zone)
 
         items['zone/' + zone] = {}
         items['zone/' + zone]['zone'] = zone
@@ -201,8 +187,7 @@ def aggregatedlistinstances(projectid, authorization):
         'kind': 'compute#instanceAggregatedList',
         'id': 'projects/' + projectid + '/instances',
         'selfLink': request.base_url,
-        'items': items,
-        'nextPageToken': ''
+        'items': items
     }
 
     res = jsonify(populated_response)
@@ -214,32 +199,43 @@ def aggregatedlistinstances(projectid, authorization):
            methods=['GET'])
 @authentication.required
 def listinstances(projectid, authorization, zone):
+
     command = 'listVirtualMachines'
     args = {}
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
+    if 'name' in str(request.args):
+        print(request.args)
+        name = (request.args['filter'].split(' '))[-1]
+        instances = [
+            _get_instance_from_name(projectid, authorization, zone, name)
+        ]
+    else:
+        cloudstack_response = requester.make_request(
+            command,
+            args,
+            authorization.client_id,
+            authorization.client_secret
+        )
 
-    cloudstack_response = json.loads(cloudstack_response)
-
-    instances = []
-    if cloudstack_response['listvirtualmachinesresponse']:
-        for response_item in cloudstack_response[
-                'listvirtualmachinesresponse']['virtualmachine']:
-            instances.append(
-                _cloudstack_virtualmachine_to_gce(response_item))
+        cloudstack_response = json.loads(cloudstack_response)
+        app.logger.debug(
+            projectid + '\n' +
+            zone + '\n' +
+            json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+        )
+        instances = []
+        if cloudstack_response['listvirtualmachinesresponse']:
+            for response_item in cloudstack_response[
+                    'listvirtualmachinesresponse']['virtualmachine']:
+                instances.append(
+                    _cloudstack_virtualmachine_to_gce(response_item)
+                )
 
     populated_response = {
         'kind': 'compute#instanceList',
         'id': 'projects/' + projectid + '/instances',
         'selfLink': request.base_url,
-        'items': instances,
-        'nextPageToken': ''
+        'items': instances
     }
-
     res = jsonify(populated_response)
     res.status_code = 200
     return res
@@ -249,29 +245,10 @@ def listinstances(projectid, authorization, zone):
            '<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
 @authentication.required
 def getinstance(projectid, authorization, zone, instance):
-    command = 'listVirtualMachines'
-    args = {
-        'keyword': instance
-    }
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
+    res = jsonify(
+        _get_instance_from_name(projectid, authorization, zone, instance)
     )
-
-    cloudstack_response = json.loads(cloudstack_response)
-
-    if cloudstack_response['listvirtualmachinesresponse']:
-        instance = cloudstack_response[
-            'listvirtualmachinesresponse']['virtualmachine']
-        res = jsonify(instance)
-        res.status_code = 200
-    else:
-        func_route = url_for('getinstance', projectid=projectid,
-                             instance=instance, zone=zone)
-        res = errors.resource_not_found(func_route)
-
+    res.status_code = 200
     return res
 
 
@@ -296,6 +273,16 @@ def deleteinstance(projectid, authorization, zone, instance):
         authorization.client_secret
     )
 
+    cloudstack_response = json.loads(cloudstack_response)
+
+    app.logger.debug(
+        projectid + '\n' +
+        instance + '\n' +
+        zone + '\n' +
+        instanceid + '\n' +
+        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    )
+
     instance_deleted = _cloudstack_delete_to_gce(
         cloudstack_response,
         instance,
@@ -311,17 +298,17 @@ def deleteinstance(projectid, authorization, zone, instance):
            '<projectid>/zones/<zone>/instances', methods=['POST'])
 @authentication.required
 def addinstance(projectid, authorization, zone):
-
     # TODO: Clean this up
     data = json.loads(request.data)
-    print data['machineType'].rsplit('/', 1)[1]
-    service_offering_id = data['machineType'].rsplit('/', 1)[1]
-
-    template_id = str(images.get_template_id(
+    service_offering_id = machine_type.get_service_offering_id(
+        data['machineType'].rsplit('/', 1)[1],
+        authorization
+    )
+    template_id = images.get_template_id(
         data['image'].rsplit('/', 1)[1],
         authorization
-    ))
-    zone_id = str(zones.get_zone_id(zone, authorization))
+    )
+    zone_id = zones.get_zone_id(zone, authorization)
     instance_name = data['name']
 
     app.logger.debug(
@@ -363,39 +350,14 @@ def addinstance(projectid, authorization, zone):
     cloudstack_response = requester.make_request(
         command,
         args,
-        authorization.client_id,
-        authorization.client_secret
+        authorization.jsessionid,
+        authorization.sessionkey
     )
 
     cloudstack_response = json.loads(cloudstack_response)
-
-    cloudstack_response = cloudstack_response['queryasyncjobresultresponse']
 
     app.logger.debug(
         json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
     )
 
-    populated_response = {
-        'kind': 'compute#operation',
-        'id': cloudstack_response['jobid'],
-        'name': cloudstack_response['jobid'],
-        'zone': url_for('getzone', projectid=projectid, zone=zone),
-        'operationType': 'insert',
-        'targetLink': url_for(
-            'getinstance',
-            projectid=projectid,
-            zone=zone,
-            instance=instance_name
-        ),
-        'status': 'PENDING',
-        'user': cloudstack_response['userid'],
-        'progress': 0,
-        'insertTime': cloudstack_response['created'],
-        'startTime': cloudstack_response['created'],
-        'selfLink': ''
-    }
-
-    res = jsonify(populated_response)
-    res.status_code = 200
-
-    return res
+    return None
