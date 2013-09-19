@@ -315,10 +315,8 @@ def addinstance(projectid, authorization, zone):
     # TODO: Clean this up
     data = json.loads(request.data)
     print data['machineType'].rsplit('/', 1)[1]
-    service_offering_id = str(machine_type.get_service_offering_id(
-        data['machineType'].rsplit('/', 1)[1],
-        authorization
-    ))
+    service_offering_id = data['machineType'].rsplit('/', 1)[1]
+
     template_id = str(images.get_template_id(
         data['image'].rsplit('/', 1)[1],
         authorization

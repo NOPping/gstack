@@ -48,7 +48,7 @@ def get_service_offering_id(service_offering, authorization):
 def _cloudstack_machinetype_to_gce(response_item):
     return ({
         "kind": "compute#machineType",
-        'name': response_item['name'],
+        'name': response_item['id'],
         'description': response_item['displaytext'],
         'id': response_item['id'],
         'creationTimestamp': response_item['created'],
