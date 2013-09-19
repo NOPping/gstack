@@ -314,15 +314,16 @@ def addinstance(projectid, authorization, zone):
 
     # TODO: Clean this up
     data = json.loads(request.data)
-    service_offering_id = machine_type.get_service_offering_id(
+    print data['machineType'].rsplit('/', 1)[1]
+    service_offering_id = str(machine_type.get_service_offering_id(
         data['machineType'].rsplit('/', 1)[1],
         authorization
-    )
-    template_id = images.get_template_id(
+    ))
+    template_id = str(images.get_template_id(
         data['image'].rsplit('/', 1)[1],
         authorization
-    )
-    zone_id = zones.get_zone_id(zone, authorization)
+    ))
+    zone_id = str(zones.get_zone_id(zone, authorization))
     instance_name = data['name']
 
     app.logger.debug(

@@ -58,7 +58,7 @@ def make_request(command, args, client_id, client_secret):
     )
 
     response = requests.get(request_url)
-    print request_url
+
     if response.status_code == 200:
         return response.text
     else:

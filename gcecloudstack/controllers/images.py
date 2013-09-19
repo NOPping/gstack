@@ -28,7 +28,7 @@ import json
 def get_template_id(image, authorization):
     command = 'listTemplates'
     args = {
-        'templatefilter': 'all',
+        'templatefilter': 'executable',
         'keyword': image
     }
     cloudstack_response = requester.make_request(
@@ -142,7 +142,7 @@ def listnodebiancloudimages(authorization):
 def listimages(projectid, authorization):
     command = 'listTemplates'
     args = {
-        'templatefilter': 'all'
+        'templatefilter': 'executable'
     }
 
     cloudstack_response = requester.make_request(
@@ -183,7 +183,7 @@ def listimages(projectid, authorization):
 def getimage(projectid, authorization, image):
     command = 'listTemplates'
     args = {
-        'templatefilter': 'all',
+        'templatefilter': 'executable',
         'keyword': image
     }
     cloudstack_response = requester.make_request(
