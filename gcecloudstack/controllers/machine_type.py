@@ -20,80 +20,78 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import errors, zones
-from flask import jsonify, request, url_for
-import json
+from gcecloudstack.controllers import errors, zones, helper
+from flask import request, url_for
 
 
-def get_service_offering_id(service_offering, authorization):
-
+def _get_machinetypes(authorization, args=None):
     command = 'listServiceOfferings'
-    args = {
-        'keyword': service_offering
-    }
+    if not args:
+        args = {}
+
     cloudstack_response = requester.make_request(
         command,
         args,
         authorization.client_id,
         authorization.client_secret
     )
-    service_offering_id = None
+    return cloudstack_response
+
+
+def get_machinetype_id(machinetype, authorization):
+    machinetype_id = None
+    cloudstack_response = _get_machinetypes(
+        authorization,
+        args={'keyword': machinetype}
+    )
 
     if cloudstack_response['listserviceofferingsresponse']:
-        service_offering_id = cloudstack_response[
+        machinetype_id = cloudstack_response[
             'listserviceofferingsresponse']['serviceoffering'][0]['id']
-    return service_offering_id
+    return machinetype_id
 
 
-def _cloudstack_machinetype_to_gce(response_item):
-    return ({
-        "kind": "compute#machineType",
-        'name': response_item['id'],
-        'description': response_item['displaytext'],
-        'id': response_item['id'],
-        'creationTimestamp': response_item['created'],
-        'guestCpus': response_item['cpunumber'],
-        'memoryMb': response_item['memory']
-    })
+def _cloudstack_machinetype_to_gce(
+        cloudstack_response, selfLink=None, zone=None):
+    response = {}
+    response['kind'] = 'compute#machineType'
+    response['name'] = cloudstack_response['name']
+    response['id'] = cloudstack_response['id']
+    response['description'] = cloudstack_response['displaytext']
+    response['creationTimestamp'] = cloudstack_response['created']
+    response['guestCpus'] = cloudstack_response['cpunumber']
+    response['memoryMb'] = cloudstack_response['memory']
+
+    if not selfLink:
+        response['selfLink'] = request.base_url
+    else:
+        response['selfLink'] = selfLink
+
+    if not zone:
+        response['zone'] = cloudstack_response['zonename']
+    else:
+        response['zone'] = zone
+
+    return response
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/machineTypes',
-           methods=['GET'])
+@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/machineTypes', methods=['GET'])
 @authentication.required
 def aggregatedlistmachinetypes(projectid, authorization):
-    command = 'listServiceOfferings'
-    args = {}
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-
-    app.logger.debug(
-        'Processing request for aggregated list machine type\n'
-        'Project: ' + projectid + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
-    )
-
-    machine_types = []
-    if cloudstack_response['listserviceofferingsresponse']:
-        for response_item in cloudstack_response[
-                'listserviceofferingsresponse']['serviceoffering']:
-            machine_types.append(
-                _cloudstack_machinetype_to_gce(response_item))
-
+    machine_types = _get_machinetypes(authorization)
     zonelist = zones.get_zone_names(authorization)
 
     items = {}
     for zone in zonelist:
         zone_machine_types = []
-        if machine_types:
-            for machineType in machine_types:
-                machineType['zone'] = zone
-                machineType['selfLink'] = request.base_url + \
-                    '/' + machineType['name']
-                zone_machine_types.append(machineType)
+        if machine_types['listserviceofferingsresponse']:
+            for machineType in machine_types['listserviceofferingsresponse']['serviceoffering']:
+                zone_machine_types.append(
+                    _cloudstack_machinetype_to_gce(
+                        cloudstack_response=machineType,
+                        selfLink=request.base_url + '/' + machineType['name']
+                    )
+                )
         else:
             zone_machine_types.append(errors.no_results_found(zone))
 
@@ -105,61 +103,46 @@ def aggregatedlistmachinetypes(projectid, authorization):
         'kind': 'compute#machineTypeAggregatedList',
         'id': 'projects/' + projectid + '/aggregated/machineTypes',
         'selfLink': request.base_url,
-        'items': items
+        'items': machine_types
     }
-
-    res = jsonify(populated_response)
-    res.status_code = 200
-    return res
+    return helper.createresponse(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] +
-           '<projectid>/zones/<zone>/machineTypes/<machinetype>',
-           methods=['GET'])
-@authentication.required
-def getmachinetype(projectid, authorization, zone, machinetype):
-    command = 'listServiceOfferings'
-    args = {
-        'keyword': machinetype
-    }
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-    cloudstack_response = json.loads(cloudstack_response)
-
-    app.logger.debug(
-        'Processing request for get machine type\n'
-        'Project: ' + projectid + '\n' +
-        'Zone: ' + zone + '\n' +
-        'Machine Type:' + machinetype + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
-    )
-
-    if cloudstack_response['listserviceofferingsresponse']:
-        response_item = cloudstack_response[
-            'listserviceofferingsresponse']['serviceoffering'][0]
-        machine_type = _cloudstack_machinetype_to_gce(response_item)
-        res = jsonify(machine_type)
-        res.status_code = 200
-
-    else:
-        func_route = url_for('getmachinetype', projectid=projectid,
-                             machinetype=machinetype, zone=zone)
-        res = errors.resource_not_found(func_route)
-
-    return res
-
-
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes',
-           methods=['GET'])
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes', methods=['GET'])
 @authentication.required
 def listmachinetype(projectid, authorization, zone):
-    command = 'listServiceOfferings'
-    args = {}
-    cloudstack_response = requester.make_request(
+    cloudstack_response = _get_machinetypes(authorization)
+
+    machine_types = []
+    if cloudstack_response['listserviceofferingsresponse']:
+        for service_offering in cloudstack_response['listserviceofferingsresponse']['serviceoffering']:
+            machine_types.append(_cloudstack_machinetype_to_gce(service_offering, zone, request.base_url +
+                                                                '/' + service_offering['name']))
+
+    populated_response = {
+        'kind': 'compute#machineTypeList',
+        'id': 'projects/' + projectid + '/aggregated/machineTypes',
+        'selfLink': request.base_url,
+        'items': machine_types
+    }
+    return helper.createresponse(data=populated_response)
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes/<machinetype>', methods=['GET'])
+@authentication.required
+def getmachinetype(projectid, authorization, zone, machinetype):
+    cloudstack_response = _get_machinetypes(
+        authorization,
+        args={'keyword': machinetype}
+    )
+    if cloudstack_response['listserviceofferingsresponse']:
+        machinetype = _cloudstack_machinetype_to_gce(
+            cloudstack_response['listserviceofferingsresponse']['serviceoffering'][0])
+        return helper.createsuccessfulresponse(data=machinetype)
+
+    func_route = url_for('getmachinetype', projectid=projectid, machinetype=machinetype, zone=zone)
+    return errors.resource_not_found(func_route)
+est(
         command,
         args,
         authorization.client_id,
