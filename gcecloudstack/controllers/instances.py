@@ -51,6 +51,8 @@ def _deploy_virtual_machine(authorization, args):
         args['zone'], authorization
     )
     convertedargs['serviceofferingid'] = args['serviceoffering']
+    convertedargs['displayname'] = args['name']
+    convertedargs['name'] = args['name']
     cloudstack_response = requester.make_request(
         command,
         convertedargs,
@@ -67,8 +69,8 @@ def _cloudstack_instance_to_gce(cloudstack_response, selfLink=None, zone=None):
     response['id'] = cloudstack_response['id']
     response['creationTimestamp'] = cloudstack_response['created']
     response['status'] = cloudstack_response['state'].upper()
-    response['name'] = cloudstack_response['instancename']
-    response['description'] = cloudstack_response['instancename']
+    response['name'] = cloudstack_response['name']
+    response['description'] = cloudstack_response['name']
     response['machineType'] = cloudstack_response['serviceofferingname']
     response['image'] = cloudstack_response['templatename']
     response['canIpForward'] = 'true'
@@ -110,7 +112,7 @@ def aggregatedlistinstances(authorization, projectid):
                     _cloudstack_instance_to_gce(
                         cloudstack_response=instance,
                         zone=zone,
-                        selfLink=request.base_url + '/' + instance['instancename']
+                        selfLink=request.base_url + '/' + instance['name']
                     )
                 )
         items['zone/' + zone] = {}
