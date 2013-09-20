@@ -21,49 +21,42 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import errors
-from flask import jsonify, request, url_for
-import json
+from gcecloudstack.controllers import errors, helper
+from flask import request, url_for
 
-
-def _cloudstack_region_to_gce(response_item):
-    return ({
-        'kind': 'compute#region',
-        'name': response_item['name'],
-        'description': response_item['name'],
-        'id': response_item['id'],
-        'status': 'UP'
-    })
-
-
-@app.route('/' + app.config['PATH'] + '<projectid>/regions', methods=['GET'])
-@authentication.required
-def listregions(projectid, authorization):
-
+def _get_regions(authorization, args=None):
     command = 'listRegions'
-    args = {}
+    if not args:
+        args = {}
+
     cloudstack_response = requester.make_request(
         command,
         args,
         authorization.client_id,
         authorization.client_secret
     )
+    return cloudstack_response
 
-    cloudstack_response = json.loads(cloudstack_response)
 
-    app.logger.debug(
-        'Processing request for listregions\n'
-        'Project: ' + projectid + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
-    )
+def _cloudstack_region_to_gce(response_item):
+    response = {}
+    response['kind'] = 'compute#region'
+    response['description'] = response_item['name']
+    response['id'] = response_item['id']
+    response['status'] = 'UP'
+    return response
 
-    cloudstack_response = cloudstack_response['listregionsresponse']
+
+@app.route('/' + app.config['PATH'] + '<projectid>/regions', methods=['GET'])
+@authentication.required
+def listregions(projectid, authorization):
+    cloudstack_response = _get_regions(authorization)
 
     regions = []
 
-    if cloudstack_response:
-        for response_item in cloudstack_response['region']:
-            regions.append(_cloudstack_region_to_gce(response_item))
+    if cloudstack_response['listregionsresponse']:
+        for region in cloudstack_response['listregionsresponse']['region']:
+            regions.append(_cloudstack_region_to_gce(region))
 
     populated_response = {
         'kind': 'compute#regionList',
@@ -71,44 +64,21 @@ def listregions(projectid, authorization):
         'selfLink': request.base_url,
         'items': regions
     }
-
-    res = jsonify(populated_response)
-    res.status_code = 200
-    return res
+    return helper.create_response(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/regions/<region>',
            methods=['GET'])
 @authentication.required
 def getregion(projectid, authorization, region):
-    command = 'listRegions'
-    args = {
-        'name': region
-    }
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-
-    cloudstack_response = json.loads(cloudstack_response)
-
-    app.logger.debug(
-        'Processing request for getregion\n'
-        'Project: ' + projectid + '\n' +
-        'Region: ' + region + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    cloudstack_response = _get_regions(
+        authorization,
+        args = {'name': region}
     )
 
     if cloudstack_response['listregionsresponse']:
-        response_item = cloudstack_response[
-            'listregionsresponse']['region'][0]
-        region = _cloudstack_region_to_gce(response_item)
-        res = jsonify(region)
-        res.status_code = 200
-    else:
-        func_route = url_for('getregion', projectid=projectid, region=region)
-        res = errors.resource_not_found(func_route)
+        cloudstack_response = _cloudstack_region_to_gce(cloudstack_response['listregionsresponse']['region'][0])
+        return helper.create_response(data=cloudstack_response)
 
-    return res
+    function_route = url_for('getimage', projectid=projectid, image=region)
+    return(errors.resource_not_found(function_route))
