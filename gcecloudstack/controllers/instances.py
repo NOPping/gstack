@@ -43,6 +43,7 @@ def _get_instances(authorization, args=None):
 
 def _deploy_virtual_machine(authorization, args):
     command = 'deployVirtualMachine'
+    # do something here to convert the given args.
     cloudstack_response = requester.make_request(
         command,
         args,
