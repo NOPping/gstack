@@ -17,19 +17,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
+from . import helper
+from flask import request
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
 from gcecloudstack.controllers import zones
-from flask import jsonify, request
 import json
 import urllib
 
 
 def _get_instances(authorization, args=None):
     command = 'listVirtualMachines'
-    if args is None:
+    if not args:
         args = {}
     cloudstack_response = requester.make_request(
         command,
@@ -38,15 +38,22 @@ def _get_instances(authorization, args=None):
         authorization.client_secret
     )
 
-    app.logger.debug(
-        json.dumps(json.loads(cloudstack_response),
-                   indent=4, separators=(',', ': '))
+    return cloudstack_response
+
+
+def _deploy_virtual_machine(authorization, args):
+    command = 'deployVirtualMachine'
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.client_id,
+        authorization.client_secret
     )
 
-    return json.loads(cloudstack_response)
+    return cloudstack_response
 
 
-def _cloudstack_instance_to_gce(response_item, zone=None, selfLink=None):
+def _cloudstack_instance_to_gce(response_item, selfLink=None, zone=None):
     cloudstack = {}
     cloudstack['kind'] = 'compute#instance'
     cloudstack['id'] = response_item['id']
@@ -81,7 +88,7 @@ def _cloudstack_instance_to_gce(response_item, zone=None, selfLink=None):
 
 @app.route('/' + app.config['PATH'] + '<projectid>/aggregated/instances', methods=['GET'])
 @authentication.required
-def aggregatedlistinstances(projectid, authorization):
+def aggregatedlistinstances(authorization, projectid):
     zonelist = zones.get_zone_names(authorization)
     instancesList = _get_instances(authorization)
 
@@ -110,14 +117,12 @@ def aggregatedlistinstances(projectid, authorization):
         'items': items
     }
 
-    res = jsonify(populated_response)
-    res.status_code = 200
-    return res
+    return helper.createsuccessfulresponse(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances', methods=['GET'])
 @authentication.required
-def listinstances(projectid, authorization, zone):
+def listinstances(authorization, projectid, zone):
     instance = None
 
     if 'filter' in request.args:
@@ -144,19 +149,38 @@ def listinstances(projectid, authorization, zone):
         'items': items
     }
 
-    res = jsonify(populated_response)
-    res.status_code = 200
-    return res
+    return helper.createsuccessfulresponse(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
 @authentication.required
 def getinstance(projectid, authorization, zone, instance):
     cloudstack_response = _get_instances(
-        authorization, args={'keyword': instance})
-    res = jsonify(
-        _cloudstack_instance_to_gce(cloudstack_response[
-                                    'listvirtualmachinesresponse']['virtualmachine'][0])
+        authorization,
+        args={'keyword': instance}
     )
-    res.status_code = 200
-    return res
+
+    return helper.createsuccessfulresponse(
+        data=_cloudstack_instance_to_gce(cloudstack_response['listvirtualmachinesresponse']['virtualmachine'][0])
+    )
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['POST'])
+@authentication.requred
+def addinstance(authorization, projectid, zone):
+    data = json.loads(request.data)
+    args = {}
+    args['name'] = data['name']
+    args['serviceoffering'] = data['machineType'].rsplit('/', 1)[1]
+    args['template'] = data['image'].rsplit('/', 1)[1]
+    args['zone'] = zone
+
+    deploymentResult = _deploy_virtual_machine(authorization, args)
+
+    populated_response = operations.create_response(
+        projectid=projectid,
+        operationid=deploymentResult['deployvirtualmachineresponse']['jobid'],
+        authorization=authorization
+    )
+
+    return helper.createsuccessfulresponse(data=populated_response)

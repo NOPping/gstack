@@ -22,6 +22,7 @@ import hmac
 import base64
 import urllib
 import requests
+import json
 from flask import abort
 from gcecloudstack import app
 
@@ -34,18 +35,12 @@ def make_request(command, args, client_id, client_secret):
     request = zip(args.keys(), args.values())
     request.sort(key=lambda x: x[0].lower())
 
-    request_url = "&".join(
-        ["=".join([r[0], urllib.quote_plus(str(r[1]))]) for r in request]
-    )
+    request_url = "&".join(["=".join([r[0], urllib.quote_plus(str(r[1]))]) for r in request])
 
-    hashStr = "&".join(["=".join([r[0].lower(),
-                        str.lower(urllib.quote_plus(str(r[1]))
-                                  ).replace("+", "%20")]) for r in request])
+    hashStr = "&".join(["=".join([r[0].lower(), str.lower(urllib.quote_plus(str(r[1]))).replace("+", "%20")])
+                        for r in request])
 
-    sig = urllib.quote_plus(
-        base64.encodestring(
-            hmac.new(client_secret, hashStr, hashlib.sha1).digest()
-        ).strip())
+    sig = urllib.quote_plus(base64.encodestring(hmac.new(client_secret, hashStr, hashlib.sha1).digest()).strip())
 
     request_url += "&signature=%s" % sig
 
@@ -59,12 +54,17 @@ def make_request(command, args, client_id, client_secret):
 
     response = requests.get(request_url)
 
+    cloudstack_response = json.load(response.text)
+
     if response.status_code == 200:
-        return response.text
+        app.logger.debug(
+            'status code:' + str(response.status_code) + '\n',
+            json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+        )
+        return cloudstack_response
     else:
         app.logger.debug(
-            'Failed request to cloudstack\n' +
-            'status code:' + str(response.status_code) + '\n'
-            'text: ' + str(response.text)
+            'status code:' + str(response.status_code) + '\n',
+            json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
         )
         abort(response.status_code)
