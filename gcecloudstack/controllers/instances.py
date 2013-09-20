@@ -126,7 +126,7 @@ def aggregatedlistinstances(authorization, projectid):
         'items': items
     }
 
-    return helper.createsuccessfulresponse(data=populated_response)
+    return helper.createresponse(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances', methods=['GET'])
@@ -160,7 +160,7 @@ def listinstances(authorization, projectid, zone):
         'items': items
     }
 
-    return helper.createsuccessfulresponse(data=populated_response)
+    return helper.createresponse(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
@@ -171,7 +171,7 @@ def getinstance(projectid, authorization, zone, instance):
         args={'keyword': instance}
     )
 
-    return helper.createsuccessfulresponse(
+    return helper.createresponse(
         data=_cloudstack_instance_to_gce(cloudstack_response['listvirtualmachinesresponse']['virtualmachine'][0])
     )
 
@@ -188,12 +188,26 @@ def addinstance(authorization, projectid, zone):
 
     deploymentResult = _deploy_virtual_machine(authorization, args)
 
-    populated_response = operations.create_response(
-        projectid=projectid,
-        operationid=deploymentResult['deployvirtualmachineresponse']['jobid'],
-        authorization=authorization
-    )
+    if 'errortext' in deploymentResult['deployvirtualmachineresponse']:
+        populated_response = {
+            'kind': 'compute#operation',
+            'operationType': 'insert',
+            'targetLink': '',
+            'status': 'DONE',
+            'progress': 100,
+            'error': {
+                'errors': [{
+                    'code': 'RESOURCE_ALREADY_EXISTS',
+                    'message': 'the resource \'projects/\'' + projectid + '/zones/' + zone + '/instances/' +
+                    args['name']
+                }]
+            }
+        }
+    else:
+        populated_response = operations.create_response(
+            projectid=projectid,
+            operationid=deploymentResult['deployvirtualmachineresponse']['jobid'],
+            authorization=authorization
+        )
 
-    app.logger.debug(str(populated_response))
-
-    return helper.createsuccessfulresponse(data=populated_response)
+    return helper.createresponse(data=populated_response)

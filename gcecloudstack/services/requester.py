@@ -57,10 +57,11 @@ def make_request(command, args, client_id, client_secret):
     cloudstack_response = json.loads(response.text)
 
     app.logger.debug(
+        'status code: ' + str(response.status_code) +
         json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
     )
 
-    if response.status_code == 200:
-        return cloudstack_response
-    else:
+    if response.status_code is 500:
         abort(response.status_code)
+    else:
+        return cloudstack_response

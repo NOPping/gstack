@@ -21,7 +21,7 @@ from gcecloudstack import app
 from flask import jsonify
 
 
-def createsuccessfulresponse(data):
+def createresponse(data):
     res = jsonify(data)
     res.status_code = 200
 
