@@ -55,8 +55,7 @@ def resource_not_found(func_url):
                 {
                     'domain': 'global',
                     'reason': 'notFound',
-                    'message': 'The resource \'' +
-                    func_url + '\' was not found'
+                    'message': 'The resource \'' + func_url + '\' was not found'
                 }
             ],
             'code': 404,
@@ -71,13 +70,10 @@ def no_results_found(scope):
     return ({
         "warning": {
             "code": "NO_RESULTS_ON_PAGE",
-            "message": "There are no results for scope" +
-            scope + " on this page.",
-            "data": [
-                {
-                    "key": "scope",
-                    "value": scope
-                }
-            ]
+            "message": "There are no results for scope" + scope + " on this page.",
+            "data": [{
+                "key": "scope",
+                "value": scope
+            }]
             }
     })

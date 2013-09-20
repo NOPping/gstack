@@ -123,3 +123,16 @@ def listdisks(projectid, authorization, zone):
     }
 
     return helper.create_response(data=populated_response)
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/disks/<disk>', methods=['GET'])
+@authentication.required
+def getdisk(projectid, authorization, zone, disk):
+    disk_list = _get_disks(
+        authorization,
+        args={'keyword': disk}
+    )
+
+    return helper.create_response(
+        data=_cloudstack_volume_to_gce(disk_list['listvolumesresponse']['volume'][0])
+    )

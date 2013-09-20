@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 # encoding: utf-8
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -17,31 +17,35 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gcecloudstack import app
-from gcecloudstack import authentication
+from flask import request
+from gcecloudstack import app, authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import errors
-from flask import jsonify, request, url_for
-import json
+from gcecloudstack.controllers import helper
 
 
-def get_zone_id(zone, authorization):
+def _get_zones(authorization, args=None):
     command = 'listZones'
-    args = {
-        'keyword': zone
-    }
+    if not args:
+        args = {}
     cloudstack_response = requester.make_request(
         command,
         args,
         authorization.client_id,
         authorization.client_secret
     )
-    zone_id = None
 
-    if cloudstack_response['listzonesresponse']:
-        zone_id = cloudstack_response[
-            'listzonesresponse']['zone'][0]['id']
-    return zone_id
+    return cloudstack_response
+
+
+def get_zone_names(authorization):
+    zone_list = _get_zones(authorization)
+
+    zones = []
+    if zone_list['listzonesresponse']:
+        for zone in zone_list['listzonesresponse']['zone']:
+            zones.append(zone['name'])
+
+    return zones
 
 
 def _cloudstack_zone_to_gce(response_item):
@@ -58,96 +62,34 @@ def _cloudstack_zone_to_gce(response_item):
     })
 
 
-def get_zone_names(authorization):
-    command = 'listZones'
-    args = {}
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-
-    zones = []
-    if cloudstack_response['listzonesresponse']:
-        for response_item in cloudstack_response['listzonesresponse']['zone']:
-            zones.append(response_item['name'])
-
-    return zones
-
-
-@app.route('/' + app.config['PATH'] + '<projectid>/zones',
-           methods=['GET'])
+@app.route('/' + app.config['PATH'] + '<projectid>/zones', methods=['GET'])
 @authentication.required
 def listzones(projectid, authorization):
-    command = 'listZones'
-    args = {}
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
+    zone_list = _get_zones(authorization)
 
-    app.logger.debug(
-        'Processing request for listzones\n'
-        'Project: ' + projectid + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
-    )
-
-    cloudstack_response = cloudstack_response['listzonesresponse']
-
-    zones = []
-
-    if cloudstack_response:
-        for response_item in cloudstack_response['zone']:
-            zones.append(_cloudstack_zone_to_gce(response_item))
+    items = []
+    if zone_list['listzonesresponse']:
+        for zone in zone_list['listzonesresponse']['zone']:
+            items.append(_cloudstack_zone_to_gce(zone))
 
     populated_response = {
         'kind': 'compute#zoneList',
         'id': 'projects/' + projectid + '/zones',
         'selfLink': request.base_url,
-        'items': zones
+        'items': items
     }
 
-    res = jsonify(populated_response)
-    res.status_code = 200
-
-    return res
+    return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>',
-           methods=['GET'])
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>', methods=['GET'])
 @authentication.required
-def getzone(projectid, authorization, zone):
-    command = 'listZones'
-    args = {
-        'name': zone
-    }
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
+def getdzone(projectid, authorization, zone):
+    zone_list = _get_zones(
+        authorization,
+        args={'keyword': zone}
     )
 
-    cloudstack_response = json.loads(cloudstack_response)
-
-    app.logger.debug(
-        'Processing request for getzone\n' +
-        'Project: ' + projectid + '\n'
-        'Zone: ' + zone + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
+    return helper.create_response(
+        data=_cloudstack_zone_to_gce(zone_list['listzonesresponse']['zone'][0])
     )
-
-    if cloudstack_response['listzonesresponse']:
-        response_item = cloudstack_response[
-            'listzonesresponse']['zone'][0]
-        zone = _cloudstack_zone_to_gce(response_item)
-        res = jsonify(zone)
-        res.status_code = 200
-    else:
-        func_route = url_for('getzone', projectid=projectid, zone=zone)
-        res = errors.resource_not_found(func_route)
-
-    return res
