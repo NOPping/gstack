@@ -54,37 +54,37 @@ def _deploy_virtual_machine(authorization, args):
     return cloudstack_response
 
 
-def _cloudstack_instance_to_gce(response_item, selfLink=None, zone=None):
-    cloudstack = {}
-    cloudstack['kind'] = 'compute#instance'
-    cloudstack['id'] = response_item['id']
-    cloudstack['creationTimestamp'] = response_item['created']
-    cloudstack['status'] = response_item['state'].upper()
-    cloudstack['name'] = response_item['displayname']
-    cloudstack['description'] = response_item['displayname']
-    cloudstack['machineType'] = response_item['serviceofferingname']
-    cloudstack['image'] = response_item['templatename']
-    cloudstack['canIpForward'] = 'true'
-    cloudstack['networkInterfaces'] = []
+def _cloudstack_instance_to_gce(cloudstack_response, selfLink=None, zone=None):
+    response = {}
+    response['kind'] = 'compute#instance'
+    response['id'] = cloudstack_response['id']
+    response['creationTimestamp'] = cloudstack_response['created']
+    response['status'] = cloudstack_response['state'].upper()
+    response['name'] = cloudstack_response['displayname']
+    response['description'] = cloudstack_response['displayname']
+    response['machineType'] = cloudstack_response['serviceofferingname']
+    response['image'] = cloudstack_response['templatename']
+    response['canIpForward'] = 'true'
+    response['networkInterfaces'] = []
 
     networking = {}
     networking['network'] = 'tobereviewed'
-    networking['networkIP'] = response_item['nic'][0]['ipaddress']
-    networking['name'] = response_item['nic'][0]['id']
+    networking['networkIP'] = cloudstack_response['nic'][0]['ipaddress']
+    networking['name'] = cloudstack_response['nic'][0]['id']
 
-    cloudstack['networkInterfaces'].append(networking)
+    response['networkInterfaces'].append(networking)
 
     if not selfLink:
-        cloudstack['selfLink'] = request.base_url
+        response['selfLink'] = request.base_url
     else:
-        cloudstack['selfLink'] = selfLink
+        response['selfLink'] = selfLink
 
     if not zone:
-        cloudstack['zone'] = response_item['zonename']
+        response['zone'] = cloudstack_response['zonename']
     else:
-        cloudstack['zone'] = zone
+        response['zone'] = zone
 
-    return cloudstack
+    return response
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/aggregated/instances', methods=['GET'])
@@ -101,10 +101,9 @@ def aggregatedlistinstances(authorization, projectid):
             for instance in instancesList['listvirtualmachinesresponse']['virtualmachine']:
                 zones_instances.append(
                     _cloudstack_instance_to_gce(
-                        response_item=instance,
+                        cloudstack_response=instance,
                         zone=zone,
-                        selfLink=request.base_url +
-                        '/' + instance['displayname']
+                        selfLink=request.base_url + '/' + instance['displayname']
                     )
                 )
         items['zone/' + zone] = {}
@@ -133,14 +132,16 @@ def listinstances(authorization, projectid, zone):
             instance = filter['name']
 
     if instance:
-        cloudstack_response = _get_instances(
-            authorization, args={'keyword': instance})
+        instanceList = _get_instances(
+            authorization,
+            args={'keyword': instance}
+        )
     else:
-        cloudstack_response = _get_instances(authorization)
+        instanceList = _get_instances(authorization)
 
     items = []
-    if cloudstack_response['listvirtualmachinesresponse']:
-        for instance in cloudstack_response['listvirtualmachinesresponse']['virtualmachine']:
+    if instanceList['listvirtualmachinesresponse']:
+        for instance in instanceList['listvirtualmachinesresponse']['virtualmachine']:
             items.append(_cloudstack_instance_to_gce(instance))
 
     populated_response = {
