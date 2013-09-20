@@ -17,38 +17,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gcecloudstack import app
-from gcecloudstack import authentication
+from flask import request
+from gcecloudstack import app, authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import errors, zones
-from flask import jsonify, request, url_for
-import json
+from gcecloudstack.controllers import zones, helper
 
 
-def _cloudstack_volume_to_gce(response_item):
-    return {
-        "kind": "compute#disk",
-        "selfLink": request.base_url + '/' + response_item['name'],
-        "id": response_item['id'],
-        "creationTimestamp": response_item['created'],
-        "zone": response_item['zonename'],
-        "status": response_item['state'],
-        "name": response_item['name'],
-        "description": response_item['name'],
-        "sizeGb": response_item['size'],
-        "sourceSnapshot": '',
-        "sourceSnapshotId": '',
-        "sourceImage": ''
-    }
-
-
-@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/disks',
-           methods=['GET'])
-@authentication.required
-def aggregatedlistdisks(projectid, authorization):
+def _get_disks(authorization, args=None):
     command = 'listVolumes'
-    args = {}
-
+    if not args:
+        args = {}
     cloudstack_response = requester.make_request(
         command,
         args,
@@ -56,31 +34,51 @@ def aggregatedlistdisks(projectid, authorization):
         authorization.client_secret
     )
 
-    cloudstack_response = json.loads(cloudstack_response)
+    return cloudstack_response
 
-    app.logger.debug(
-        'Processing request for list disks\n'
-        'Project: ' + projectid + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
-    )
 
-    disks = []
-    if cloudstack_response['listvolumesresponse']:
-        for response_item in cloudstack_response[
-                'listvolumesresponse']['volume']:
-            disks.append(_cloudstack_volume_to_gce(response_item))
+def _cloudstack_volume_to_gce(cloudstack_response, selfLink=None, zone=None):
+    response = {}
+    response['kind'] = 'compute#disk'
+    response['id'] = cloudstack_response['id']
+    response['creationTimestamp'] = cloudstack_response['created']
+    response['status'] = cloudstack_response['state'].upper()
+    response['name'] = cloudstack_response['name']
+    response['description'] = cloudstack_response['name']
+    response['sizeGb'] = cloudstack_response['size']
 
-    zonelist = zones.get_zone_names(authorization)
+    if not selfLink:
+        response['selfLink'] = request.base_url
+    else:
+        response['selfLink'] = selfLink
+
+    if not zone:
+        response['zone'] = cloudstack_response['zonename']
+    else:
+        response['zone'] = zone
+
+    return response
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/disks', methods=['GET'])
+@authentication.required
+def aggregatedlistdisks(projectid, authorization):
+    disk_list = _get_disks(authorization)
+    zone_list = zones.get_zone_names(authorization)
 
     items = {}
-    for zone in zonelist:
-        zone_disks = []
-        for disk in disks:
-            disk['zone'] = zone
-            disk['selfLink'] = request.base_url + \
-                '/' + disk['name']
-            zone_disks.append(disk)
 
+    for zone in zone_list:
+        zone_disks = []
+        if disk_list['listvolumesresponse']:
+            for disk in disk_list['listvolumesresponse']['volume']:
+                zone_disks.append(
+                    _cloudstack_volume_to_gce(
+                        cloudstack_response=disk,
+                        zone=zone,
+                        selfLink=request.base_url + '/' + disk['name']
+                    )
+                )
         items['zone/' + zone] = {}
         items['zone/' + zone]['zone'] = zone
         items['zone/' + zone]['disks'] = zone_disks
@@ -91,87 +89,37 @@ def aggregatedlistdisks(projectid, authorization):
         'id': 'projects/' + projectid + '/global/images',
         'items': items
     }
-    res = jsonify(populated_response)
-    res.status_code = 200
-    return res
+
+    return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/disks',
-           methods=['GET'])
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/disks', methods=['GET'])
 @authentication.required
 def listdisks(projectid, authorization, zone):
-    command = 'listVolumes'
-    args = {}
+    disk = None
+    filter = helper.get_filter(request.args)
 
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
+    if 'name' in filter:
+        disk = filter['name']
 
-    cloudstack_response = json.loads(cloudstack_response)
+    if disk:
+        disk_list = _get_disks(
+            authorization,
+            args={'keyword': disk}
+        )
+    else:
+        disk_list = _get_disks(authorization)
 
-    app.logger.debug(
-        'Processing request for list disks\n'
-        'Project: ' + projectid + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
-    )
-
-    disks = []
-    if cloudstack_response['listvolumesresponse']:
-        for response_item in cloudstack_response[
-                'listvolumesresponse']['volume']:
-            disks.append(_cloudstack_volume_to_gce(response_item))
+    items = []
+    if disk_list['listvolumesresponse']:
+        for disk in disk_list['listvolumesresponse']['volume']:
+            items.append(_cloudstack_volume_to_gce(disk))
 
     populated_response = {
         'kind': 'compute#imageList',
         'selfLink': request.base_url,
         'id': 'projects/' + projectid + '/global/images',
-        'items': disks
-    }
-    res = jsonify(populated_response)
-    res.status_code = 200
-    return res
-
-
-@app.route('/' + app.config['PATH'] +
-           '<projectid>/zones/<zone>/disks', methods=['POST'])
-@authentication.required
-def insertdisk(projectid, authorization, zone):
-    image_url = (json.loads(request.data))['description']
-    url_sections = image_url.split('/')
-    image_name = url_sections[-1]
-
-    command = 'createVolume'
-    args = {
-        'name': image_name
+        'items': items
     }
 
-    # At the minute we're returning a spoofed response without creating a
-    # volume
-
-    # cloudstack_response = requester.make_request(
-    #    command,
-    #    args,
-    #    authorization.client_id,
-    #    authorization.client_secret
-    # )
-
-    populated_response = {
-        "kind": "compute#disk",
-        "selfLink": request.base_url,
-        "id": 0,
-        "creationTimestamp": '',
-        "zone": '',
-        "status": '',
-        "name": '',
-        "description": '',
-        "sizeGb": 100,
-        "sourceSnapshot": '',
-        "sourceSnapshotId": '',
-        "sourceImage": ''
-    }
-    res = jsonify(populated_response)
-    res.status_code = 200
-    return res
+    return helper.create_response(data=populated_response)

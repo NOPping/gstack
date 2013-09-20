@@ -17,15 +17,26 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import urllib
 from gcecloudstack import app
 from flask import jsonify
 
 
-def createresponse(data):
+def create_response(data):
     res = jsonify(data)
     res.status_code = 200
 
     return res
+
+
+def get_filter(data):
+    filter = {}
+
+    if 'filter' in data:
+        filter = urllib.unquote_plus(data['filter'])
+        filter = dict(filter.split(' eq ') for values in filter)
+
+    return filter
 
 
 def get_root_url():

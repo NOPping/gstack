@@ -17,13 +17,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import json
 from flask import request
-from gcecloudstack import app
-from gcecloudstack import authentication
+from gcecloudstack import app, authentication
 from gcecloudstack.services import requester
 from gcecloudstack.controllers import zones, helper, operations, images
-import json
-import urllib
 
 
 def _get_instances(authorization, args=None):
@@ -42,20 +40,21 @@ def _get_instances(authorization, args=None):
 
 def _deploy_virtual_machine(authorization, args):
     command = 'deployVirtualMachine'
-    # do something here to convert the given args.
-    convertedargs = {}
-    convertedargs['templateid'] = images.get_template_id(
+
+    converted_args = {}
+    converted_args['templateid'] = images.get_template_id(
         args['template'], authorization
     )
-    convertedargs['zoneid'] = zones.get_zone_id(
+    converted_args['zoneid'] = zones.get_zone_id(
         args['zone'], authorization
     )
-    convertedargs['serviceofferingid'] = args['serviceoffering']
-    convertedargs['displayname'] = args['name']
-    convertedargs['name'] = args['name']
+    converted_args['serviceofferingid'] = args['serviceoffering']
+    converted_args['displayname'] = args['name']
+    converted_args['name'] = args['name']
+
     cloudstack_response = requester.make_request(
         command,
-        convertedargs,
+        converted_args,
         authorization.client_id,
         authorization.client_secret
     )
@@ -99,15 +98,15 @@ def _cloudstack_instance_to_gce(cloudstack_response, selfLink=None, zone=None):
 @app.route('/' + app.config['PATH'] + '<projectid>/aggregated/instances', methods=['GET'])
 @authentication.required
 def aggregatedlistinstances(authorization, projectid):
-    zonelist = zones.get_zone_names(authorization)
-    instancesList = _get_instances(authorization)
+    zone_list = zones.get_zone_names(authorization)
+    instances_list = _get_instances(authorization)
 
     items = {}
 
-    for zone in zonelist:
+    for zone in zone_list:
         zones_instances = []
-        if instancesList['listvirtualmachinesresponse']:
-            for instance in instancesList['listvirtualmachinesresponse']['virtualmachine']:
+        if instances_list['listvirtualmachinesresponse']:
+            for instance in instances_list['listvirtualmachinesresponse']['virtualmachine']:
                 zones_instances.append(
                     _cloudstack_instance_to_gce(
                         cloudstack_response=instance,
@@ -126,41 +125,39 @@ def aggregatedlistinstances(authorization, projectid):
         'items': items
     }
 
-    return helper.createresponse(data=populated_response)
+    return helper.create_response(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances', methods=['GET'])
 @authentication.required
 def listinstances(authorization, projectid, zone):
     instance = None
+    filter = helper.get_filter(request.args)
 
-    if 'filter' in request.args:
-        filter = urllib.unquote_plus(request.args['filter'])
-        filter = dict(filter.split(' eq ') for values in filter)
-        if filter['name']:
-            instance = filter['name']
+    if 'name' in filter:
+        instance = filter['name']
 
     if instance:
-        instanceList = _get_instances(
+        instance_list = _get_instances(
             authorization,
             args={'keyword': instance}
         )
     else:
-        instanceList = _get_instances(authorization)
+        instance_list = _get_instances(authorization)
 
     items = []
-    if instanceList['listvirtualmachinesresponse']:
-        for instance in instanceList['listvirtualmachinesresponse']['virtualmachine']:
+    if instance_list['listvirtualmachinesresponse']:
+        for instance in instance_list['listvirtualmachinesresponse']['virtualmachine']:
             items.append(_cloudstack_instance_to_gce(instance))
 
     populated_response = {
-        'kind': 'compute#instanceList',
+        'kind': 'compute#instance_list',
         'id': 'projects/' + projectid + '/instances',
         'selfLink': request.base_url,
         'items': items
     }
 
-    return helper.createresponse(data=populated_response)
+    return helper.create_response(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
@@ -171,7 +168,7 @@ def getinstance(projectid, authorization, zone, instance):
         args={'keyword': instance}
     )
 
-    return helper.createresponse(
+    return helper.create_response(
         data=_cloudstack_instance_to_gce(cloudstack_response['listvirtualmachinesresponse']['virtualmachine'][0])
     )
 
@@ -210,4 +207,4 @@ def addinstance(authorization, projectid, zone):
             authorization=authorization
         )
 
-    return helper.createresponse(data=populated_response)
+    return helper.create_response(data=populated_response)
