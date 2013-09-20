@@ -37,9 +37,9 @@ def get_zone_id(zone, authorization):
         authorization.client_secret
     )
     zone_id = None
-    cloudstack_responses = json.loads(cloudstack_response)
-    if cloudstack_responses['listzonesresponse']:
-        zone_id = cloudstack_responses[
+
+    if cloudstack_response['listzonesresponse']:
+        zone_id = cloudstack_response[
             'listzonesresponse']['zone'][0]['id']
     return zone_id
 
@@ -68,8 +68,6 @@ def get_zone_names(authorization):
         authorization.client_secret
     )
 
-    cloudstack_response = json.loads(cloudstack_response)
-
     zones = []
     if cloudstack_response['listzonesresponse']:
         for response_item in cloudstack_response['listzonesresponse']['zone']:
@@ -90,8 +88,6 @@ def listzones(projectid, authorization):
         authorization.client_id,
         authorization.client_secret
     )
-
-    cloudstack_response = json.loads(cloudstack_response)
 
     app.logger.debug(
         'Processing request for listzones\n'

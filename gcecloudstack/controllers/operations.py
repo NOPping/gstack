@@ -16,3 +16,94 @@
 # KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+from gcecloudstack import app
+from gcecloudstack import authentication
+from gcecloudstack.controllers import helper
+from gcecloudstack.services import requester
+from flask import url_for
+
+
+def _get_async_result(authorization, args):
+    command = 'queryAsyncJobResult'
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.client_id,
+        authorization.client_secret
+    )
+
+    return cloudstack_response
+
+
+def _create_instance_response(async_result, projectid):
+    populated_response = {
+        'kind': 'compute#operation',
+        'id': async_result['jobid'],
+        'name': async_result['jobid'],
+        'operationType': 'insert',
+        'user': async_result['userid'],
+        'insertTime': async_result['created'],
+        'startTime': async_result['created'],
+        'selfLink': helper.get_root_url() + url_for(
+            'getoperations',
+            projectid=projectid,
+            operationid=async_result['jobid']
+        ),
+    }
+
+    if async_result['jobstatus'] is 0:
+        # handle pending case
+        populated_response['targetLink'] = ''
+        populated_response['status'] = 'PENDING'
+        populated_response['progress'] = 0
+    elif async_result['jobstatus'] is 1:
+        # handle successful case
+        populated_response['status'] = 'DONE'
+        populated_response['zone'] = helper.get_root_url() + url_for(
+            'getzone',
+            projectid=projectid,
+            zone=async_result['jobresult']['virtualmachine']['zonename'],
+        )
+        populated_response['targetLink'] = helper.get_root_url() + url_for(
+            'getinstance',
+            projectid=projectid,
+            zone=async_result['jobresult']['virtualmachine']['zonename'],
+            instance=async_result['jobresult']['virtualmachine']['instancename']
+        )
+
+    # need to add a case here for error handling, its job status 2
+
+    return populated_response
+
+
+def create_response(authorization, projectid, operationid):
+    async_result = _get_async_result(
+        authorization=authorization,
+        args={'jobId': operationid}
+    )
+
+    command_name = None
+    populated_response = {}
+
+    if async_result['queryasyncjobresultresponse']:
+        async_result = async_result['queryasyncjobresultresponse']
+        command_name = async_result['cmd'].rsplit('.', 1)[1]
+
+    if command_name == 'DeployVMCmd':
+        populated_response = _create_instance_response(
+            async_result=async_result,
+            projectid=projectid
+        )
+
+    return populated_response
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>/global/operations/<operationid>', methods=['GET'])
+@authentication.required
+def getoperations(authorization, operationid, projectid):
+    return helper.createsuccessfulresponse(create_response(
+        authorization=authorization,
+        operationid=operationid,
+        projectid=projectid
+    ))

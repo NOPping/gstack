@@ -26,7 +26,7 @@ from pyoauth2.provider import ResourceProvider
 from pyoauth2.provider import AuthorizationProvider
 
 
-from gcecloudstack import db
+from gcecloudstack import db, app
 from gcecloudstack.services import requester
 from gcecloudstack.models.client import Client
 from gcecloudstack.models.accesstoken import AccessToken
@@ -39,6 +39,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         return client_id is not None
 
     def validate_client_secret(self, client_id, client_secret):
+        app.logger.debug("Validating secret")
         command = 'listCapabilities'
         args = {}
         cloudstack_response = requester.make_request(
@@ -48,6 +49,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
             client_secret
         )
 
+        app.logger.debug("Cloudstack call was successful")
         if cloudstack_response:
             existing_client = Client.query.get(client_id)
 
@@ -77,14 +79,11 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
     def persist_authorization_code(self, client_id, code, scope):
         return
 
-    def persist_token_information(self, client_id, scope, access_token,
-                                  token_type, expires_in, refresh_token, data):
+    def persist_token_information(self, client_id, scope, access_token, token_type, expires_in, refresh_token, data):
         client = Client.query.get(client_id)
         if client is not None:
-            existing_access_token = AccessToken.query.filter_by(
-                client_id=client_id).first()
-            existing_refresh_token = RefreshToken.query.filter_by(
-                client_id=client_id).first()
+            existing_access_token = AccessToken.query.filter_by(client_id=client_id).first()
+            existing_refresh_token = RefreshToken.query.filter_by(client_id=client_id).first()
 
             if existing_access_token is not None:
                 existing_access_token.access_token = access_token

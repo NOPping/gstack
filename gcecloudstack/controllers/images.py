@@ -38,9 +38,9 @@ def get_template_id(image, authorization):
         authorization.client_secret
     )
     template_id = None
-    cloudstack_responses = json.loads(cloudstack_response)
-    if cloudstack_responses['listtemplatesresponse']:
-        template_id = cloudstack_responses[
+
+    if cloudstack_response['listtemplatesresponse']:
+        template_id = cloudstack_response[
             'listtemplatesresponse']['template'][0]['id']
     return template_id
 
@@ -152,8 +152,6 @@ def listimages(projectid, authorization):
         authorization.client_secret
     )
 
-    cloudstack_response = json.loads(cloudstack_response)
-
     app.logger.debug(
         'Processing request for list images\n'
         'Project: ' + projectid + '\n' +
@@ -192,7 +190,6 @@ def getimage(projectid, authorization, image):
         authorization.client_id,
         authorization.client_secret
     )
-    cloudstack_response = json.loads(cloudstack_response)
 
     app.logger.debug(
         'Processing request for get image\n'

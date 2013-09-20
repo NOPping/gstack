@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from gcecloudstack import app
 from flask import jsonify
 
 
@@ -25,3 +26,7 @@ def createsuccessfulresponse(data):
     res.status_code = 200
 
     return res
+
+
+def get_root_url():
+    return 'https://' + app.config['LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT']

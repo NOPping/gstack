@@ -17,12 +17,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from . import helper
 from flask import request
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import zones
+from gcecloudstack.controllers import zones, helper, operations, images
 import json
 import urllib
 
@@ -44,9 +43,17 @@ def _get_instances(authorization, args=None):
 def _deploy_virtual_machine(authorization, args):
     command = 'deployVirtualMachine'
     # do something here to convert the given args.
+    convertedargs = {}
+    convertedargs['templateid'] = images.get_template_id(
+        args['template'], authorization
+    )
+    convertedargs['zoneid'] = zones.get_zone_id(
+        args['zone'], authorization
+    )
+    convertedargs['serviceofferingid'] = args['serviceoffering']
     cloudstack_response = requester.make_request(
         command,
-        args,
+        convertedargs,
         authorization.client_id,
         authorization.client_secret
     )
@@ -60,8 +67,8 @@ def _cloudstack_instance_to_gce(cloudstack_response, selfLink=None, zone=None):
     response['id'] = cloudstack_response['id']
     response['creationTimestamp'] = cloudstack_response['created']
     response['status'] = cloudstack_response['state'].upper()
-    response['name'] = cloudstack_response['displayname']
-    response['description'] = cloudstack_response['displayname']
+    response['name'] = cloudstack_response['instancename']
+    response['description'] = cloudstack_response['instancename']
     response['machineType'] = cloudstack_response['serviceofferingname']
     response['image'] = cloudstack_response['templatename']
     response['canIpForward'] = 'true'
@@ -103,7 +110,7 @@ def aggregatedlistinstances(authorization, projectid):
                     _cloudstack_instance_to_gce(
                         cloudstack_response=instance,
                         zone=zone,
-                        selfLink=request.base_url + '/' + instance['displayname']
+                        selfLink=request.base_url + '/' + instance['instancename']
                     )
                 )
         items['zone/' + zone] = {}
@@ -167,8 +174,8 @@ def getinstance(projectid, authorization, zone, instance):
     )
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['POST'])
-@authentication.requred
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances', methods=['POST'])
+@authentication.required
 def addinstance(authorization, projectid, zone):
     data = json.loads(request.data)
     args = {}
@@ -184,5 +191,7 @@ def addinstance(authorization, projectid, zone):
         operationid=deploymentResult['deployvirtualmachineresponse']['jobid'],
         authorization=authorization
     )
+
+    app.logger.debug(str(populated_response))
 
     return helper.createsuccessfulresponse(data=populated_response)

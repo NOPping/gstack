@@ -38,9 +38,9 @@ def get_service_offering_id(service_offering, authorization):
         authorization.client_secret
     )
     service_offering_id = None
-    cloudstack_responses = json.loads(cloudstack_response)
-    if cloudstack_responses['listserviceofferingsresponse']:
-        service_offering_id = cloudstack_responses[
+
+    if cloudstack_response['listserviceofferingsresponse']:
+        service_offering_id = cloudstack_response[
             'listserviceofferingsresponse']['serviceoffering'][0]['id']
     return service_offering_id
 
@@ -69,8 +69,6 @@ def aggregatedlistmachinetypes(projectid, authorization):
         authorization.client_id,
         authorization.client_secret
     )
-
-    cloudstack_response = json.loads(cloudstack_response)
 
     app.logger.debug(
         'Processing request for aggregated list machine type\n'
@@ -167,8 +165,6 @@ def listmachinetype(projectid, authorization, zone):
         authorization.client_id,
         authorization.client_secret
     )
-
-    cloudstack_response = json.loads(cloudstack_response)
 
     app.logger.debug(
         'Processing request for list machine type\n'

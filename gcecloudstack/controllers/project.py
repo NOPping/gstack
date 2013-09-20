@@ -59,7 +59,6 @@ def getproject(projectid, authorization):
         authorization.client_id,
         authorization.client_secret
     )
-    cloudstack_response = json.loads(cloudstack_response)
 
     app.logger.debug(
         'Processing request for listzones\n'
