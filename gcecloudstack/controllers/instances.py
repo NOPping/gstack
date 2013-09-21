@@ -98,8 +98,8 @@ def _cloudstack_instance_to_gce(cloudstack_response, selfLink=None, zone=None):
 @app.route('/' + app.config['PATH'] + '<projectid>/aggregated/instances', methods=['GET'])
 @authentication.required
 def aggregatedlistinstances(authorization, projectid):
-    zone_list = zones.get_zone_names(authorization)
-    instances_list = _get_instances(authorization)
+    zone_list = zones.get_zone_names(authorization=authorization)
+    instances_list = _get_instances(authorization=authorization)
 
     items = {}
 
@@ -141,7 +141,7 @@ def listinstances(authorization, projectid, zone):
 
     if instance:
         instance_list = _get_instances(
-            authorization,
+            authorization=authorization,
             args={'keyword': instance}
         )
         if instance_list['listvirtualmachinesresponse']:
@@ -152,7 +152,7 @@ def listinstances(authorization, projectid, zone):
             if instance:
                 items.append(_cloudstack_instance_to_gce(instance))
     else:
-        instance_list = _get_instances(authorization)
+        instance_list = _get_instances(authorization=authorization)
         if instance_list['listvirtualmachinesresponse']:
             for instance in instance_list['listvirtualmachinesresponse']['virtualmachine']:
                 items.append(_cloudstack_instance_to_gce(instance))
@@ -171,7 +171,7 @@ def listinstances(authorization, projectid, zone):
 @authentication.required
 def getinstance(projectid, authorization, zone, instance):
     instance_list = _get_instances(
-        authorization,
+        authorization=authorization,
         args={'keyword': instance}
     )
 

@@ -63,8 +63,8 @@ def _cloudstack_volume_to_gce(cloudstack_response, selfLink=None, zone=None):
 @app.route('/' + app.config['PATH'] + '<projectid>/aggregated/disks', methods=['GET'])
 @authentication.required
 def aggregatedlistdisks(projectid, authorization):
-    disk_list = _get_disks(authorization)
-    zone_list = zones.get_zone_names(authorization)
+    disk_list = _get_disks(authorization=authorization)
+    zone_list = zones.get_zone_names(authorization=authorization)
 
     items = {}
 
@@ -106,7 +106,7 @@ def listdisks(projectid, authorization, zone):
 
     if disk:
         disk_list = _get_disks(
-            authorization,
+            authorization=authorization,
             args={'keyword': disk}
         )
         if disk_list['listvolumesresponse']:
@@ -117,7 +117,7 @@ def listdisks(projectid, authorization, zone):
             if disk:
                 items.append(_cloudstack_volume_to_gce(disk))
     else:
-        disk_list = _get_disks(authorization)
+        disk_list = _get_disks(authorization=authorization)
         if disk_list['listvolumesresponse']:
             for disk in disk_list['listvolumesresponse']['volume']:
                 items.append(_cloudstack_volume_to_gce(disk))
@@ -136,7 +136,7 @@ def listdisks(projectid, authorization, zone):
 @authentication.required
 def getdisk(projectid, authorization, zone, disk):
     disk_list = _get_disks(
-        authorization,
+        authorization=authorization,
         args={'keyword': disk}
     )
 

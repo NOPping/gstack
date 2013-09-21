@@ -17,16 +17,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gcecloudstack import app
-from gcecloudstack import authentication
+from gcecloudstack import app, authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import helper, errors, operations
+from gcecloudstack.controllers import helper, errors
 from flask import request, url_for
+
 
 def _get_templates(authorization, args=None):
     command = 'listTemplates'
     if not args:
         args = {}
+
+    if 'templatefilter' not in args:
+        args['templatefilter'] = 'executable'
 
     cloudstack_response = requester.make_request(
         command,
@@ -37,15 +40,34 @@ def _get_templates(authorization, args=None):
     return cloudstack_response
 
 
-def get_template_id(image, authorization):
-    template_id = None
-    cloudstack_response = _get_templates(
-        authorization,
-        args={'keyword': image}
+def get_template_by_name(authorization, image):
+    image_list = _get_templates(
+        authorization=authorization,
+        args={
+            'keyword': image
+        }
     )
-    if cloudstack_response['listtemplatesresponse']:
-        template_id = cloudstack_response['listtemplatesresponse']['template'][0]['id']
-    return template_id
+
+    if image_list['listtemplatesresponse']:
+        response = helper.filter_by_name(
+            data=image_list['listtemplatesresponse']['template'],
+            name=image
+        )
+        return response
+    else:
+        return None
+
+
+def _create_populated_image_response(projectid, images=None):
+    if not images:
+        images = []
+    populated_response = {
+        'kind': 'compute#imageList',
+        'selfLink': request.base_url,
+        'id': 'projects/' + projectid + '/global/images',
+        'items': images
+    }
+    return populated_response
 
 
 def _cloudstack_template_to_gce(cloudstack_response, selfLink=None):
@@ -62,94 +84,59 @@ def _cloudstack_template_to_gce(cloudstack_response, selfLink=None):
     response['description'] = cloudstack_response['displaytext']
     response['status'] = translate_image_status[str(cloudstack_response['isready'])]
 
-    if not selfLink:
-        response['selfLink'] = request.base_url
-    else:
+    if selfLink:
         response['selfLink'] = selfLink
+    else:
+        response['selfLink'] = request.base_url
 
     return response
-
 
 
 @app.route('/' + app.config['PATH'] + 'centos-cloud/global/images', methods=['GET'])
 @authentication.required
 def listnocentoscloudimages(authorization):
-    images = []
-    populated_response = _create_populated_image_response('centos-cloud', images)
+    populated_response = _create_populated_image_response('centos-cloud')
     return helper.create_response(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + 'debian-cloud/global/images', methods=['GET'])
 @authentication.required
 def listnodebiancloudimages(authorization):
-    images = []
-    populated_response = _create_populated_image_response('debian-cloud', images)
+    populated_response = _create_populated_image_response('debian-cloud')
     return helper.create_response(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/global/images', methods=['GET'])
 @authentication.required
 def listimages(projectid, authorization):
-    cloudstack_response = _get_templates(
-        authorization,
-        args = {
-            'templatefilter': 'executable'
-        }
+    image_list = _get_templates(
+        authorization=authorization
     )
 
     images = []
-    if cloudstack_response['listtemplatesresponse']:
-        for template in cloudstack_response['listtemplatesresponse']['template']:
-            images.append(_cloudstack_template_to_gce(template))
+    if image_list['listtemplatesresponse']:
+        for image in image_list['listtemplatesresponse']['template']:
+            images.append(_cloudstack_template_to_gce(
+                image,
+                selfLink=request.base_url + '/' + image['name'])
+            )
 
     populated_response = _create_populated_image_response(projectid, images)
     return helper.create_response(data=populated_response)
 
 
-def _create_populated_image_response(projectid, images):
-    populated_response = {
-        'kind': 'compute#imageList',
-        'selfLink': request.base_url,
-        'id': 'projects/' + projectid + '/global/images',
-        'items': images
-    }
-    return populated_response
-
-
 @app.route('/' + app.config['PATH'] + '<projectid>/global/images/<image>', methods=['GET'])
 @authentication.required
 def getimage(projectid, authorization, image):
-    cloudstack_response = _get_templates(
-        authorization,
-        args = {
-            'templatefilter': 'executable',
-            'keyword': image
-        }
-    )
-    if cloudstack_response['listtemplatesresponse']:
-        cloudstack_response = _cloudstack_template_to_gce(cloudstack_response['listtemplatesresponse']['template'][0])
-        return helper.create_response(data=cloudstack_response)
-
-    function_route = url_for('getimage', projectid=projectid, image=image)
-    return(errors.resource_not_found(function_route))
-
-
-@app.route('/' + app.config['PATH'] + '<projectid>/global/images/<image>', methods = ['DELETE'])
-@authentication.required
-def deleteimage(projectid, authorization, image):
-    imageid = get_template_id(image, authorization)
-    if imageid is None:
-        function_route = url_for('deleteimage', projectid=projectid, image=image)
-        return errors.resource_not_found(function_route)
-
-    args =  {'id':imageid}
-    cloudstack_response = requester.make_request(
-        'deleteTemplate',
-        args,
-        authorization.client_id,
-        authentication.client_secret
+    template = get_template_by_name(
+        authorization=authorization,
+        image=image
     )
 
-    image_deleted = operations.delete_image_response(cloudstack_response, image, imageid)
-    return helper.create_response(data=image_deleted)
-
+    if template:
+        return helper.create_response(
+            data=_cloudstack_template_to_gce(template)
+        )
+    else:
+        func_route = url_for('getimage', projectid=projectid, image=image)
+        return errors.resource_not_found(func_route)

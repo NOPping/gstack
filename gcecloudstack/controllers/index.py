@@ -19,7 +19,7 @@
 
 
 from gcecloudstack import app
-from flask import jsonify
+from gcecloudstack.controllers import helper
 import json
 
 
@@ -35,7 +35,4 @@ def discovery():
         'LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT'] + '/'
     discovery_template['servicePath'] = app.config['PATH']
 
-    res = jsonify(discovery_template)
-
-    res.status_code = 200
-    return res
+    return helper.create_response(data=discovery_template)
