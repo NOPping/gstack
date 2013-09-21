@@ -46,13 +46,11 @@ def get_machinetype_id(machinetype, authorization):
     )
 
     if cloudstack_response['listserviceofferingsresponse']:
-        machinetype_id = cloudstack_response[
-            'listserviceofferingsresponse']['serviceoffering'][0]['id']
+        machinetype_id = cloudstack_response['listserviceofferingsresponse']['serviceoffering'][0]['id']
     return machinetype_id
 
 
-def _cloudstack_machinetype_to_gce(
-        cloudstack_response, selfLink=None, zone=None):
+def _cloudstack_machinetype_to_gce(cloudstack_response, selfLink=None, zone=None):
     response = {}
     response['kind'] = 'compute#machineType'
     response['name'] = cloudstack_response['name']
@@ -67,9 +65,7 @@ def _cloudstack_machinetype_to_gce(
     else:
         response['selfLink'] = selfLink
 
-    if not zone:
-        response['zone'] = cloudstack_response['zonename']
-    else:
+    if zone:
         response['zone'] = zone
 
     return response
@@ -103,9 +99,9 @@ def aggregatedlistmachinetypes(projectid, authorization):
         'kind': 'compute#machineTypeAggregatedList',
         'id': 'projects/' + projectid + '/aggregated/machineTypes',
         'selfLink': request.base_url,
-        'items': machine_types
+        'items': items
     }
-    return helper.createresponse(data=populated_response)
+    return helper.create_response(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes', methods=['GET'])
@@ -125,7 +121,7 @@ def listmachinetype(projectid, authorization, zone):
         'selfLink': request.base_url,
         'items': machine_types
     }
-    return helper.createresponse(data=populated_response)
+    return helper.create_response(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes/<machinetype>', methods=['GET'])
@@ -138,7 +134,7 @@ def getmachinetype(projectid, authorization, zone, machinetype):
     if cloudstack_response['listserviceofferingsresponse']:
         machinetype = _cloudstack_machinetype_to_gce(
             cloudstack_response['listserviceofferingsresponse']['serviceoffering'][0])
-        return helper.createsuccessfulresponse(data=machinetype)
+        return helper.create_response(data=machinetype)
 
     func_route = url_for('getmachinetype', projectid=projectid, machinetype=machinetype, zone=zone)
     return errors.resource_not_found(func_route)

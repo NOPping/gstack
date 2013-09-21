@@ -75,7 +75,7 @@ def _cloudstack_template_to_gce(cloudstack_response, selfLink=None):
 def listnocentoscloudimages(authorization):
     images = []
     populated_response = _create_populated_image_response('centos-cloud', images)
-    return helper.createsuccessfulresponse(data=populated_response)
+    return helper.create_response(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + 'debian-cloud/global/images', methods=['GET'])
@@ -83,7 +83,7 @@ def listnocentoscloudimages(authorization):
 def listnodebiancloudimages(authorization):
     images = []
     populated_response = _create_populated_image_response('debian-cloud', images)
-    return helper.createsuccessfulresponse(data=populated_response)
+    return helper.create_response(data=populated_response)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/global/images', methods=['GET'])
@@ -102,7 +102,7 @@ def listimages(projectid, authorization):
             images.append(_cloudstack_template_to_gce(template))
 
     populated_response = _create_populated_image_response(projectid, images)
-    return helper.createsuccessfulresponse(data=populated_response)
+    return helper.create_response(data=populated_response)
 
 
 def _create_populated_image_response(projectid, images):
@@ -127,7 +127,7 @@ def getimage(projectid, authorization, image):
     )
     if cloudstack_response['listtemplatesresponse']:
         cloudstack_response = _cloudstack_template_to_gce(cloudstack_response['listtemplatesresponse']['template'][0])
-        return helper.createsuccessfulresponse(data=cloudstack_response)
+        return helper.create_response(data=cloudstack_response)
 
     function_route = url_for('getimage', projectid=projectid, image=image)
     return(errors.resource_not_found(function_route))
