@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import urllib
 from flask import request, url_for
 from gcecloudstack import app, authentication
 from gcecloudstack.services import requester
@@ -37,7 +38,25 @@ def _get_disks(authorization, args=None):
     return cloudstack_response
 
 
-def _cloudstack_volume_to_gce(cloudstack_response, selfLink=None, zone=None):
+def get_disk_by_name(authorization, disk):
+    disk_list = _get_disks(
+        authorization=authorization,
+        args={
+            'keyword': disk
+        }
+    )
+
+    if disk_list['listvolumesresponse']:
+        response = helper.filter_by_name(
+            data=disk_list['listvolumesresponse']['volume'],
+            name=disk
+        )
+        return response
+    else:
+        return None
+
+
+def _cloudstack_volume_to_gce(cloudstack_response, projectid, zone):
     response = {}
     response['kind'] = 'compute#disk'
     response['id'] = cloudstack_response['id']
@@ -47,10 +66,12 @@ def _cloudstack_volume_to_gce(cloudstack_response, selfLink=None, zone=None):
     response['description'] = cloudstack_response['name']
     response['sizeGb'] = cloudstack_response['size']
 
-    if not selfLink:
-        response['selfLink'] = request.base_url
-    else:
-        response['selfLink'] = selfLink
+    response['selfLink'] = urllib.unquote_plus(helper.get_root_url() + url_for(
+        'getmachinetype',
+        projectid=projectid,
+        machinetype=cloudstack_response['name'],
+        zone=zone
+    ))
 
     if not zone:
         response['zone'] = cloudstack_response['zonename']
@@ -75,8 +96,8 @@ def aggregatedlistdisks(projectid, authorization):
                 zone_disks.append(
                     _cloudstack_volume_to_gce(
                         cloudstack_response=disk,
+                        projectid=projectid,
                         zone=zone,
-                        selfLink=request.base_url + '/' + disk['name']
                     )
                 )
         items['zone/' + zone] = {}
@@ -85,7 +106,7 @@ def aggregatedlistdisks(projectid, authorization):
 
     populated_response = {
         'kind': 'compute#diskAggregatedList',
-        'selfLink': request.base_url,
+        'selfLink': urllib.unquote_plus(request.base_url),
         'id': 'projects/' + projectid + '/global/images',
         'items': items
     }
@@ -115,16 +136,28 @@ def listdisks(projectid, authorization, zone):
                 name=disk
             )
             if disk:
-                items.append(_cloudstack_volume_to_gce(disk))
+                items.append(
+                    _cloudstack_volume_to_gce(
+                        cloudstack_response=disk,
+                        projectid=projectid,
+                        zone=zone
+                    )
+                )
     else:
         disk_list = _get_disks(authorization=authorization)
         if disk_list['listvolumesresponse']:
             for disk in disk_list['listvolumesresponse']['volume']:
-                items.append(_cloudstack_volume_to_gce(disk))
+                items.append(
+                    _cloudstack_volume_to_gce(
+                        cloudstack_response=disk,
+                        projectid=projectid,
+                        zone=zone
+                    )
+                )
 
     populated_response = {
         'kind': 'compute#imageList',
-        'selfLink': request.base_url,
+        'selfLink': urllib.unquote_plus(request.base_url),
         'id': 'projects/' + projectid + '/global/images',
         'items': items
     }
@@ -135,19 +168,23 @@ def listdisks(projectid, authorization, zone):
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/disks/<disk>', methods=['GET'])
 @authentication.required
 def getdisk(projectid, authorization, zone, disk):
-    disk_list = _get_disks(
+    response = get_disk_by_name(
         authorization=authorization,
-        args={'keyword': disk}
+        disk=disk
     )
 
-    if disk_list['listvolumesresponse']:
-        response = helper.filter_by_name(
-            data=disk_list['listvolumesresponse']['volume'],
-            name=disk
-        )
+    if response:
         return helper.create_response(
-            data=_cloudstack_volume_to_gce(response)
+            data=_cloudstack_volume_to_gce(
+                cloudstack_response=response,
+                projectid=projectid,
+                zone=zone
+            )
         )
     else:
-        func_route = url_for('getdisk', projectid=projectid, zone=zone, disk=disk)
+        func_route = url_for(
+            'getdisk',
+            projectid=projectid,
+            disk=disk
+        )
         return errors.resource_not_found(func_route)

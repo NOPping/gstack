@@ -17,11 +17,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import json
+import json, urllib
 from flask import request, url_for
 from gcecloudstack import app, authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import zones, helper, operations, images, errors
+from gcecloudstack.controllers import zones, helper, operations, images, errors, machine_type
 
 
 def _get_instances(authorization, args=None):
@@ -42,13 +42,23 @@ def _deploy_virtual_machine(authorization, args):
     command = 'deployVirtualMachine'
 
     converted_args = {}
-    converted_args['templateid'] = images.get_template_id(
-        args['template'], authorization
+    template = images.get_template_by_name(
+        authorization=authorization,
+        image=args['template']
     )
-    converted_args['zoneid'] = zones.get_zone_id(
-        args['zone'], authorization
+    converted_args['templateid'] = template['id']
+
+    zone = zones.get_zone_by_name(
+        authorization=authorization,
+        zone=args['zone']
     )
-    converted_args['serviceofferingid'] = args['serviceoffering']
+    converted_args['zoneid'] = zone['id']
+
+    serviceoffering = machine_type.get_machinetype_by_name(
+        authorization=authorization,
+        machinetype=args['serviceoffering']
+    )
+    converted_args['serviceofferingid'] = serviceoffering['id']
     converted_args['displayname'] = args['name']
     converted_args['name'] = args['name']
 
@@ -62,7 +72,7 @@ def _deploy_virtual_machine(authorization, args):
     return cloudstack_response
 
 
-def _cloudstack_instance_to_gce(cloudstack_response, selfLink=None, zone=None):
+def _cloudstack_instance_to_gce(cloudstack_response, zone, projectid):
     response = {}
     response['kind'] = 'compute#instance'
     response['id'] = cloudstack_response['id']
@@ -82,15 +92,13 @@ def _cloudstack_instance_to_gce(cloudstack_response, selfLink=None, zone=None):
 
     response['networkInterfaces'].append(networking)
 
-    if not selfLink:
-        response['selfLink'] = request.base_url
-    else:
-        response['selfLink'] = selfLink
-
-    if not zone:
-        response['zone'] = cloudstack_response['zonename']
-    else:
-        response['zone'] = zone
+    response['selfLink'] = urllib.unquote_plus(helper.get_root_url() + url_for(
+        'getinstance',
+        projectid=projectid,
+        instance=cloudstack_response['name'],
+        zone=zone
+    ))
+    response['zone'] = zone
 
     return response
 
@@ -110,8 +118,8 @@ def aggregatedlistinstances(authorization, projectid):
                 zones_instances.append(
                     _cloudstack_instance_to_gce(
                         cloudstack_response=instance,
-                        zone=zone,
-                        selfLink=request.base_url + '/' + instance['name']
+                        projectid=projectid,
+                        zone=zone
                     )
                 )
         items['zone/' + zone] = {}
@@ -150,12 +158,24 @@ def listinstances(authorization, projectid, zone):
                 name=instance
             )
             if instance:
-                items.append(_cloudstack_instance_to_gce(instance))
+                items.append(
+                    _cloudstack_instance_to_gce(
+                        cloudstack_response=instance,
+                        projectid=projectid,
+                        zone=zone
+                    )
+                )
     else:
         instance_list = _get_instances(authorization=authorization)
         if instance_list['listvirtualmachinesresponse']:
             for instance in instance_list['listvirtualmachinesresponse']['virtualmachine']:
-                items.append(_cloudstack_instance_to_gce(instance))
+                items.append(
+                    _cloudstack_instance_to_gce(
+                        cloudstack_response=instance,
+                        projectid=projectid,
+                        zone=zone,
+                    )
+                )
 
     populated_response = {
         'kind': 'compute#instance_list',
@@ -181,7 +201,7 @@ def getinstance(projectid, authorization, zone, instance):
             name=instance
         )
         return helper.create_response(
-            data=_cloudstack_instance_to_gce(response)
+            data=_cloudstack_instance_to_gce(cloudstack_response=response, projectid=projectid, zone=zone)
         )
     else:
         func_route = url_for('getinstance', projectid=projectid, zone=zone, instance=instance)

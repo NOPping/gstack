@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import urllib
 from gcecloudstack import app, authentication
 from gcecloudstack.services import requester
 from gcecloudstack.controllers import helper, errors
@@ -85,9 +86,9 @@ def _cloudstack_template_to_gce(cloudstack_response, selfLink=None):
     response['status'] = translate_image_status[str(cloudstack_response['isready'])]
 
     if selfLink:
-        response['selfLink'] = selfLink
+        response['selfLink'] = urllib.unquote_plus(selfLink)
     else:
-        response['selfLink'] = request.base_url
+        response['selfLink'] = urllib.unquote_plus(request.base_url)
 
     return response
 
@@ -117,7 +118,7 @@ def listimages(projectid, authorization):
     if image_list['listtemplatesresponse']:
         for image in image_list['listtemplatesresponse']['template']:
             images.append(_cloudstack_template_to_gce(
-                image,
+                cloudstack_response=image,
                 selfLink=request.base_url + '/' + image['name'])
             )
 
@@ -128,14 +129,14 @@ def listimages(projectid, authorization):
 @app.route('/' + app.config['PATH'] + '<projectid>/global/images/<image>', methods=['GET'])
 @authentication.required
 def getimage(projectid, authorization, image):
-    template = get_template_by_name(
+    response = get_template_by_name(
         authorization=authorization,
         image=image
     )
 
-    if template:
+    if response:
         return helper.create_response(
-            data=_cloudstack_template_to_gce(template)
+            data=_cloudstack_template_to_gce(response)
         )
     else:
         func_route = url_for('getimage', projectid=projectid, image=image)

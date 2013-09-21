@@ -17,10 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from flask import request
+from flask import request, url_for
 from gcecloudstack import app, authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import helper
+from gcecloudstack.controllers import helper, errors
 
 
 def _get_zones(authorization, args=None):
@@ -35,6 +35,24 @@ def _get_zones(authorization, args=None):
     )
 
     return cloudstack_response
+
+
+def get_zone_by_name(authorization, zone):
+    zone_list = _get_zones(
+        authorization=authorization,
+        args={
+            'keyword': zone
+        }
+    )
+
+    if zone_list['listzonesresponse']:
+        response = helper.filter_by_name(
+            data=zone_list['listzonesresponse']['zone'],
+            name=zone
+        )
+        return response
+    else:
+        return None
 
 
 def get_zone_names(authorization):
@@ -84,12 +102,16 @@ def listzones(projectid, authorization):
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>', methods=['GET'])
 @authentication.required
-def getdzone(projectid, authorization, zone):
-    zone_list = _get_zones(
-        authorization,
-        args={'keyword': zone}
+def getzone(projectid, authorization, zone):
+    response = get_zone_by_name(
+        authorization=authorization,
+        zone=zone
     )
 
-    return helper.create_response(
-        data=_cloudstack_zone_to_gce(zone_list['listzonesresponse']['zone'][0])
-    )
+    if response:
+        return helper.create_response(
+            data=_cloudstack_zone_to_gce(zone)
+        )
+    else:
+        func_route = url_for('getzone', projectid=projectid, zone=zone)
+        return errors.resource_not_found(func_route)

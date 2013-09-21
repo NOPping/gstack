@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import urllib
 from gcecloudstack import app
 from flask import jsonify, Response
 
@@ -55,11 +56,11 @@ def resource_not_found(func_url):
                 {
                     'domain': 'global',
                     'reason': 'notFound',
-                    'message': 'The resource \'' + func_url + '\' was not found'
+                    'message': 'The resource \'' + urllib.unquote_plus(func_url) + '\' was not found'
                 }
             ],
             'code': 404,
-            'message': 'The resource \'' + func_url + '\' was not found'
+            'message': 'The resource \'' + urllib.unquote_plus(func_url) + '\' was not found'
         }
     })
     res.status_code = 404

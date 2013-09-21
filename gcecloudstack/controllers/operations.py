@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import urllib
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.controllers import helper
@@ -44,11 +45,11 @@ def _create_instance_response(async_result, projectid):
         'user': async_result['userid'],
         'insertTime': async_result['created'],
         'startTime': async_result['created'],
-        'selfLink': helper.get_root_url() + url_for(
+        'selfLink': urllib.unquote_plus(helper.get_root_url() + url_for(
             'getoperations',
             projectid=projectid,
             operationid=async_result['jobid']
-        ),
+        )),
     }
 
     if async_result['jobstatus'] is 0:
@@ -59,17 +60,17 @@ def _create_instance_response(async_result, projectid):
     elif async_result['jobstatus'] is 1:
         # handle successful case
         populated_response['status'] = 'DONE'
-        populated_response['zone'] = helper.get_root_url() + url_for(
+        populated_response['zone'] = urllib.unquote_plus(helper.get_root_url() + url_for(
             'getzone',
             projectid=projectid,
             zone=async_result['jobresult']['virtualmachine']['zonename'],
-        )
-        populated_response['targetLink'] = helper.get_root_url() + url_for(
+        ))
+        populated_response['targetLink'] = urllib.unquote_plus(helper.get_root_url() + url_for(
             'getinstance',
             projectid=projectid,
             zone=async_result['jobresult']['virtualmachine']['zonename'],
-            instance=async_result['jobresult']['virtualmachine']['instancename']
-        )
+            instance=async_result['jobresult']['virtualmachine']['displayname']
+        ))
 
     # need to add a case here for error handling, its job status 2
 
@@ -101,7 +102,7 @@ def create_response(authorization, projectid, operationid):
 @app.route('/' + app.config['PATH'] + '<projectid>/global/operations/<operationid>', methods=['GET'])
 @authentication.required
 def getoperations(authorization, operationid, projectid):
-    return helper.createsuccessfulresponse(create_response(
+    return helper.create_response(create_response(
         authorization=authorization,
         operationid=operationid,
         projectid=projectid

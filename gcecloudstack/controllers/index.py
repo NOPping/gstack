@@ -28,11 +28,9 @@ def discovery():
     with open(app.config['DATA'] + '/v1beta15.json') as template:
         discovery_template = json.loads(template.read())
 
-    discovery_template['baseUrl'] = 'https://' + app.config['LISTEN_ADDRESS'] \
-        + ':' + app.config['LISTEN_PORT'] + '/' + app.config['PATH']
+    discovery_template['baseUrl'] = helper.get_root_url() + '/' + app.config['PATH']
     discovery_template['basePath'] = '/' + app.config['PATH']
-    discovery_template['rootUrl'] = 'https://' + app.config[
-        'LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT'] + '/'
+    discovery_template['rootUrl'] = helper.get_root_url() + '/'
     discovery_template['servicePath'] = app.config['PATH']
 
     return helper.create_response(data=discovery_template)

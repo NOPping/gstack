@@ -24,6 +24,7 @@ from gcecloudstack.services import requester
 from gcecloudstack.controllers import errors, helper
 from flask import request, url_for
 
+
 def _get_regions(authorization, args=None):
     command = 'listRegions'
     if not args:
@@ -67,13 +68,12 @@ def listregions(projectid, authorization):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/regions/<region>',
-           methods=['GET'])
+@app.route('/' + app.config['PATH'] + '<projectid>/regions/<region>', methods=['GET'])
 @authentication.required
 def getregion(projectid, authorization, region):
     cloudstack_response = _get_regions(
-        authorization,
-        args = {'name': region}
+        authorization=authorization,
+        args={'name': region}
     )
 
     if cloudstack_response['listregionsresponse']:
