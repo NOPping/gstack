@@ -20,7 +20,7 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import helper, errors
+from gcecloudstack.controllers import helper, errors, operations
 from flask import request, url_for
 
 def _get_templates(authorization, args=None):
@@ -68,6 +68,7 @@ def _cloudstack_template_to_gce(cloudstack_response, selfLink=None):
         response['selfLink'] = selfLink
 
     return response
+
 
 
 @app.route('/' + app.config['PATH'] + 'centos-cloud/global/images', methods=['GET'])
@@ -131,4 +132,24 @@ def getimage(projectid, authorization, image):
 
     function_route = url_for('getimage', projectid=projectid, image=image)
     return(errors.resource_not_found(function_route))
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>/global/images/<image>', methods = ['DELETE'])
+@authentication.required
+def deleteimage(projectid, authorization, image):
+    imageid = get_template_id(image, authorization)
+    if imageid is None:
+        function_route = url_for('deleteimage', projectid=projectid, image=image)
+        return errors.resource_not_found(function_route)
+
+    args =  {'id':imageid}
+    cloudstack_response = requester.make_request(
+        'deleteTemplate',
+        args,
+        authorization.client_id,
+        authentication.client_secret
+    )
+
+    image_deleted = operations.delete_image_response(cloudstack_response, image, imageid)
+    return helper.create_response(data=image_deleted)
 

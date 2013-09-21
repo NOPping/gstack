@@ -32,8 +32,17 @@ def _get_async_result(authorization, args):
         authorization.client_id,
         authorization.client_secret
     )
-
     return cloudstack_response
+
+def delete_image_response(cloudstack_response, image, imageid):
+    response = {}
+    response['kind'] = 'compute#operation'
+    response['id'] = ''
+    response['name'] = image
+    response['operationType'] = 'delete'
+    response['status'] = cloudstack_response['success']
+    response['description'] = cloudstack_response['displaytext']
+    return response
 
 
 def _create_instance_response(async_result, projectid):
