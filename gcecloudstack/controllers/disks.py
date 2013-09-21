@@ -17,10 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from flask import request
+from flask import request, url_for
 from gcecloudstack import app, authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import zones, helper
+from gcecloudstack.controllers import zones, helper, errors
 
 
 def _get_disks(authorization, args=None):
@@ -102,18 +102,25 @@ def listdisks(projectid, authorization, zone):
     if 'name' in filter:
         disk = filter['name']
 
+    items = []
+
     if disk:
         disk_list = _get_disks(
             authorization,
             args={'keyword': disk}
         )
+        if disk_list['listvolumesresponse']:
+            disk = helper.filter_by_name(
+                data=disk_list['listvolumesresponse']['volume'],
+                name=disk
+            )
+            if disk:
+                items.append(_cloudstack_volume_to_gce(disk))
     else:
         disk_list = _get_disks(authorization)
-
-    items = []
-    if disk_list['listvolumesresponse']:
-        for disk in disk_list['listvolumesresponse']['volume']:
-            items.append(_cloudstack_volume_to_gce(disk))
+        if disk_list['listvolumesresponse']:
+            for disk in disk_list['listvolumesresponse']['volume']:
+                items.append(_cloudstack_volume_to_gce(disk))
 
     populated_response = {
         'kind': 'compute#imageList',
@@ -133,6 +140,14 @@ def getdisk(projectid, authorization, zone, disk):
         args={'keyword': disk}
     )
 
-    return helper.create_response(
-        data=_cloudstack_volume_to_gce(disk_list['listvolumesresponse']['volume'][0])
-    )
+    if disk_list['listvolumesresponse']:
+        response = helper.filter_by_name(
+            data=disk_list['listvolumesresponse']['volume'],
+            name=disk
+        )
+        return helper.create_response(
+            data=_cloudstack_volume_to_gce(response)
+        )
+    else:
+        func_route = url_for('getdisk', projectid=projectid, zone=zone, disk=disk)
+        return errors.resource_not_found(func_route)

@@ -39,5 +39,12 @@ def get_filter(data):
     return filter
 
 
+def filter_by_name(data, name):
+    for item in data:
+        if item['name'] == name:
+            return item
+    return None
+
+
 def get_root_url():
     return 'https://' + app.config['LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT']

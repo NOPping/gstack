@@ -18,10 +18,10 @@
 # under the License.
 
 import json
-from flask import request
+from flask import request, url_for
 from gcecloudstack import app, authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import zones, helper, operations, images
+from gcecloudstack.controllers import zones, helper, operations, images, errors
 
 
 def _get_instances(authorization, args=None):
@@ -137,18 +137,25 @@ def listinstances(authorization, projectid, zone):
     if 'name' in filter:
         instance = filter['name']
 
+    items = []
+
     if instance:
         instance_list = _get_instances(
             authorization,
             args={'keyword': instance}
         )
+        if instance_list['listvirtualmachinesresponse']:
+            instance = helper.filter_by_name(
+                data=instance_list['listvirtualmachinesresponse']['virtualmachine'],
+                name=instance
+            )
+            if instance:
+                items.append(_cloudstack_instance_to_gce(instance))
     else:
         instance_list = _get_instances(authorization)
-
-    items = []
-    if instance_list['listvirtualmachinesresponse']:
-        for instance in instance_list['listvirtualmachinesresponse']['virtualmachine']:
-            items.append(_cloudstack_instance_to_gce(instance))
+        if instance_list['listvirtualmachinesresponse']:
+            for instance in instance_list['listvirtualmachinesresponse']['virtualmachine']:
+                items.append(_cloudstack_instance_to_gce(instance))
 
     populated_response = {
         'kind': 'compute#instance_list',
@@ -163,14 +170,22 @@ def listinstances(authorization, projectid, zone):
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
 @authentication.required
 def getinstance(projectid, authorization, zone, instance):
-    cloudstack_response = _get_instances(
+    instance_list = _get_instances(
         authorization,
         args={'keyword': instance}
     )
 
-    return helper.create_response(
-        data=_cloudstack_instance_to_gce(cloudstack_response['listvirtualmachinesresponse']['virtualmachine'][0])
-    )
+    if instance_list['listvirtualmachinesresponse']:
+        response = helper.filter_by_name(
+            data=instance_list['listvirtualmachinesresponse']['virtualmachine'],
+            name=instance
+        )
+        return helper.create_response(
+            data=_cloudstack_instance_to_gce(response)
+        )
+    else:
+        func_route = url_for('getinstance', projectid=projectid, zone=zone, instance=instance)
+        return errors.resource_not_found(func_route)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances', methods=['POST'])
