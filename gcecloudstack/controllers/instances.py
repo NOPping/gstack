@@ -127,8 +127,6 @@ def _get_virtual_machine_by_name(authorization, instance):
             'keyword': instance
         }
     )
-    print('made it here')
-    print(virtual_machine_list)
 
     if virtual_machine_list['listvirtualmachinesresponse']:
         response = helper.filter_by_name(
@@ -279,5 +277,5 @@ def addinstance(authorization, projectid, zone):
 @authentication.required
 def deleteinstance(projectid, authorization, zone, instance):
     cloudstack_response = _destroy_virtual_machine(authorization, instance)
-    instance_deleted = operations.delete_instance_response(cloudstack_response['destroyvirtualmachineresponse'])
+    instance_deleted = operations.delete_instance_response(cloudstack_response['destroyvirtualmachineresponse'], projectid, zone)
     return helper.create_response(data=instance_deleted)

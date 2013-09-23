@@ -35,7 +35,7 @@ def _get_async_result(authorization, args):
     )
     return cloudstack_response
 
-def delete_instance_response(cloudstack_response):
+def delete_instance_response(cloudstack_response, projectid, zone):
     response = {}
     response['kind'] = 'compute#operation'
     response['operationType'] = 'delete'
@@ -44,7 +44,12 @@ def delete_instance_response(cloudstack_response):
     response['targetLink'] = ''
     response['status'] = 'DONE'
     response['progress'] = 0
-    response['selfLink'] = ''
+    response['zone'] = zone
+    response['selfLink'] = urllib.unquote_plus(helper.get_root_url() + url_for(
+        'getoperations',
+        projectid = projectid,
+        operationid = cloudstack_response['jobid']
+    ))
     return response
 
 
