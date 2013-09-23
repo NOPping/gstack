@@ -17,7 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import json, urllib
+import json
+import urllib
 from flask import request, url_for
 from gcecloudstack import app, authentication
 from gcecloudstack.services import requester
@@ -72,9 +73,10 @@ def _deploy_virtual_machine(authorization, args):
 
     return cloudstack_response
 
+
 def _destroy_virtual_machine(authorization, instance):
     virtual_machine_id = _get_virtual_machine_by_name(authorization, instance)['id']
-    print(virtual_machine_id)
+
     if virtual_machine_id is None:
         func_route = url_for('_destroy_virtual_machine', instance=instance)
         return(errors.resource_not_found(func_route))
@@ -88,6 +90,7 @@ def _destroy_virtual_machine(authorization, instance):
         authorization.client_id,
         authorization.client_secret
     )
+
 
 def _cloudstack_virtual_machine_to_gce(cloudstack_response, zone, projectid):
     response = {}
@@ -119,6 +122,7 @@ def _cloudstack_virtual_machine_to_gce(cloudstack_response, zone, projectid):
     response['zone'] = zone
 
     return response
+
 
 def _get_virtual_machine_by_name(authorization, instance):
     virtual_machine_list = _get_virtual_machines(
@@ -247,9 +251,9 @@ def addinstance(authorization, projectid, zone):
     args['template'] = data['image'].rsplit('/', 1)[1]
     args['zone'] = zone
 
-    deploymentResult = _deploy_virtual_machine(authorization, args)
+    deployment_result = _deploy_virtual_machine(authorization, args)
 
-    if 'errortext' in deploymentResult['deployvirtualmachineresponse']:
+    if 'errortext' in deployment_result['deployvirtualmachineresponse']:
         populated_response = {
             'kind': 'compute#operation',
             'operationType': 'insert',
@@ -267,15 +271,22 @@ def addinstance(authorization, projectid, zone):
     else:
         populated_response = operations.create_response(
             projectid=projectid,
-            operationid=deploymentResult['deployvirtualmachineresponse']['jobid'],
+            operationid=deployment_result['deployvirtualmachineresponse']['jobid'],
             authorization=authorization
         )
 
     return helper.create_response(data=populated_response)
 
+
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['DELETE'])
 @authentication.required
 def deleteinstance(projectid, authorization, zone, instance):
-    cloudstack_response = _destroy_virtual_machine(authorization, instance)
-    instance_deleted = operations.delete_instance_response(cloudstack_response['destroyvirtualmachineresponse'], projectid, zone)
-    return helper.create_response(data=instance_deleted)
+    deletion_result = _destroy_virtual_machine(authorization, instance)
+
+    populated_response = operations.create_response(
+        projectid=projectid,
+        operationid=deletion_result['destroyvirtualmachineresponse']['jobid'],
+        authorization=authorization
+    )
+
+    return helper.create_response(data=populated_response)

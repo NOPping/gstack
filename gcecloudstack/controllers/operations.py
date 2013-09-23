@@ -35,23 +35,46 @@ def _get_async_result(authorization, args):
     )
     return cloudstack_response
 
-def delete_instance_response(cloudstack_response, projectid, zone):
-    response = {}
-    response['kind'] = 'compute#operation'
-    response['operationType'] = 'delete'
-    response['name'] = cloudstack_response['jobid']
-    response['id'] = cloudstack_response['jobid']
-    response['targetLink'] = ''
-    response['status'] = 'DONE'
-    response['progress'] = 0
-    response['zone'] = zone
-    response['selfLink'] = urllib.unquote_plus(helper.get_root_url() + url_for(
-        'getoperations',
-        projectid = projectid,
-        operationid = cloudstack_response['jobid']
-    ))
-    return response
 
+def _delete_instance_response(async_result, projectid):
+    populated_response = {
+        'kind': 'compute#operation',
+        'id': async_result['jobid'],
+        'name': async_result['jobid'],
+        'operationType': 'delete',
+        'user': async_result['userid'],
+        'insertTime': async_result['created'],
+        'startTime': async_result['created'],
+        'selfLink': urllib.unquote_plus(helper.get_root_url() + url_for(
+            'getoperations',
+            projectid=projectid,
+            operationid=async_result['jobid']
+        ))
+    }
+
+    if async_result['jobstatus'] is 0:
+        # handle pending case
+        populated_response['targetLink'] = ''
+        populated_response['status'] = 'PENDING'
+        populated_response['progress'] = 0
+    elif async_result['jobstatus'] is 1:
+        # handle successful case
+        populated_response['status'] = 'DONE'
+        populated_response['zone'] = urllib.unquote_plus(helper.get_root_url() + url_for(
+            'getzone',
+            projectid=projectid,
+            zone=async_result['jobresult']['virtualmachine']['zonename'],
+        ))
+        populated_response['targetLink'] = urllib.unquote_plus(helper.get_root_url() + url_for(
+            'getinstance',
+            projectid=projectid,
+            zone=async_result['jobresult']['virtualmachine']['zonename'],
+            instance=async_result['jobresult']['virtualmachine']['displayname']
+        ))
+
+    # need to add a case here for error handling, its job status 2
+
+    return populated_response
 
 
 def _create_instance_response(async_result, projectid):
@@ -67,7 +90,7 @@ def _create_instance_response(async_result, projectid):
             'getoperations',
             projectid=projectid,
             operationid=async_result['jobid']
-        )),
+        ))
     }
 
     if async_result['jobstatus'] is 0:
@@ -110,6 +133,11 @@ def create_response(authorization, projectid, operationid):
 
     if command_name == 'DeployVMCmd':
         populated_response = _create_instance_response(
+            async_result=async_result,
+            projectid=projectid
+        )
+    elif command_name == 'DestroyVMCmd':
+        populated_response = _delete_instance_response(
             async_result=async_result,
             projectid=projectid
         )
