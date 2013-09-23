@@ -24,10 +24,11 @@ from gcecloudstack.services import requester
 from gcecloudstack.controllers import zones, helper, operations, images, errors, machine_type
 
 
-def _get_instances(authorization, args=None):
+def _get_virtual_machines(authorization, args=None):
     command = 'listVirtualMachines'
     if not args:
         args = {}
+
     cloudstack_response = requester.make_request(
         command,
         args,
@@ -71,8 +72,24 @@ def _deploy_virtual_machine(authorization, args):
 
     return cloudstack_response
 
+def _destroy_virtual_machine(authorization, instance):
+    virtual_machine_id = _get_virtual_machine_by_name(authorization, instance)['id']
+    print(virtual_machine_id)
+    if virtual_machine_id is None:
+        func_route = url_for('_destroy_virtual_machine', instance=instance)
+        return(errors.resource_not_found(func_route))
 
-def _cloudstack_instance_to_gce(cloudstack_response, zone, projectid):
+    args = {
+        'id': virtual_machine_id
+    }
+    return requester.make_request(
+        'destroyVirtualMachine',
+        args,
+        authorization.client_id,
+        authorization.client_secret
+    )
+
+def _cloudstack_virtual_machine_to_gce(cloudstack_response, zone, projectid):
     response = {}
     response['kind'] = 'compute#instance'
     response['id'] = cloudstack_response['id']
@@ -84,6 +101,7 @@ def _cloudstack_instance_to_gce(cloudstack_response, zone, projectid):
     response['image'] = cloudstack_response['templatename']
     response['canIpForward'] = 'true'
     response['networkInterfaces'] = []
+    response['disks'] = []
 
     networking = {}
     networking['network'] = 'tobereviewed'
@@ -102,21 +120,40 @@ def _cloudstack_instance_to_gce(cloudstack_response, zone, projectid):
 
     return response
 
+def _get_virtual_machine_by_name(authorization, instance):
+    virtual_machine_list = _get_virtual_machines(
+        authorization=authorization,
+        args={
+            'keyword': instance
+        }
+    )
+    print('made it here')
+    print(virtual_machine_list)
+
+    if virtual_machine_list['listvirtualmachinesresponse']:
+        response = helper.filter_by_name(
+            data=virtual_machine_list['listvirtualmachinesresponse']['virtualmachine'],
+            name=instance
+        )
+        return response
+    else:
+        return None
+
 
 @app.route('/' + app.config['PATH'] + '<projectid>/aggregated/instances', methods=['GET'])
 @authentication.required
 def aggregatedlistinstances(authorization, projectid):
     zone_list = zones.get_zone_names(authorization=authorization)
-    instances_list = _get_instances(authorization=authorization)
+    virtual_machine_list = _get_virtual_machines(authorization=authorization)
 
     items = {}
 
     for zone in zone_list:
         zones_instances = []
-        if instances_list['listvirtualmachinesresponse']:
-            for instance in instances_list['listvirtualmachinesresponse']['virtualmachine']:
+        if virtual_machine_list['listvirtualmachinesresponse']:
+            for instance in virtual_machine_list['listvirtualmachinesresponse']['virtualmachine']:
                 zones_instances.append(
-                    _cloudstack_instance_to_gce(
+                    _cloudstack_virtual_machine_to_gce(
                         cloudstack_response=instance,
                         projectid=projectid,
                         zone=zone
@@ -132,7 +169,6 @@ def aggregatedlistinstances(authorization, projectid):
         'selfLink': request.base_url,
         'items': items
     }
-
     return helper.create_response(data=populated_response)
 
 
@@ -148,29 +184,24 @@ def listinstances(authorization, projectid, zone):
     items = []
 
     if instance:
-        instance_list = _get_instances(
+        virtual_machine = _get_virtual_machine_by_name(
             authorization=authorization,
-            args={'keyword': instance}
+            instance=instance
         )
-        if instance_list['listvirtualmachinesresponse']:
-            instance = helper.filter_by_name(
-                data=instance_list['listvirtualmachinesresponse']['virtualmachine'],
-                name=instance
-            )
-            if instance:
-                items.append(
-                    _cloudstack_instance_to_gce(
-                        cloudstack_response=instance,
-                        projectid=projectid,
-                        zone=zone
-                    )
+        if virtual_machine:
+            items.append(
+                _cloudstack_virtual_machine_to_gce(
+                    cloudstack_response=virtual_machine,
+                    projectid=projectid,
+                    zone=zone
                 )
+            )
     else:
-        instance_list = _get_instances(authorization=authorization)
-        if instance_list['listvirtualmachinesresponse']:
-            for instance in instance_list['listvirtualmachinesresponse']['virtualmachine']:
+        virtual_machine_list = _get_virtual_machines(authorization=authorization)
+        if virtual_machine_list['listvirtualmachinesresponse']:
+            for instance in virtual_machine_list['listvirtualmachinesresponse']['virtualmachine']:
                 items.append(
-                    _cloudstack_instance_to_gce(
+                    _cloudstack_virtual_machine_to_gce(
                         cloudstack_response=instance,
                         projectid=projectid,
                         zone=zone,
@@ -190,22 +221,22 @@ def listinstances(authorization, projectid, zone):
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
 @authentication.required
 def getinstance(projectid, authorization, zone, instance):
-    instance_list = _get_instances(
+    response = _get_virtual_machine_by_name(
         authorization=authorization,
-        args={'keyword': instance}
+        instance=instance
     )
 
-    if instance_list['listvirtualmachinesresponse']:
-        response = helper.filter_by_name(
-            data=instance_list['listvirtualmachinesresponse']['virtualmachine'],
-            name=instance
-        )
+    if response:
         return helper.create_response(
-            data=_cloudstack_instance_to_gce(cloudstack_response=response, projectid=projectid, zone=zone)
+            data=_cloudstack_virtual_machine_to_gce(
+                cloudstack_response=response,
+                projectid=projectid,
+                zone=zone
+            )
         )
     else:
-        func_route = url_for('getinstance', projectid=projectid, zone=zone, instance=instance)
-        return errors.resource_not_found(func_route)
+        function_route = url_for('getinstance', projectid=projectid, instance=instance)
+        return errors.resource_not_found(function_route)
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances', methods=['POST'])
@@ -243,3 +274,10 @@ def addinstance(authorization, projectid, zone):
         )
 
     return helper.create_response(data=populated_response)
+
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['DELETE'])
+@authentication.required
+def deleteinstance(projectid, authorization, zone, instance):
+    cloudstack_response = _destroy_virtual_machine(authorization, instance)
+    instance_deleted = operations.delete_instance_response(cloudstack_response['destroyvirtualmachineresponse'])
+    return helper.create_response(data=instance_deleted)

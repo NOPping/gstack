@@ -35,6 +35,19 @@ def _get_async_result(authorization, args):
     )
     return cloudstack_response
 
+def delete_instance_response(cloudstack_response):
+    response = {}
+    response['kind'] = 'compute#operation'
+    response['operationType'] = 'delete'
+    response['name'] = cloudstack_response['jobid']
+    response['id'] = cloudstack_response['jobid']
+    response['targetLink'] = ''
+    response['status'] = 'DONE'
+    response['progress'] = 0
+    response['selfLink'] = ''
+    return response
+
+
 
 def _create_instance_response(async_result, projectid):
     populated_response = {
