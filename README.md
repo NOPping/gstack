@@ -273,7 +273,7 @@ You can of course list and delete instances
     | c9793c52-17d7-4f20-85cf-faf6b82a6e9a |        | CH-GV2 | DONE   |                | CH-GV2/instances/foobar | 2013-09-24T13:42:13+0200 | delete         |       |               |         |
     +--------------------------------------+--------+--------+--------+----------------+-------------------------+--------------------------+----------------+-------+---------------+---------+
 
-
+Specification of keypairs and securitygroups via gcutil is still being worked on
 
 ##Trouble shooting
 

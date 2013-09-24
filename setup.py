@@ -37,10 +37,10 @@ def read(fname):
 
 setup(name="gcecloudstack",
       version=VERSION,
-      description="Web Server exposing a GCE interface to Apache CloudStack",
+      description="A GCE interface to Apache CloudStack",
       author="Ian Duffy, Darren Brogan, Sebastien Goasguen",
-      author_email="",
-      long_description="Google Compute Engine Interface to the Apache CloudStack API",
+      author_email="ian@ianduffy.ie, brogand93@darrenbrogan.ie, runseb@gmail.com",
+      long_description="A Google Compute Engine compliant interface to the Apache CloudStack API",
       platforms=("Any",),
       license="LICENSE.txt",
       package_data={'': ['LICENSE.txt', 'data/*']},
