@@ -20,9 +20,10 @@
 from gcecloudstack import app
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
-from gcecloudstack.controllers import errors
+from gcecloudstack.controllers import errors, helper
 from flask import jsonify, request, url_for
 import json
+import urllib
 
 
 def _format_quota(limit, metric, usage):
@@ -88,30 +89,40 @@ def getproject(projectid, authorization):
         res = jsonify(populated_response)
         res.status_code = 200
     else:
-        func_route = url_for('getproject', projectid=projectid)
+        func_route = urllib.unquote_plus(url_for('getproject', projectid=projectid))
         res = errors.resource_not_found(func_route)
 
     return res
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/setCommonInstanceMetadata',
-           methods=['POST'])
+@app.route('/' + app.config['PATH'] + '<projectid>/setCommonInstanceMetadata', methods=['POST'])
 @authentication.required
 def setglobalmetadata(projectid, authorization):
+    data = json.loads(request.data)
+    data = data['items'][0]['value'].split(':')[1]
+
+    command = 'registerSSHKeyPair'
+    args = {
+        'name': projectid,
+        'publickey': data
+    }
+
+    requester.make_request(
+        command,
+        args,
+        authorization.client_id,
+        authorization.client_secret,
+    )
 
     res = jsonify({
         "kind": "compute#operation",
-        "id": '',
-        'name': '',
         'operationType': 'setMetadata',
-        'targetLink': '',
-        'targetId': '',
-        'status': '',
-        'user': projectid,
-        'progress': 0,
-        'insertTime': '',
-        'startTime': '',
-        'selfLink': request.base_url
+        'targetLink': urllib.unquote_plus(helper.get_root_url() + url_for(
+            'getproject',
+            projectid=projectid
+        )),
+        'status': 'PENDING',
+        'progress': 0
     })
     res.status_code = 200
     return res

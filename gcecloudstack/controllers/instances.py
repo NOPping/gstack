@@ -40,7 +40,7 @@ def _get_virtual_machines(authorization, args=None):
     return cloudstack_response
 
 
-def _deploy_virtual_machine(authorization, args):
+def _deploy_virtual_machine(authorization, args, projectid):
     command = 'deployVirtualMachine'
 
     converted_args = {}
@@ -63,6 +63,7 @@ def _deploy_virtual_machine(authorization, args):
     converted_args['serviceofferingid'] = serviceoffering['id']
     converted_args['displayname'] = args['name']
     converted_args['name'] = args['name']
+    converted_args['keypair'] = projectid
 
     cloudstack_response = requester.make_request(
         command,
@@ -251,7 +252,7 @@ def addinstance(authorization, projectid, zone):
     args['template'] = data['image'].rsplit('/', 1)[1]
     args['zone'] = zone
 
-    deployment_result = _deploy_virtual_machine(authorization, args)
+    deployment_result = _deploy_virtual_machine(authorization, args, projectid)
 
     if 'errortext' in deployment_result['deployvirtualmachineresponse']:
         populated_response = {
