@@ -37,7 +37,8 @@ def _cloudstack_securitygroup_to_gce(response_item):
                        "IPProtocol": rule['protocol'],
                        "ports": ports
                        })
-        sourceranges.append(rule['cidr'])
+        if 'cidr' in rule.keys():
+            sourceranges.append(rule['cidr'])
     return ({
             "kind": "compute#firewall",
             "selfLink": '',
@@ -68,7 +69,7 @@ def listsecuritygroups(projectid, authorization):
         authorization.client_secret
     )
 
-    cloudstack_response = json.loads(cloudstack_response)
+    cloudstack_response = cloudstack_response
 
     app.logger.debug(
         'Processing request for aggregated list Firewalls\n'
@@ -113,7 +114,7 @@ def getsecuritygroup(projectid, authorization, firewall):
         authorization.client_id,
         authorization.client_secret
     )
-    cloudstack_response = json.loads(cloudstack_response)
+    cloudstack_response = cloudstack_response
 
     app.logger.debug(
         'Processing request for get Firewall\n'
@@ -151,7 +152,7 @@ def deletesecuritygroup(projectid, authorization, firewall):
         authorization.client_secret
     )
 
-    cloudstack_response = json.loads(cloudstack_response)
+    cloudstack_response = cloudstack_response
 
     app.logger.debug(
         'Processing request for deleting a Firewall \n'
@@ -184,7 +185,7 @@ def createsecuritygroup(projectid, authorization):
         authorization.client_secret
     )
 
-    cloudstack_response = json.loads(cloudstack_response)
+    cloudstack_response = cloudstack_response
 
     app.logger.debug(
         'Processing request for creating a Firewall \n'
@@ -212,7 +213,7 @@ def createsecuritygroup(projectid, authorization):
                 authorization.client_secret
             )
 
-            cloudstack_response = json.loads(cloudstack_response)
+            cloudstack_response = cloudstack_response
 
             app.logger.debug(
                 'Processing request for adding a rule to a Firewall \n'

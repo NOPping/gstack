@@ -66,7 +66,7 @@ Then follow the same instructions as the Developers.
 
 ##Usage
 
-With a small convenient bash script like this:
+With a small convenient bash script `gce` like this:
 
     #!/bin/bash
 
@@ -74,9 +74,206 @@ With a small convenient bash script like this:
 
     gcutil --authorization_uri_base=https://localhost:5000/oauth2 --auth_host_name=127.0.0.1 --auth_host_port=9999 --auth_local_webserver=true --api_host="https://localhost:5000/" --fetch_discovery=true $*
 
-You can start issuing standard gcutil commands:
+You can start issuing standard gcutil commands. For illustration purposes we use [Exoscale](http://exoscale.ch)
 
-    gcloud --project foobar listmachinetype
+    $ gce --project toto listzones
+    --project toto listzones
+    +--------+-------------+--------+-------------+-------------------------+-----------------+------------+-------------+----------------------+
+    |  name  | description | status | deprecation | next-maintenance-window | instances-usage | cpus-usage | disks-usage | disks-total-gb-usage |
+    +--------+-------------+--------+-------------+-------------------------+-----------------+------------+-------------+----------------------+
+    | CH-GV2 | CH-GV2      | UP     |             | None scheduled          |                 |            |             |                      |
+    +--------+-------------+--------+-------------+-------------------------+-----------------+------------+-------------+----------------------+
+    $ gce --project toto listmachinetypes
+    --project toto listmachinetypes
+
+    Items in zone/CH-GV2:
+
+    +-------------+--------------------------+--------+------+-----------+----------------------+---------+----------------------+-------------+
+    |    name     |       description        |  zone  | cpus | memory-mb | scratch-disk-size-gb | max-pds | max-total-pd-size-gb | deprecation |
+    +-------------+--------------------------+--------+------+-----------+----------------------+---------+----------------------+-------------+
+    | Micro       | Micro 512mb 1cpu         | CH-GV2 | 1    | 512       |                      |         |                      |             |
+    | Tiny        | Tiny 1024mb 1cpu         | CH-GV2 | 1    | 1024      |                      |         |                      |             |
+    | Small       | Small 2048mb 2cpu        | CH-GV2 | 2    | 2048      |                      |         |                      |             |
+    | Medium      | Medium 4096mb 2cpu       | CH-GV2 | 2    | 4096      |                      |         |                      |             |
+    | Large       | Large 8192mb 4cpu        | CH-GV2 | 4    | 8182      |                      |         |                      |             |
+    | Extra-large | Extra-large 16384mb 4cpu | CH-GV2 | 4    | 16384     |                      |         |                      |             |
+    | Huge        | Huge 32184mb 8cpu        | CH-GV2 | 8    | 32184     |                      |         |                      |             |
+    +-------------+--------------------------+--------+------+-----------+----------------------+---------+----------------------+-------------+
+
+	$ gce --project toto listimages
+	--project toto listimages
+	+---------------------------------+------------------------------------------+--------+-------------+--------+
+	|              name               |               description                | kernel | deprecation | status |
+	+---------------------------------+------------------------------------------+--------+-------------+--------+
+	| CentOS 5.5(64-bit) no GUI (KVM) | CentOS 5.5(64-bit) no GUI (KVM)          |        |             | Ready  |
+	| Linux CentOS 6.4 64-bit         | Linux CentOS 6.4 64-bit 10GB Disk        |        |             | Ready  |
+	| Linux CentOS 6.4 64-bit         | Linux CentOS 6.4 64-bit 50GB Disk        |        |             | Ready  |
+	| Linux CentOS 6.4 64-bit         | Linux CentOS 6.4 64-bit 100GB Disk       |        |             | Ready  |
+	| Linux CentOS 6.4 64-bit         | Linux CentOS 6.4 64-bit 200GB Disk       |        |             | Ready  |
+	| Linux CentOS 6.4 64-bit         | Linux CentOS 6.4 64-bit 400GB Disk       |        |             | Ready  |
+	| Linux Ubuntu 12.04 LTS 64-bit   | Linux Ubuntu 12.04 LTS 64-bit 10GB Disk  |        |             | Ready  |
+	| Linux Ubuntu 12.04 LTS 64-bit   | Linux Ubuntu 12.04 LTS 64-bit 50GB Disk  |        |             | Ready  |
+	| Linux Ubuntu 12.04 LTS 64-bit   | Linux Ubuntu 12.04 LTS 64-bit 100GB Disk |        |             | Ready  |
+	| Linux Ubuntu 12.04 LTS 64-bit   | Linux Ubuntu 12.04 LTS 64-bit 200GB Disk |        |             | Ready  |
+	| Linux Ubuntu 12.04 LTS 64-bit   | Linux Ubuntu 12.04 LTS 64-bit 400GB Disk |        |             | Ready  |
+	| Linux Ubuntu 13.04 64-bit       | Linux Ubuntu 13.04 64-bit 10 GB Disk     |        |             | Ready  |
+	| Linux Ubuntu 13.04 64-bit       | Linux Ubuntu 13.04 64-bit 50 GB Disk     |        |             | Ready  |
+	| Linux Ubuntu 13.04 64-bit       | Linux Ubuntu 13.04 64-bit 100 GB Disk    |        |             | Ready  |
+	| Linux Ubuntu 13.04 64-bit       | Linux Ubuntu 13.04 64-bit 200 GB Disk    |        |             | Ready  |
+	| Linux Ubuntu 13.04 64-bit       | Linux Ubuntu 13.04 64-bit 400 GB Disk    |        |             | Ready  |
+	| Windows Server 2008 R2 SP1      | 50                                       |        |             | Ready  |
+	| Windows Server 2008 R2 SP1      | Windows Server 2008 R2 SP1 100GB Disk    |        |             | Ready  |
+	| Windows Server 2008 R2 SP1      | Windows Server 2008 R2 SP1 200GB Disk    |        |             | Ready  |
+	| Windows Server 2008 R2 SP1      | Windows Server 2008 R2 SP1 400GB Disk    |        |             | Ready  |
+	| Windows Server 2012             | Windows Server 2012 Disk 50GB            |        |             | Ready  |
+	| Windows Server 2012             | Windows Server 2012 Disk 200GB           |        |             | Ready  |
+	| Windows Server 2012             | Windows Server 2012 Disk 100GB           |        |             | Ready  |
+	| Windows Server 2012             | Windows Server 2012 Disk 400GB           |        |             | Ready  |
+	+---------------------------------+------------------------------------------+--------+-------------+--------+
+	
+To create a securitygroup, use the firewall commands:
+
+    $ gce --project toto listfirewalls
+    --project toto listfirewalls
+    +---------+------------------------+---------+---------------------+-------------+-------------+
+    |  name   |      description       | network |     source-ips      | source-tags | target-tags |
+    +---------+------------------------+---------+---------------------+-------------+-------------+
+    | default | Default Security Group |         | 0.0.0.0/0,0.0.0.0/0 |             |             |
+    +---------+------------------------+---------+---------------------+-------------+-------------+
+
+    $ gce --project toto addfirewall foobar --allowed=tcp:22 --allowed_ip_sources=0.0.0.0/0 --description=test
+    --project toto addfirewall foobar --allowed=tcp:22 --allowed_ip_sources=0.0.0.0/0 --description=test
+    
+	$ gce --project toto listfirewalls
+    --project toto listfirewalls
+    +---------+------------------------+---------+---------------------+-------------+-------------+
+    |  name   |      description       | network |     source-ips      | source-tags | target-tags |
+    +---------+------------------------+---------+---------------------+-------------+-------------+
+    | default | Default Security Group |         | 0.0.0.0/0,0.0.0.0/0 |             |             |
+    | foobar  | test                   |         | 0.0.0.0/0           |             |             |
+    +---------+------------------------+---------+---------------------+-------------+-------------+
+
+    $ gce --project toto getfirewall foobar
+    --project toto getfirewall foobar
+    +---------------+-----------+
+    |   property    |   value   |
+    +---------------+-----------+
+    | name          | foobar    |
+    | description   | test      |
+    | creation-time |           |
+    | network       |           |
+    | source-ips    | 0.0.0.0/0 |
+    | source-tags   |           |
+    | target-tags   |           |
+    | allowed       | tcp: 22   |
+    +---------------+-----------+
+
+	$ gce --project toto deletefirewall foobar
+	--project toto deletefirewall foobar
+	Delete firewall foobar? [y/n]
+	>>> y
+	+------+-------------+---------+------------+-------------+-------------+
+	| name | description | network | source-ips | source-tags | target-tags |
+	+------+-------------+---------+------------+-------------+-------------+
+	|      |             |         |            |             |             |
+	+------+-------------+---------+------------+-------------+-------------+
+	sebimac:bin sebgoa$ gce --project toto listfirewalls
+	--project toto listfirewalls
+	+---------+------------------------+---------+---------------------+-------------+-------------+
+	|  name   |      description       | network |     source-ips      | source-tags | target-tags |
+	+---------+------------------------+---------+---------------------+-------------+-------------+
+	| default | Default Security Group |         | 0.0.0.0/0,0.0.0.0/0 |             |             |
+	+---------+------------------------+---------+---------------------+-------------+-------------+
+
+To start an instance note that you need to pass your email as project. This is one of the caveat due to semantic differences between projects and domains. Still a work in progress. Feedback and contributions welcome. Also note that persistent disks are not supported yet.
+
+    $ gce --project runseb@gmail.com addinstance foobar
+    --project runseb@gmail.com addinstance foobar
+    Selecting the only available zone: CH-GV2
+    1: Extra-large	Extra-large 16384mb 4cpu
+    2: Huge	Huge 32184mb 8cpu
+    3: Large	Large 8192mb 4cpu
+    4: Medium	Medium 4096mb 2cpu
+    5: Micro	Micro 512mb 1cpu
+    6: Small	Small 2048mb 2cpu
+    7: Tiny	Tiny 1024mb 1cpu
+    >>> 7
+    The boot disk is unspecified.  I can create a new persistent boot disk and use it (preferred), or use a scratch disk (not recommended).  Do you want to use a persistent boot disk? [y/n]
+    >>> n
+    1: CentOS 5.5(64-bit) no GUI (KVM)
+    2: Linux CentOS 6.4 64-bit
+    3: Linux CentOS 6.4 64-bit
+    4: Linux CentOS 6.4 64-bit
+    5: Linux CentOS 6.4 64-bit
+    6: Linux CentOS 6.4 64-bit
+    7: Linux Ubuntu 12.04 LTS 64-bit
+    8: Linux Ubuntu 12.04 LTS 64-bit
+    9: Linux Ubuntu 12.04 LTS 64-bit
+    10: Linux Ubuntu 12.04 LTS 64-bit
+    11: Linux Ubuntu 12.04 LTS 64-bit
+    12: Linux Ubuntu 13.04 64-bit
+    13: Linux Ubuntu 13.04 64-bit
+    14: Linux Ubuntu 13.04 64-bit
+    15: Linux Ubuntu 13.04 64-bit
+    16: Linux Ubuntu 13.04 64-bit
+    17: Windows Server 2008 R2 SP1
+    18: Windows Server 2008 R2 SP1
+    19: Windows Server 2008 R2 SP1
+    20: Windows Server 2008 R2 SP1
+    21: Windows Server 2012
+    22: Windows Server 2012
+    23: Windows Server 2012
+    24: Windows Server 2012
+    >>> 7
+    INFO: Waiting for insert of instance . Sleeping for 3s.
+    INFO: Waiting for insert of instance . Sleeping for 3s.
+    INFO: Waiting for insert of instance . Sleeping for 3s.
+    INFO: Waiting for insert of instance . Sleeping for 3s.
+    INFO: Waiting for insert of instance . Sleeping for 3s.
+
+    Table of resources:
+
+    +--------+--------------+-------------------------------+--------+--------------+-------------+-------------+-------+--------+---------+----------------+
+    |  name  | machine-type |             image             | kernel |   network    | network-ip  | external-ip | disks |  zone  | status  | status-message |
+    +--------+--------------+-------------------------------+--------+--------------+-------------+-------------+-------+--------+---------+----------------+
+    | foobar | Tiny         | Linux Ubuntu 12.04 LTS 64-bit |        | tobereviewed | 185.19.28.6 |             |       | CH-GV2 | RUNNING |                |
+    +--------+--------------+-------------------------------+--------+--------------+-------------+-------------+-------+--------+---------+----------------+
+
+    Table of operations:
+
+    +--------------------------------------+--------+--------+--------+----------------+--------+--------------------------+----------------+-------+---------------+---------+
+    |                 name                 | region |  zone  | status | status-message | target |       insert-time        | operation-type | error | error-message | warning |
+    +--------------------------------------+--------+--------+--------+----------------+--------+--------------------------+----------------+-------+---------------+---------+
+    | 781114e4-6dda-4671-989e-aa1bc06d2034 |        | CH-GV2 | DONE   |                | foobar | 2013-09-24T13:38:02+0200 | insert         |       |               |         |
+    +--------------------------------------+--------+--------+--------+----------------+--------+--------------------------+----------------+-------+---------------+---------+
+
+You can of course list and delete instances
+
+    $ gce --project runseb@gmail.com listinstances
+    --project runseb@gmail.com listinstances
+
+
+    Items in zone/CH-GV2:
+
+    +--------+--------------+-------------------------------+--------+--------------+-------------+-------------+-------+--------+---------+----------------+
+    |  name  | machine-type |             image             | kernel |   network    | network-ip  | external-ip | disks |  zone  | status  | status-message |
+    +--------+--------------+-------------------------------+--------+--------------+-------------+-------------+-------+--------+---------+----------------+
+    | foobar | Tiny         | Linux Ubuntu 12.04 LTS 64-bit |        | tobereviewed | 185.19.28.6 |             |       | CH-GV2 | RUNNING |                |
+    +--------+--------------+-------------------------------+--------+--------------+-------------+-------------+-------+--------+---------+----------------+
+
+    $ gce --project runseb@gmail.com deleteinstance foobar
+    --project runseb@gmail.com deleteinstance foobar
+    Delete instance foobar? [y/n]
+    >>> y
+    WARNING: Consider passing '--zone=CH-GV2' to avoid the unnecessary zone lookup which requires extra API calls.
+    INFO: Waiting for delete of instance . Sleeping for 3s.
+    +--------------------------------------+--------+--------+--------+----------------+-------------------------+--------------------------+----------------+-------+---------------+---------+
+    |                 name                 | region |  zone  | status | status-message |         target          |       insert-time        | operation-type | error | error-message | warning |
+    +--------------------------------------+--------+--------+--------+----------------+-------------------------+--------------------------+----------------+-------+---------------+---------+
+    | c9793c52-17d7-4f20-85cf-faf6b82a6e9a |        | CH-GV2 | DONE   |                | CH-GV2/instances/foobar | 2013-09-24T13:42:13+0200 | delete         |       |               |         |
+    +--------------------------------------+--------+--------+--------+----------------+-------------------------+--------------------------+----------------+-------+---------------+---------+
+
+
 
 ##Trouble shooting
 
