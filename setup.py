@@ -25,7 +25,7 @@ except ImportError:
         from setuptools import setup
     except ImportError:
         raise RuntimeError(
-            "python setuptools is required to build gcecloudstack")
+            "python setuptools is required to build gcloud")
 
 VERSION = '0.0.1'
 
@@ -35,12 +35,13 @@ import os
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read().strip()
 
-setup(name="gcecloudstack",
+setup(name="gcloud",
       version=VERSION,
       description="A GCE interface to Apache CloudStack",
       author="Ian Duffy, Darren Brogan, Sebastien Goasguen",
       author_email="ian@ianduffy.ie, brogand93@darrenbrogan.ie, runseb@gmail.com",
       long_description="A Google Compute Engine compliant interface to the Apache CloudStack API",
+      url = "https://github.com/NOPping/cloudstack-gce",
       platforms=("Any",),
       license="LICENSE.txt",
       package_data={'': ['LICENSE.txt', 'data/*']},
@@ -56,7 +57,7 @@ setup(name="gcecloudstack",
       ],
       zip_safe=False,
       entry_points="""
-      [console_scripts]
-      gcecloudstack = gcecloudstack.appserver:main
+          [console_scripts]
+          gcloud = gcecloudstack.appserver:main
       """,
-      )
+)
