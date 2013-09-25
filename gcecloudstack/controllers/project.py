@@ -34,6 +34,30 @@ def _format_quota(limit, metric, usage):
     })
 
 
+def _list_ssh_keys(authorization):
+    command = 'listTags'
+    args = {
+        'resourcetype': 'UserVm',
+        'key': 'sshkey'
+    }
+
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.client_id,
+        authorization.client_secret
+    )
+
+    sshkeys = []
+    if cloudstack_response['listtagsresponse']:
+        for tag in cloudstack_response['listtagsresponse']['tag']:
+            sshkeys.append(tag['value'])
+
+    print str(set(sshkeys))
+
+    return sshkeys
+
+
 def _cloudstack_quotas_to_gce(quotas):
 
     names = {'vm', 'ip', 'volume', 'snapshot', 'template', 'project',
@@ -61,11 +85,7 @@ def getproject(projectid, authorization):
         authorization.client_secret
     )
 
-    app.logger.debug(
-        'Processing request for listzones\n'
-        'Project: ' + projectid + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
-    )
+    _list_ssh_keys(authorization)
 
     if cloudstack_response['listaccountsresponse']:
         response_item = cloudstack_response[
@@ -77,7 +97,7 @@ def getproject(projectid, authorization):
             'commonInstanceMetadata': {
                 'kind': 'compute#metadata'
             },
-            'creationTimestamp': '2013-09-04T17:41:05.702-07:00',
+            'creationTimestamp': response_item['user'][0]['created'],
             'kind': 'compute#project',
             'description': response_item['name'],
             'name': response_item['name'],

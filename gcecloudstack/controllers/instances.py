@@ -111,6 +111,15 @@ def _cloudstack_virtual_machine_to_gce(cloudstack_response, zone, projectid):
     networking['network'] = 'tobereviewed'
     networking['networkIP'] = cloudstack_response['nic'][0]['ipaddress']
     networking['name'] = cloudstack_response['nic'][0]['id']
+    networking['accessConfigs'] = []
+
+    accessconfig = {}
+    accessconfig['kind'] = 'compute#accessConfig'
+    accessconfig['type'] = 'ONE_TO_ONE_NAT'
+    accessconfig['name'] = 'External NAT'
+    accessconfig['natIP'] = cloudstack_response['nic'][0]['ipaddress']
+
+    networking['accessConfigs'].append(accessconfig)
 
     response['networkInterfaces'].append(networking)
 
