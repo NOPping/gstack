@@ -17,13 +17,14 @@
 # specific language governing permissions and limitations
 # under the License.from gcecloudstack import app
 
-from gcecloudstack import app
+from gcecloudstack import app, publickey_storage
 from gcecloudstack import authentication
 from gcecloudstack.services import requester
 from gcecloudstack.controllers import errors, helper
 from flask import jsonify, request, url_for
 import json
 import urllib
+import collections
 
 
 def _format_quota(limit, metric, usage):
@@ -38,7 +39,7 @@ def _list_ssh_keys(authorization):
     command = 'listTags'
     args = {
         'resourcetype': 'UserVm',
-        'key': 'sshkey'
+        'keyword': 'sshkey-segment'
     }
 
     cloudstack_response = requester.make_request(
@@ -48,12 +49,24 @@ def _list_ssh_keys(authorization):
         authorization.client_secret
     )
 
+    resources = {}
     sshkeys = []
+
     if cloudstack_response['listtagsresponse']:
         for tag in cloudstack_response['listtagsresponse']['tag']:
-            sshkeys.append(tag['value'])
+            if tag['resourceid'] not in resources:
+                resources[tag['resourceid']] = {}
+            resources[tag['resourceid']][tag['key']] = tag['value']
+        for resource in resources:
+            sorted_resource = collections.OrderedDict(sorted(resources[resource].items()))
+            sshkey = ''
+            for keychunk in sorted_resource:
+                sshkey = sshkey + sorted_resource[keychunk]
+            sshkeys.append(sshkey)
 
-    print str(set(sshkeys))
+    print str(sshkeys)
+
+    sshkeys = '\n'.join(sshkeys)
 
     return sshkeys
 
@@ -85,8 +98,6 @@ def getproject(projectid, authorization):
         authorization.client_secret
     )
 
-    _list_ssh_keys(authorization)
-
     if cloudstack_response['listaccountsresponse']:
         response_item = cloudstack_response[
             'listaccountsresponse']['account'][0]
@@ -95,7 +106,13 @@ def getproject(projectid, authorization):
 
         populated_response = {
             'commonInstanceMetadata': {
-                'kind': 'compute#metadata'
+                'kind': 'compute#metadata',
+                'items': [
+                    {
+                        'key': 'sshKeys',
+                        'value': _list_ssh_keys(authorization)
+                    }
+                ]
             },
             'creationTimestamp': response_item['user'][0]['created'],
             'kind': 'compute#project',
@@ -119,6 +136,7 @@ def getproject(projectid, authorization):
 @authentication.required
 def setglobalmetadata(projectid, authorization):
     data = json.loads(request.data)
+    publickey_storage[projectid] = data['items'][0]['value']
     data = data['items'][0]['value'].split(':')[1]
 
     command = 'registerSSHKeyPair'

@@ -36,6 +36,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
 
 db = SQLAlchemy(app)
 
+publickey_storage = {}
+
 from gcecloudstack.controllers import *
 
 db.create_all()

@@ -18,7 +18,7 @@
 # under the License.
 
 import urllib
-from gcecloudstack import app
+from gcecloudstack import app, publickey_storage
 from gcecloudstack import authentication
 from gcecloudstack.controllers import helper
 from gcecloudstack.services import requester
@@ -77,7 +77,35 @@ def _delete_instance_response(async_result, projectid):
     return populated_response
 
 
-def _create_instance_response(async_result, projectid):
+def _add_sshkey_metadata(authorization, publickey, instanceid):
+    l = publickey
+    n = 100
+    split_publickey = [l[i:i+n] for i in range(0, len(l), n)]
+    i = 0
+    for datasegment in split_publickey:
+        print datasegment
+        _add_sshkey_metadata_segment(authorization, str(i)+'-sshkey-segment', datasegment, instanceid)
+        i = i + 1
+
+
+def _add_sshkey_metadata_segment(authorization, keyname, value, instanceid):
+    command = 'createTags'
+    args = {
+        'tags[0].key': keyname,
+        'tags[0].value': value,
+        'resourceids': instanceid,
+        'resourcetype': 'UserVm'
+    }
+
+    requester.make_request(
+        command,
+        args,
+        authorization.client_id,
+        authorization.client_secret
+    )
+
+
+def _create_instance_response(async_result, projectid, authorization):
     populated_response = {
         'kind': 'compute#operation',
         'id': async_result['jobid'],
@@ -112,6 +140,11 @@ def _create_instance_response(async_result, projectid):
             zone=async_result['jobresult']['virtualmachine']['zonename'],
             instance=async_result['jobresult']['virtualmachine']['displayname']
         ))
+        _add_sshkey_metadata(
+            authorization=authorization,
+            publickey=publickey_storage[projectid],
+            instanceid=async_result['jobresult']['virtualmachine']['id']
+        )
 
     # need to add a case here for error handling, its job status 2
 
@@ -134,7 +167,8 @@ def create_response(authorization, projectid, operationid):
     if command_name == 'DeployVMCmd':
         populated_response = _create_instance_response(
             async_result=async_result,
-            projectid=projectid
+            projectid=projectid,
+            authorization=authorization
         )
     elif command_name == 'DestroyVMCmd':
         populated_response = _delete_instance_response(
