@@ -108,7 +108,7 @@ def _cloudstack_virtual_machine_to_gce(cloudstack_response, zone, projectid):
     response['disks'] = []
 
     networking = {}
-    networking['network'] = 'tobereviewed'
+    networking['network'] = cloudstack_response['securitygroup'][0]['name']
     networking['networkIP'] = cloudstack_response['nic'][0]['ipaddress']
     networking['name'] = cloudstack_response['nic'][0]['id']
     networking['accessConfigs'] = []
