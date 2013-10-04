@@ -17,7 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import urllib, json
+import urllib
+import json
 from flask import request, url_for
 from gcecloudstack import app, authentication
 from gcecloudstack.services import requester

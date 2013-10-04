@@ -35,29 +35,30 @@ import os
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read().strip()
 
-setup(name="gcloud",
-      version=VERSION,
-      description="A GCE interface to Apache CloudStack",
-      author="Ian Duffy, Darren Brogan, Sebastien Goasguen",
-      author_email="ian@ianduffy.ie, brogand93@darrenbrogan.ie, runseb@gmail.com",
-      long_description="A Google Compute Engine compliant interface to the Apache CloudStack API",
-      url = "https://github.com/NOPping/cloudstack-gce",
-      platforms=("Any",),
-      license="LICENSE.txt",
-      package_data={'': ['LICENSE.txt', 'data/*']},
-      packages = [
-          "gcecloudstack", "gcecloudstack.controllers", "gcecloudstack.models",
-          "gcecloudstack.services", "gcecloudstack.data", "pyoauth2"],
-      install_requires=[
-          "flask",
-          "requests==0.14",
-          "pycrypto==2.6",
-          "pyopenssl",
-          "Flask-SQLAlchemy",
-      ],
-      zip_safe=False,
-      entry_points="""
-          [console_scripts]
-          gcloud = gcecloudstack.appserver:main
-      """,
+setup(
+    name="gcloud",
+    version=VERSION,
+    description="A GCE interface to Apache CloudStack",
+    author="Ian Duffy, Darren Brogan, Sebastien Goasguen",
+    author_email="ian@ianduffy.ie, brogand93@darrenbrogan.ie, runseb@gmail.com",
+    long_description="A Google Compute Engine compliant interface to the Apache CloudStack API",
+    url="https://github.com/NOPping/cloudstack-gce",
+    platforms=("Any",),
+    license="LICENSE.txt",
+    package_data={'': ['LICENSE.txt', 'data/*']},
+    packages = [
+        "gcecloudstack", "gcecloudstack.controllers", "gcecloudstack.models",
+        "gcecloudstack.services", "gcecloudstack.data", "pyoauth2"],
+    install_requires=[
+        "flask",
+        "requests==0.14",
+        "pycrypto==2.6",
+        "pyopenssl",
+        "Flask-SQLAlchemy",
+    ],
+    zip_safe=False,
+    entry_points="""
+        [console_scripts]
+        gcloud = gcecloudstack.appserver:main
+    """,
 )

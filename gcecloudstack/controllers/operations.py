@@ -80,11 +80,11 @@ def _delete_instance_response(async_result, projectid):
 def _add_sshkey_metadata(authorization, publickey, instanceid):
     l = publickey
     n = 100
-    split_publickey = [l[i:i+n] for i in range(0, len(l), n)]
+    split_publickey = [l[i:i + n] for i in range(0, len(l), n)]
     i = 0
     for datasegment in split_publickey:
         print datasegment
-        _add_sshkey_metadata_segment(authorization, str(i)+'-sshkey-segment', datasegment, instanceid)
+        _add_sshkey_metadata_segment(authorization, str(i) + '-sshkey-segment', datasegment, instanceid)
         i = i + 1
 
 
