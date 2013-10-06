@@ -27,14 +27,6 @@ import urllib
 import collections
 
 
-def _format_quota(limit, metric, usage):
-    return ({
-        'limit': limit,
-        'metric': metric,
-        'usage': usage,
-    })
-
-
 def _list_ssh_keys(authorization):
     command = 'listTags'
     args = {
@@ -64,33 +56,16 @@ def _list_ssh_keys(authorization):
                 sshkey = sshkey + sorted_resource[keychunk]
             sshkeys.append(sshkey)
 
-    print str(sshkeys)
-
     sshkeys = '\n'.join(sshkeys)
 
     return sshkeys
 
 
-def _cloudstack_quotas_to_gce(quotas):
-
-    names = {'vm', 'ip', 'volume', 'snapshot', 'template', 'project',
-             'network'
-             }
-    gce_quotas = []
-    for name in names:
-        gce_quotas.append(
-            _format_quota(quotas[name + 'limit'], name, quotas[name + 'total'])
-        )
-    return gce_quotas
-
-
-@app.route('/' + app.config['PATH'] + '<projectid>', methods=['GET'])
-@authentication.required
-def getproject(projectid, authorization):
+def _get_accounts(authorization, args=None):
     command = 'listAccounts'
-    args = {
-        'name': projectid
-    }
+    if not args:
+        args = {}
+
     cloudstack_response = requester.make_request(
         command,
         args,
@@ -98,32 +73,97 @@ def getproject(projectid, authorization):
         authorization.client_secret
     )
 
-    if cloudstack_response['listaccountsresponse']:
-        response_item = cloudstack_response[
-            'listaccountsresponse']['account'][0]
+    return cloudstack_response
 
-        quotas = _cloudstack_quotas_to_gce(response_item)
 
-        populated_response = {
-            'commonInstanceMetadata': {
-                'kind': 'compute#metadata',
-                'items': [
-                    {
-                        'key': 'sshKeys',
-                        'value': _list_ssh_keys(authorization)
-                    }
-                ]
-            },
-            'creationTimestamp': response_item['user'][0]['created'],
-            'kind': 'compute#project',
-            'description': response_item['name'],
-            'name': response_item['name'],
-            'id': response_item['id'],
-            'selfLink': request.base_url,
-            'quotas': quotas
+def _get_account_by_name(authorization, projectid):
+    account_list = _get_accounts(
+        authorization=authorization,
+        args={
+            'keyword': projectid
         }
+    )
 
-        res = jsonify(populated_response)
+    if account_list['listaccountsresponse']:
+        response = helper.filter_by_name(
+            data=account_list['listaccountsresponse']['account'],
+            name=projectid
+        )
+        return response
+    else:
+        return None
+
+
+def _format_quota(metric, limit, usage):
+    quota = {}
+    quota['metric'] = metric
+    quota['limit'] = limit
+    quota['usage'] = usage
+    return quota
+
+
+def _populate_quotas(cloudstack_response):
+    quotas = []
+
+    quota_names = {}
+    quota_names['INSTANCE'] = 'vm'
+    quota_names['DISKS'] = 'volume'
+    quota_names['SNAPSHOTS'] = 'snapshot'
+    quota_names['IMAGES'] = 'template'
+
+    for name in quota_names:
+        quotas.append(
+            _format_quota(
+                name,
+                cloudstack_response[quota_names[name] + 'limit'],
+                cloudstack_response[quota_names[name] + 'total']
+            )
+        )
+
+    return quotas
+
+
+def _cloudstack_project_to_gce(cloudstack_response, metadata=None):
+    if not metadata:
+        metadata = {}
+
+    quotas = _populate_quotas(cloudstack_response)
+
+    response = {}
+    response['kind'] = 'compute#project'
+    response['id'] = cloudstack_response['id']
+    response['creationTimestamp'] = cloudstack_response['user'][0]['created']
+    response['name'] = cloudstack_response['name']
+    response['description'] = cloudstack_response['name']
+    response['selfLink'] = request.base_url
+
+    if metadata:
+        response['commonInstanceMetadata'] = {}
+        response['commonInstanceMetadata']['kind'] = 'compute#metadata'
+        response['commonInstanceMetadata']['items'] = []
+
+    if quotas:
+        response['quotas'] = quotas
+
+    if 'sshKeys' in metadata and metadata['sshKeys']:
+        sshKeys = {}
+        sshKeys['key'] = 'sshKeys'
+        sshKeys['value'] = metadata['sshKeys']
+        response['commonInstanceMetadata']['items'].append(sshKeys)
+
+    return response
+
+
+@app.route('/' + app.config['PATH'] + '<projectid>', methods=['GET'])
+@authentication.required
+def getproject(authorization, projectid):
+    project = _get_account_by_name(authorization, projectid)
+
+    if project:
+        metadata = {}
+        metadata['sshKeys'] = _list_ssh_keys(authorization)
+
+        res = jsonify(_cloudstack_project_to_gce(project, metadata))
         res.status_code = 200
     else:
         func_route = urllib.unquote_plus(url_for('getproject', projectid=projectid))
