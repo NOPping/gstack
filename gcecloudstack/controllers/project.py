@@ -42,7 +42,7 @@ def _list_ssh_keys(authorization):
     )
 
     resources = {}
-    sshkeys = []
+    sshkeys = set()
 
     if cloudstack_response['listtagsresponse']:
         for tag in cloudstack_response['listtagsresponse']['tag']:
@@ -54,7 +54,7 @@ def _list_ssh_keys(authorization):
             sshkey = ''
             for keychunk in sorted_resource:
                 sshkey = sshkey + sorted_resource[keychunk]
-            sshkeys.append(sshkey)
+            sshkeys.add(sshkey)
 
     sshkeys = '\n'.join(sshkeys)
 
@@ -178,6 +178,18 @@ def setglobalmetadata(projectid, authorization):
     data = json.loads(request.data)
     publickey_storage[projectid] = data['items'][0]['value']
     data = data['items'][0]['value'].split(':')[1]
+
+    command = 'deleteSSHKeyPair'
+    args = {
+        'name': projectid
+    }
+
+    requester.make_request(
+        command,
+        args,
+        authorization.client_id,
+        authorization.client_secret,
+    )
 
     command = 'registerSSHKeyPair'
     args = {
