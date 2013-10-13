@@ -15,12 +15,12 @@
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
-# under the License.from gcecloudstack import app
+# under the License.from gcloud import app
 
-from gcecloudstack import app, publickey_storage
-from gcecloudstack import authentication
-from gcecloudstack.services import requester
-from gcecloudstack.controllers import errors, helper
+from gcloud import app, publickey_storage
+from gcloud import authentication
+from gcloud.services import requester
+from gcloud.controllers import errors, helper
 from flask import jsonify, request, url_for
 import json
 import urllib

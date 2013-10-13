@@ -17,19 +17,34 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from flask import abort
-from functools import wraps
-from gcecloudstack.oauth2provider import CloudstackResourceProvider
-
-resource_provider = CloudstackResourceProvider()
+import urllib
+from gcloud import app
+from flask import jsonify
 
 
-def required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        authorization = resource_provider.get_authorization()
-        if not authorization.is_valid:
-            return abort(401)
+def create_response(data):
+    res = jsonify(data)
+    res.status_code = 200
 
-        return f(authorization=authorization, *args, **kwargs)
-    return decorated
+    return res
+
+
+def get_filter(data):
+    filter = {}
+
+    if 'filter' in data:
+        filter = urllib.unquote_plus(data['filter'])
+        filter = dict(filter.split(' eq ') for values in filter)
+
+    return filter
+
+
+def filter_by_name(data, name):
+    for item in data:
+        if item['name'] == name:
+            return item
+    return None
+
+
+def get_root_url():
+    return 'https://' + app.config['LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT']

@@ -36,18 +36,18 @@ Install the package
 
     python ./setup.py install
 
-This will install a `gcecloudstack` binary in your path. Check the `gcecloudstack/data/config.cfg` and enter the endpoint of your cloud.
+This will install a `gcloud` binary in your path. Check the `gcloud/data/config.cfg` and enter the endpoint of your cloud.
 
 Install [gcutil](https://developers.google.com/compute/docs/gcutil/) 
 
-gcloud comes with a self-signed certificate for the local endpoint `gcecloudstack/data/server.crt`, copy the certificate to the gcutil certificates file `gcutil/lib/httplib2/httplib2/cacerts.txt`
+gcloud comes with a self-signed certificate for the local endpoint `gcloud/data/server.crt`, copy the certificate to the gcutil certificates file `gcutil/lib/httplib2/httplib2/cacerts.txt`
 
 At this stage your CloudStack apikey and secretkey need to be entered in the gcutil auth_helper.py file at `gcutil/lib/google_compute_engine/gcutil/auth_helper.py`
 This is far from ideal and we opened a featur request with google to pass the `client_id` and `client_secret` as options to gcutil, hopefully future release of gcutil will allow us to do so.
 
 Start gcloud:
 
-    gcecloudstack
+    gcloud
 
 Use gcutil with the following parameters (an alias can be useful):
 

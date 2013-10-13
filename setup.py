@@ -47,8 +47,8 @@ setup(
     license="LICENSE.txt",
     package_data={'': ['LICENSE.txt', 'data/*']},
     packages = [
-        "gcecloudstack", "gcecloudstack.controllers", "gcecloudstack.models",
-        "gcecloudstack.services", "gcecloudstack.data", "pyoauth2"],
+        "gcloud", "gcloud.controllers", "gcloud.models",
+        "gcloud.services", "gcloud.data", "pyoauth2"],
     install_requires=[
         "flask",
         "requests==0.14",
@@ -59,6 +59,6 @@ setup(
     zip_safe=False,
     entry_points="""
         [console_scripts]
-        gcloud = gcecloudstack.appserver:main
+        gcloud = gcloud.appserver:main
     """,
 )

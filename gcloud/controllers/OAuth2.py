@@ -19,8 +19,8 @@
 
 import flask
 from flask import request
-from gcecloudstack import app
-from gcecloudstack.oauth2provider import CloudstackAuthorizationProvider
+from gcloud import app
+from gcloud.oauth2provider import CloudstackAuthorizationProvider
 
 
 @app.route('/oauth2/auth', methods=['GET'])

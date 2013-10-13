@@ -26,11 +26,11 @@ from pyoauth2.provider import ResourceProvider
 from pyoauth2.provider import AuthorizationProvider
 
 
-from gcecloudstack import db, app
-from gcecloudstack.services import requester
-from gcecloudstack.models.client import Client
-from gcecloudstack.models.accesstoken import AccessToken
-from gcecloudstack.models.refreshtoken import RefreshToken
+from gcloud import db, app
+from gcloud.services import requester
+from gcloud.models.client import Client
+from gcloud.models.accesstoken import AccessToken
+from gcloud.models.refreshtoken import RefreshToken
 
 
 class CloudstackAuthorizationProvider(AuthorizationProvider):

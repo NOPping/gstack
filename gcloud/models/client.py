@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gcecloudstack import db
+from gcloud import db
 
 
 class Client(db.Model):

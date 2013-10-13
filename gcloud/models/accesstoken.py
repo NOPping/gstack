@@ -17,34 +17,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import urllib
-from gcecloudstack import app
-from flask import jsonify
+from gcloud import db
 
 
-def create_response(data):
-    res = jsonify(data)
-    res.status_code = 200
-
-    return res
-
-
-def get_filter(data):
-    filter = {}
-
-    if 'filter' in data:
-        filter = urllib.unquote_plus(data['filter'])
-        filter = dict(filter.split(' eq ') for values in filter)
-
-    return filter
-
-
-def filter_by_name(data, name):
-    for item in data:
-        if item['name'] == name:
-            return item
-    return None
-
-
-def get_root_url():
-    return 'https://' + app.config['LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT']
+class AccessToken(db.Model):
+    access_token = db.Column(db.String(100), primary_key=True, unique=True)
+    client_id = db.Column(db.String(100), unique=True)
+    expires_in = db.Column(db.Integer)
+    data = db.Column(db.String(500))

@@ -17,11 +17,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gcecloudstack import db
+
+from gcloud import app
+from gcloud.controllers import helper
+import json
 
 
-class AccessToken(db.Model):
-    access_token = db.Column(db.String(100), primary_key=True, unique=True)
-    client_id = db.Column(db.String(100), unique=True)
-    expires_in = db.Column(db.Integer)
-    data = db.Column(db.String(500))
+@app.route('/discovery/v1/apis/compute/v1beta15/rest', methods=['GET'])
+def discovery():
+    with open(app.config['DATA'] + '/v1beta15.json') as template:
+        discovery_template = json.loads(template.read())
+
+    discovery_template['baseUrl'] = helper.get_root_url() + '/' + app.config['PATH']
+    discovery_template['basePath'] = '/' + app.config['PATH']
+    discovery_template['rootUrl'] = helper.get_root_url() + '/'
+    discovery_template['servicePath'] = app.config['PATH']
+
+    return helper.create_response(data=discovery_template)

@@ -17,20 +17,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from flask import abort
+from functools import wraps
+from gcloud.oauth2provider import CloudstackResourceProvider
 
-from gcecloudstack import app
-from gcecloudstack.controllers import helper
-import json
+resource_provider = CloudstackResourceProvider()
 
 
-@app.route('/discovery/v1/apis/compute/v1beta15/rest', methods=['GET'])
-def discovery():
-    with open(app.config['DATA'] + '/v1beta15.json') as template:
-        discovery_template = json.loads(template.read())
+def required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        authorization = resource_provider.get_authorization()
+        if not authorization.is_valid:
+            return abort(401)
 
-    discovery_template['baseUrl'] = helper.get_root_url() + '/' + app.config['PATH']
-    discovery_template['basePath'] = '/' + app.config['PATH']
-    discovery_template['rootUrl'] = helper.get_root_url() + '/'
-    discovery_template['servicePath'] = app.config['PATH']
-
-    return helper.create_response(data=discovery_template)
+        return f(authorization=authorization, *args, **kwargs)
+    return decorated

@@ -1,4 +1,4 @@
-gcecloudstack/data/app.db
+gcloud/data/app.db
 
 *.py[cod]
 *~
@@ -36,3 +36,4 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+*-e

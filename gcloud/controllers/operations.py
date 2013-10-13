@@ -18,10 +18,10 @@
 # under the License.
 
 import urllib
-from gcecloudstack import app, publickey_storage
-from gcecloudstack import authentication
-from gcecloudstack.controllers import helper
-from gcecloudstack.services import requester
+from gcloud import app, publickey_storage
+from gcloud import authentication
+from gcloud.controllers import helper
+from gcloud.services import requester
 from flask import url_for
 
 

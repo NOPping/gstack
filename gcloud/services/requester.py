@@ -24,7 +24,7 @@ import urllib
 import requests
 import json
 from flask import abort
-from gcecloudstack import app
+from gcloud import app
 
 
 def make_request(command, args, client_id, client_secret):

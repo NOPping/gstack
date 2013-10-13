@@ -20,9 +20,9 @@
 import json
 import urllib
 from flask import request, url_for
-from gcecloudstack import app, authentication
-from gcecloudstack.services import requester
-from gcecloudstack.controllers import zones, helper, operations, images, errors, machine_type
+from gcloud import app, authentication
+from gcloud.services import requester
+from gcloud.controllers import zones, helper, operations, images, errors, machine_type
 
 
 def _get_virtual_machines(authorization, args=None):

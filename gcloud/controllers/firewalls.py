@@ -17,10 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gcecloudstack import app
-from gcecloudstack import authentication
-from gcecloudstack.services import requester
-from gcecloudstack.controllers import errors
+from gcloud import app
+from gcloud import authentication
+from gcloud.services import requester
+from gcloud.controllers import errors
 from flask import jsonify, request, url_for
 import json
 

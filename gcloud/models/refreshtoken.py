@@ -17,27 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import os
+from gcloud import db
 
-from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
-
-basedir = os.path.abspath(os.path.dirname(__file__))
-
-# Configuration Options
-app.config['DATA'] = basedir + '/data'
-app.config.from_pyfile(app.config['DATA'] + '/config.cfg')
-
-# Sqlite Options
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-    os.path.join(app.config['DATA'], 'app.db')
-
-db = SQLAlchemy(app)
-
-publickey_storage = {}
-
-from gcecloudstack.controllers import *
-
-db.create_all()
+class RefreshToken(db.Model):
+    refresh_token = db.Column(db.String(100), primary_key=True, unique=True)
+    client_id = db.Column(db.String(100), unique=True)
+    data = db.Column(db.String(500))

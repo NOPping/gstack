@@ -18,7 +18,7 @@
 # under the License.
 
 import urllib
-from gcecloudstack import app
+from gcloud import app
 from flask import jsonify, Response
 
 

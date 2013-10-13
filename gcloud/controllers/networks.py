@@ -20,9 +20,9 @@
 import urllib
 import json
 from flask import request, url_for
-from gcecloudstack import app, authentication
-from gcecloudstack.services import requester
-from gcecloudstack.controllers import helper, errors
+from gcloud import app, authentication
+from gcloud.services import requester
+from gcloud.controllers import helper, errors
 
 
 def _get_securitygroups(authorization, args=None):

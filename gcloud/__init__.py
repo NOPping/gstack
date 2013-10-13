@@ -17,20 +17,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gcecloudstack import app
-from OpenSSL import SSL
+import os
 
+from flask import Flask
+from flask.ext.sqlalchemy import SQLAlchemy
 
-def main():
-    context = SSL.Context(SSL.SSLv23_METHOD)
-    context.use_privatekey_file(app.config['DATA'] + '/server.key')
-    context.use_certificate_file(app.config['DATA'] + '/server.crt')
-    app.run(
-        host=app.config['LISTEN_ADDRESS'],
-        port=int(app.config['LISTEN_PORT']),
-        debug=app.config['DEBUG'],
-        ssl_context=context
-    )
+app = Flask(__name__)
 
-if __name__ == '__main__':
-    main()
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+# Configuration Options
+app.config['DATA'] = basedir + '/data'
+app.config.from_pyfile(app.config['DATA'] + '/config.cfg')
+
+# Sqlite Options
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+    os.path.join(app.config['DATA'], 'app.db')
+
+db = SQLAlchemy(app)
+
+publickey_storage = {}
+
+from gcloud.controllers import *
+
+db.create_all()

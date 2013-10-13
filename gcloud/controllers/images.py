@@ -18,9 +18,9 @@
 # under the License.
 
 import urllib
-from gcecloudstack import app, authentication
-from gcecloudstack.services import requester
-from gcecloudstack.controllers import helper, errors
+from gcloud import app, authentication
+from gcloud.services import requester
+from gcloud.controllers import helper, errors
 from flask import request, url_for
 
 
