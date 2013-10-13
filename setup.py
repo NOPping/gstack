@@ -42,7 +42,7 @@ setup(
     author="Ian Duffy, Darren Brogan, Sebastien Goasguen",
     author_email="ian@ianduffy.ie, brogand93@darrenbrogan.ie, runseb@gmail.com",
     long_description="A Google Compute Engine compliant interface to the Apache CloudStack API",
-    url="https://github.com/NOPping/cloudstack-gce",
+    url="https://github.com/NOPping/gCloud",
     platforms=("Any",),
     license="LICENSE.txt",
     package_data={'': ['LICENSE.txt', 'data/*']},

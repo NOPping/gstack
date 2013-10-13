@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/NOPping/cloudstack-gce.png?branch=master)](https://travis-ci.org/NOPping/cloudstack-gce)
+[![Build Status](https://travis-ci.org/NOPping/gCloud.png?branch=master)](https://travis-ci.org/NOPping/gCloud)
 
 # Google Compute Engine Interface For Cloudstack
 
@@ -30,7 +30,7 @@ Caveat: There exists some semantic differences between the two APIs, for example
 
 Clone the repository
 
-    git clone https://github.com/NOPping/cloudstack-gce.git
+    git clone https://github.com/NOPping/gCloud.git
 
 Install the package
 
