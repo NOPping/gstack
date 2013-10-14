@@ -25,7 +25,7 @@ from gcloud.services import requester
 from gcloud.controllers import helper, errors
 
 
-def _get_securitygroups(authorization, args=None):
+def _get_networks(authorization, args=None):
     command = 'listSecurityGroups'
     if not args:
         args = {}
@@ -39,8 +39,8 @@ def _get_securitygroups(authorization, args=None):
     return cloudstack_response
 
 
-def _get_securitygroup_by_name(authorization, securitygroup):
-    securitygroup_list = _get_securitygroups(
+def get_network_by_name(authorization, securitygroup):
+    securitygroup_list = _get_networks(
         authorization=authorization,
         args={
             'keyword': securitygroup
@@ -57,7 +57,7 @@ def _get_securitygroup_by_name(authorization, securitygroup):
         return None
 
 
-def _add_securitygroup(authorization, args=None):
+def _get_network(authorization, args=None):
     command = 'createSecurityGroup'
     if not args:
         args = {}
@@ -71,8 +71,8 @@ def _add_securitygroup(authorization, args=None):
     return cloudstack_response
 
 
-def _delete_securitygroup(authorization, projectid, network):
-    securitygroup_id = _get_securitygroup_by_name(authorization, network)['id']
+def _delete_network(authorization, projectid, network):
+    securitygroup_id = get_network_by_name(authorization, network)['id']
 
     if securitygroup_id is None:
         func_route = url_for('getnetwork', projectid=projectid, network=network)
@@ -119,7 +119,7 @@ def _create_populated_network_response(projectid, networks=None):
 @app.route('/' + app.config['PATH'] + '<projectid>/global/networks', methods=['GET'])
 @authentication.required
 def listnetworks(projectid, authorization):
-    securitygroup_list = _get_securitygroups(
+    securitygroup_list = _get_networks(
         authorization=authorization
     )
 
@@ -138,7 +138,7 @@ def listnetworks(projectid, authorization):
 @app.route('/' + app.config['PATH'] + '<projectid>/global/networks/<network>', methods=['GET'])
 @authentication.required
 def getnetwork(projectid, authorization, network):
-    response = _get_securitygroup_by_name(
+    response = get_network_by_name(
         authorization=authorization,
         securitygroup=network
     )
@@ -160,7 +160,7 @@ def addnetwork(authorization, projectid):
     args['name'] = data['name']
     args['description'] = data['description']
 
-    network_result = _add_securitygroup(authorization, args)
+    network_result = _get_network(authorization, args)
 
     if 'errortext' in network_result['createsecuritygroupresponse']:
         populated_response = {
@@ -197,7 +197,7 @@ def addnetwork(authorization, projectid):
 @app.route('/' + app.config['PATH'] + '<projectid>/global/networks/<network>', methods=['DELETE'])
 @authentication.required
 def deletenetwork(projectid, authorization, network):
-    _delete_securitygroup(authorization, projectid, network)
+    _delete_network(authorization, projectid, network)
 
     populated_response = {
         'kind': 'compute#operation',

@@ -22,7 +22,7 @@ import urllib
 from flask import request, url_for
 from gcloud import app, authentication
 from gcloud.services import requester
-from gcloud.controllers import zones, helper, operations, images, errors, machine_type
+from gcloud.controllers import zones, helper, operations, images, errors, machine_type, networks
 
 
 def _get_virtual_machines(authorization, args=None):
@@ -61,6 +61,14 @@ def _deploy_virtual_machine(authorization, args, projectid):
         machinetype=args['serviceoffering']
     )
     converted_args['serviceofferingid'] = serviceoffering['id']
+
+    if 'network' in args:
+        network = networks.get_network_by_name(
+            authorization=authorization,
+            securitygroup=args['network']
+        )
+        converted_args['securitygroupids'] = network['id']
+
     converted_args['displayname'] = args['name']
     converted_args['name'] = args['name']
     converted_args['keypair'] = projectid
@@ -260,6 +268,10 @@ def addinstance(authorization, projectid, zone):
     args['serviceoffering'] = data['machineType'].rsplit('/', 1)[1]
     args['template'] = data['image'].rsplit('/', 1)[1]
     args['zone'] = zone
+
+    network = data['networkInterfaces'][0]['network'].rsplit('/', 1)[1]
+    if network is not 'default':
+        args['network'] = network
 
     deployment_result = _deploy_virtual_machine(authorization, args, projectid)
 
