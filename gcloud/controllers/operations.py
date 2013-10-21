@@ -140,7 +140,6 @@ def _create_instance_response(async_result, projectid, authorization):
             zone=async_result['jobresult']['virtualmachine']['zonename'],
             instance=async_result['jobresult']['virtualmachine']['displayname']
         ))
-        app.logger.debug(publickey_storage)
         _add_sshkey_metadata(
             authorization=authorization,
             publickey=publickey_storage[projectid],

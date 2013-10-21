@@ -26,7 +26,7 @@ from pyoauth2.provider import ResourceProvider
 from pyoauth2.provider import AuthorizationProvider
 
 
-from gcloud import db, app
+from gcloud import db
 from gcloud.services import requester
 from gcloud.models.client import Client
 from gcloud.models.accesstoken import AccessToken
@@ -39,7 +39,6 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         return client_id is not None
 
     def validate_client_secret(self, client_id, client_secret):
-        app.logger.debug("Validating secret")
         command = 'listCapabilities'
         args = {}
         cloudstack_response = requester.make_request(
@@ -49,7 +48,6 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
             client_secret
         )
 
-        app.logger.debug("Cloudstack call was successful")
         if cloudstack_response:
             existing_client = Client.query.get(client_id)
 
