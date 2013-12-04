@@ -25,7 +25,7 @@ except ImportError:
         from setuptools import setup
     except ImportError:
         raise RuntimeError(
-            "python setuptools is required to build gcloud")
+            "python setuptools is required to build gstack")
 
 VERSION = '0.0.1'
 
