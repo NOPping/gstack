@@ -36,7 +36,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read().strip()
 
 setup(
-    name="gcloud",
+    name="gstack",
     version=VERSION,
     description="A GCE interface to Apache CloudStack",
     author="Ian Duffy, Darren Brogan, Sebastien Goasguen",
@@ -47,8 +47,8 @@ setup(
     license="LICENSE.txt",
     package_data={'': ['LICENSE.txt', 'data/*']},
     packages = [
-        "gcloud", "gcloud.controllers", "gcloud.models",
-        "gcloud.services", "gcloud.data", "pyoauth2"],
+        "gstack", "gstack.controllers", "gstack.models",
+        "gstack.services", "gstack.data", "pyoauth2"],
     install_requires=[
         "flask",
         "requests==0.14",
@@ -59,6 +59,6 @@ setup(
     zip_safe=False,
     entry_points="""
         [console_scripts]
-        gcloud = gcloud.appserver:main
+        gstack = gstack.appserver:main
     """,
 )
