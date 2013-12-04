@@ -1,4 +1,4 @@
-gcloud/data/app.db
+gstack/data/app.db
 
 *.py[cod]
 *~
