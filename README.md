@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/NOPping/gCloud.png?branch=master)](https://travis-ci.org/NOPping/gCloud)
+![Build Status](https://api.travis-ci.org/NOPping/gstack.svg?branch=master)
 
 # Google Compute Engine Interface For Cloudstack
 
