@@ -1,4 +1,4 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 # encoding: utf-8
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -100,7 +100,8 @@ def listzones(projectid, authorization):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/zones/<zone>', methods=['GET'])
 @authentication.required
 def getzone(projectid, authorization, zone):
     response = get_zone_by_name(

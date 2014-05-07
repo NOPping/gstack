@@ -1,4 +1,4 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 # encoding: utf-8
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -46,7 +46,8 @@ def get_machinetype_by_name(authorization, machinetype):
 
     if machinetype_list['listserviceofferingsresponse']:
         response = helper.filter_by_name(
-            data=machinetype_list['listserviceofferingsresponse']['serviceoffering'],
+            data=machinetype_list['listserviceofferingsresponse'][
+                'serviceoffering'],
             name=machinetype
         )
         return response
@@ -75,7 +76,8 @@ def _cloudstack_machinetype_to_gce(cloudstack_response, projectid, zone):
     return response
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/machineTypes', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/aggregated/machineTypes', methods=['GET'])
 @authentication.required
 def aggregatedlistmachinetypes(projectid, authorization):
     machine_types = _get_machinetypes(authorization)
@@ -109,7 +111,8 @@ def aggregatedlistmachinetypes(projectid, authorization):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes', methods=['GET'])
 @authentication.required
 def listmachinetype(projectid, authorization, zone):
     machinetype = None
@@ -127,7 +130,8 @@ def listmachinetype(projectid, authorization, zone):
         )
         if machinetype_list['listvolumesresponse']:
             machinetype = helper.filter_by_name(
-                data=machinetype_list['listserviceofferingsresponse']['serviceoffering'],
+                data=machinetype_list['listserviceofferingsresponse'][
+                    'serviceoffering'],
                 name=machinetype
             )
             if machinetype:
@@ -160,7 +164,8 @@ def listmachinetype(projectid, authorization, zone):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes/<machinetype>', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/zones/<zone>/machineTypes/<machinetype>', methods=['GET'])
 @authentication.required
 def getmachinetype(projectid, authorization, zone, machinetype):
     response = get_machinetype_by_name(
@@ -177,5 +182,9 @@ def getmachinetype(projectid, authorization, zone, machinetype):
             )
         )
     else:
-        func_route = url_for('getmachinetype', projectid=projectid, machinetype=machinetype, zone=zone)
+        func_route = url_for(
+            'getmachinetype',
+            projectid=projectid,
+            machinetype=machinetype,
+            zone=zone)
         return errors.resource_not_found(func_route)

@@ -47,4 +47,5 @@ def filter_by_name(data, name):
 
 
 def get_root_url():
-    return 'https://' + app.config['LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT']
+    return 'https://' + \
+        app.config['LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT']

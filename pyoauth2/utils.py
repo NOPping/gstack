@@ -8,7 +8,8 @@ UNICODE_ASCII_CHARACTERS = (string.ascii_letters.decode('ascii') +
 
 
 def random_ascii_string(length):
-    return ''.join([random.choice(UNICODE_ASCII_CHARACTERS) for x in xrange(length)])
+    return ''.join([random.choice(UNICODE_ASCII_CHARACTERS)
+                    for x in xrange(length)])
 
 
 def url_query_params(url):

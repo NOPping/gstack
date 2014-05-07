@@ -1,4 +1,4 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 # encoding: utf-8
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -34,26 +34,26 @@ def _cloudstack_securitygroup_to_gce(response_item):
         for i in range(rule['startport'], rule['endport'] + 1):
             ports.append(str(i))
         allowed.append({
-                       "IPProtocol": rule['protocol'],
-                       "ports": ports
-                       })
+            "IPProtocol": rule['protocol'],
+            "ports": ports
+        })
         if 'cidr' in rule.keys():
             sourceranges.append(rule['cidr'])
     return ({
-            "kind": "compute#firewall",
-            "selfLink": '',
-            "id": response_item['id'],
-            "creationTimestamp": '',
-            "name": response_item['name'],
-            "description": response_item['description'],
-            "network": '',
-            "sourceRanges": sourceranges,
-            "sourceTags": [
-                ''
-            ],
-            "targetTags": response_item['tags'],
-            "allowed": allowed
-            })
+        "kind": "compute#firewall",
+        "selfLink": '',
+        "id": response_item['id'],
+        "creationTimestamp": '',
+        "name": response_item['name'],
+        "description": response_item['description'],
+        "network": '',
+        "sourceRanges": sourceranges,
+        "sourceTags": [
+            ''
+        ],
+        "targetTags": response_item['tags'],
+        "allowed": allowed
+    })
 
 
 @app.route('/' + app.config['PATH'] + '<projectid>/global/firewalls',

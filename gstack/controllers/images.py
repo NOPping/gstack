@@ -83,7 +83,8 @@ def _cloudstack_template_to_gce(cloudstack_response, selfLink=None):
     response['creationTimestamp'] = cloudstack_response['created']
     response['name'] = cloudstack_response['name']
     response['description'] = cloudstack_response['displaytext']
-    response['status'] = translate_image_status[str(cloudstack_response['isready'])]
+    response['status'] = translate_image_status[
+        str(cloudstack_response['isready'])]
 
     if selfLink:
         response['selfLink'] = urllib.unquote_plus(selfLink)
@@ -93,21 +94,24 @@ def _cloudstack_template_to_gce(cloudstack_response, selfLink=None):
     return response
 
 
-@app.route('/' + app.config['PATH'] + 'centos-cloud/global/images', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + 'centos-cloud/global/images', methods=['GET'])
 @authentication.required
 def listnocentoscloudimages(authorization):
     populated_response = _create_populated_image_response('centos-cloud')
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + 'debian-cloud/global/images', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + 'debian-cloud/global/images', methods=['GET'])
 @authentication.required
 def listnodebiancloudimages(authorization):
     populated_response = _create_populated_image_response('debian-cloud')
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/global/images', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/global/images', methods=['GET'])
 @authentication.required
 def listimages(projectid, authorization):
     image_list = _get_templates(
@@ -119,14 +123,14 @@ def listimages(projectid, authorization):
         for image in image_list['listtemplatesresponse']['template']:
             images.append(_cloudstack_template_to_gce(
                 cloudstack_response=image,
-                selfLink=request.base_url + '/' + image['name'])
-            )
+                selfLink=request.base_url + '/' + image['name']))
 
     populated_response = _create_populated_image_response(projectid, images)
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/global/images/<image>', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/global/images/<image>', methods=['GET'])
 @authentication.required
 def getimage(projectid, authorization, image):
     response = get_template_by_name(

@@ -68,7 +68,8 @@ def listregions(projectid, authorization):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/regions/<region>', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/regions/<region>', methods=['GET'])
 @authentication.required
 def getregion(projectid, authorization, region):
     cloudstack_response = _get_regions(
@@ -77,8 +78,9 @@ def getregion(projectid, authorization, region):
     )
 
     if cloudstack_response['listregionsresponse']:
-        cloudstack_response = _cloudstack_region_to_gce(cloudstack_response['listregionsresponse']['region'][0])
+        cloudstack_response = _cloudstack_region_to_gce(
+            cloudstack_response['listregionsresponse']['region'][0])
         return helper.create_response(data=cloudstack_response)
 
     function_route = url_for('getimage', projectid=projectid, image=region)
-    return(errors.resource_not_found(function_route))
+    return errors.resource_not_found(function_route)

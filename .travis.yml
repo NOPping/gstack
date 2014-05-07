@@ -6,7 +6,7 @@ install:
   - pip install pep8
   - pip install -e . --use-mirrors
 script:
-  - pep8 --ignore=E501 *.py gcloud
-  - pylint --rcfile=pylint.rc *.py gcloud
+  - pep8 --ignore=E501 *.py gstack
+  - pylint --rcfile=pylint.rc *.py gstack
 
 # Force travis-ci build

@@ -84,7 +84,12 @@ def _add_sshkey_metadata(authorization, publickey, instanceid):
     i = 0
     for datasegment in split_publickey:
         print datasegment
-        _add_sshkey_metadata_segment(authorization, str(i) + '-sshkey-segment', datasegment, instanceid)
+        _add_sshkey_metadata_segment(
+            authorization,
+            str(i) +
+            '-sshkey-segment',
+            datasegment,
+            instanceid)
         i = i + 1
 
 
@@ -179,7 +184,8 @@ def create_response(authorization, projectid, operationid):
     return populated_response
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/global/operations/<operationid>', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/global/operations/<operationid>', methods=['GET'])
 @authentication.required
 def getoperations(authorization, operationid, projectid):
     return helper.create_response(create_response(

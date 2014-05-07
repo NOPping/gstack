@@ -1,4 +1,4 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 # encoding: utf-8
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -49,7 +49,8 @@ def get_network_by_name(authorization, securitygroup):
 
     if securitygroup_list['listsecuritygroupsresponse']:
         response = helper.filter_by_name(
-            data=securitygroup_list['listsecuritygroupsresponse']['securitygroup'],
+            data=securitygroup_list[
+                'listsecuritygroupsresponse']['securitygroup'],
             name=securitygroup
         )
         return response
@@ -75,12 +76,18 @@ def _delete_network(authorization, projectid, network):
     securitygroup_id = get_network_by_name(authorization, network)['id']
 
     if securitygroup_id is None:
-        func_route = url_for('getnetwork', projectid=projectid, network=network)
-        return(errors.resource_not_found(func_route))
+        func_route = url_for(
+            'getnetwork',
+            projectid=projectid,
+            network=network
+        )
+
+        return errors.resource_not_found(func_route)
 
     args = {
         'id': securitygroup_id
     }
+
     return requester.make_request(
         'deleteSecurityGroup',
         args,
@@ -116,7 +123,8 @@ def _create_populated_network_response(projectid, networks=None):
     return populated_response
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/global/networks', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/global/networks', methods=['GET'])
 @authentication.required
 def listnetworks(projectid, authorization):
     securitygroup_list = _get_networks(
@@ -128,14 +136,17 @@ def listnetworks(projectid, authorization):
         for network in securitygroup_list['listsecuritygroupsresponse']['securitygroup']:
             networks.append(_cloudstack_network_to_gce(
                 cloudstack_response=network,
-                selfLink=request.base_url + '/' + network['name'])
-            )
+                selfLink=request.base_url + '/' + network['name']))
 
-    populated_response = _create_populated_network_response(projectid, networks)
+    populated_response = _create_populated_network_response(
+        projectid,
+        networks
+    )
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/global/networks/<network>', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/global/networks/<network>', methods=['GET'])
 @authentication.required
 def getnetwork(projectid, authorization, network):
     response = get_network_by_name(
@@ -148,11 +159,15 @@ def getnetwork(projectid, authorization, network):
             data=_cloudstack_network_to_gce(response)
         )
     else:
-        func_route = url_for('getnetwork', projectid=projectid, network=network)
+        func_route = url_for(
+            'getnetwork',
+            projectid=projectid,
+            network=network)
         return errors.resource_not_found(func_route)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/global/networks', methods=['POST'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/global/networks', methods=['POST'])
 @authentication.required
 def addnetwork(authorization, projectid):
     data = json.loads(request.data)
@@ -194,7 +209,8 @@ def addnetwork(authorization, projectid):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/global/networks/<network>', methods=['DELETE'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/global/networks/<network>', methods=['DELETE'])
 @authentication.required
 def deletenetwork(projectid, authorization, network):
     _delete_network(authorization, projectid, network)

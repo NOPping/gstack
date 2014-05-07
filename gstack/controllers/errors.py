@@ -76,5 +76,5 @@ def no_results_found(scope):
                 "key": "scope",
                 "value": scope
             }]
-            }
+        }
     })

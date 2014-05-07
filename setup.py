@@ -46,7 +46,7 @@ setup(
     platforms=("Any",),
     license="LICENSE.txt",
     package_data={'': ['LICENSE.txt', 'data/*']},
-    packages = [
+    packages=[
         "gstack", "gstack.controllers", "gstack.models",
         "gstack.services", "gstack.data", "pyoauth2"],
     install_requires=[

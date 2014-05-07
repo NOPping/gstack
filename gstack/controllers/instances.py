@@ -84,11 +84,13 @@ def _deploy_virtual_machine(authorization, args, projectid):
 
 
 def _destroy_virtual_machine(authorization, instance):
-    virtual_machine_id = _get_virtual_machine_by_name(authorization, instance)['id']
+    virtual_machine_id = _get_virtual_machine_by_name(
+        authorization,
+        instance)['id']
 
     if virtual_machine_id is None:
         func_route = url_for('_destroy_virtual_machine', instance=instance)
-        return(errors.resource_not_found(func_route))
+        return errors.resource_not_found(func_route)
 
     args = {
         'id': virtual_machine_id
@@ -152,7 +154,8 @@ def _get_virtual_machine_by_name(authorization, instance):
 
     if virtual_machine_list['listvirtualmachinesresponse']:
         response = helper.filter_by_name(
-            data=virtual_machine_list['listvirtualmachinesresponse']['virtualmachine'],
+            data=virtual_machine_list[
+                'listvirtualmachinesresponse']['virtualmachine'],
             name=instance
         )
         return response
@@ -160,7 +163,8 @@ def _get_virtual_machine_by_name(authorization, instance):
         return None
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/instances', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/aggregated/instances', methods=['GET'])
 @authentication.required
 def aggregatedlistinstances(authorization, projectid):
     zone_list = zones.get_zone_names(authorization=authorization)
@@ -192,7 +196,8 @@ def aggregatedlistinstances(authorization, projectid):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances', methods=['GET'])
 @authentication.required
 def listinstances(authorization, projectid, zone):
     instance = None
@@ -217,7 +222,8 @@ def listinstances(authorization, projectid, zone):
                 )
             )
     else:
-        virtual_machine_list = _get_virtual_machines(authorization=authorization)
+        virtual_machine_list = _get_virtual_machines(
+            authorization=authorization)
         if virtual_machine_list['listvirtualmachinesresponse']:
             for instance in virtual_machine_list['listvirtualmachinesresponse']['virtualmachine']:
                 items.append(
@@ -238,7 +244,8 @@ def listinstances(authorization, projectid, zone):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
 @authentication.required
 def getinstance(projectid, authorization, zone, instance):
     response = _get_virtual_machine_by_name(
@@ -255,7 +262,10 @@ def getinstance(projectid, authorization, zone, instance):
             )
         )
     else:
-        function_route = url_for('getinstance', projectid=projectid, instance=instance)
+        function_route = url_for(
+            'getinstance',
+            projectid=projectid,
+            instance=instance)
         return errors.resource_not_found(function_route)
 
 
@@ -285,15 +295,16 @@ def addinstance(authorization, projectid, zone):
             'error': {
                 'errors': [{
                     'code': 'RESOURCE_ALREADY_EXISTS',
-                    'message': 'the resource \'projects/\'' + projectid + '/zones/' + zone + '/instances/' +
-                    args['name']
+                    'message': 'the resource \'projects/\'' + projectid +
+                               '/zones/' + zone + '/instances/' + args['name']
                 }]
             }
         }
     else:
         populated_response = operations.create_response(
             projectid=projectid,
-            operationid=deployment_result['deployvirtualmachineresponse']['jobid'],
+            operationid=deployment_result[
+                'deployvirtualmachineresponse']['jobid'],
             authorization=authorization
         )
 

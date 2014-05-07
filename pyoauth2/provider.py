@@ -442,7 +442,7 @@ class AuthorizationProvider(Provider):
                 return self._make_redirect_error_response(u, err)
             else:
                 return self._invalid_redirect_uri_response()
-        except StandardError as exc:
+        except Exception as exc:
             self._handle_exception(exc)
             print exc.errno
             print exc.strerror
@@ -480,7 +480,7 @@ class AuthorizationProvider(Provider):
 
             # Catch missing parameters in request
             return self._make_json_error_response('invalid_request')
-        except StandardError as exc:
+        except Exception as exc:
             self._handle_exception(exc)
             print exc
             # Catch all other server errors

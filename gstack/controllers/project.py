@@ -50,7 +50,9 @@ def _list_ssh_keys(authorization):
                 resources[tag['resourceid']] = {}
             resources[tag['resourceid']][tag['key']] = tag['value']
         for resource in resources:
-            sorted_resource = collections.OrderedDict(sorted(resources[resource].items()))
+            sorted_resource = collections.OrderedDict(
+                sorted(
+                    resources[resource].items()))
             sshkey = ''
             for keychunk in sorted_resource:
                 sshkey = sshkey + sorted_resource[keychunk]
@@ -166,13 +168,17 @@ def getproject(authorization, projectid):
         res = jsonify(_cloudstack_project_to_gce(project, metadata))
         res.status_code = 200
     else:
-        func_route = urllib.unquote_plus(url_for('getproject', projectid=projectid))
+        func_route = urllib.unquote_plus(
+            url_for(
+                'getproject',
+                projectid=projectid))
         res = errors.resource_not_found(func_route)
 
     return res
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/setCommonInstanceMetadata', methods=['POST'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/setCommonInstanceMetadata', methods=['POST'])
 @authentication.required
 def setglobalmetadata(projectid, authorization):
     data = json.loads(request.data)

@@ -1,4 +1,4 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 # encoding: utf-8
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -81,7 +81,8 @@ def _cloudstack_volume_to_gce(cloudstack_response, projectid, zone):
     return response
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/disks', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/aggregated/disks', methods=['GET'])
 @authentication.required
 def aggregatedlistdisks(projectid, authorization):
     disk_list = _get_disks(authorization=authorization)
@@ -114,7 +115,8 @@ def aggregatedlistdisks(projectid, authorization):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/disks', methods=['GET'])
+@app.route('/' + app.config['PATH'] +
+           '<projectid>/zones/<zone>/disks', methods=['GET'])
 @authentication.required
 def listdisks(projectid, authorization, zone):
     disk = None
@@ -165,7 +167,8 @@ def listdisks(projectid, authorization, zone):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/disks/<disk>', methods=['GET'])
+@app.route(
+    '/' + app.config['PATH'] + '<projectid>/zones/<zone>/disks/<disk>', methods=['GET'])
 @authentication.required
 def getdisk(projectid, authorization, zone, disk):
     response = get_disk_by_name(

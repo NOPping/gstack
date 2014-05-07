@@ -77,11 +77,21 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
     def persist_authorization_code(self, client_id, code, scope):
         return
 
-    def persist_token_information(self, client_id, scope, access_token, token_type, expires_in, refresh_token, data):
+    def persist_token_information(
+            self,
+            client_id,
+            scope,
+            access_token,
+            token_type,
+            expires_in,
+            refresh_token,
+            data):
         client = Client.query.get(client_id)
         if client is not None:
-            existing_access_token = AccessToken.query.filter_by(client_id=client_id).first()
-            existing_refresh_token = RefreshToken.query.filter_by(client_id=client_id).first()
+            existing_access_token = AccessToken.query.filter_by(
+                client_id=client_id).first()
+            existing_refresh_token = RefreshToken.query.filter_by(
+                client_id=client_id).first()
 
             if existing_access_token is not None:
                 existing_access_token.access_token = access_token
@@ -120,15 +130,9 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
 
     def from_refresh_token(self, client_id, refresh_token, scope):
         found_refresh_token = RefreshToken.query.get(refresh_token)
-        if (
-            found_refresh_token is not None and
-            found_refresh_token.data != 'false'
-        ):
+        if found_refresh_token is not None and found_refresh_token.data != 'false':
             data = json.loads(found_refresh_token.data)
-            if (
-                (scope == '' or scope == data.get('scope'))
-                and client_id == data.get('client_id')
-            ):
+            if (scope == '' or scope == data.get('scope')) and client_id == data.get('client_id'):
                 return data
         else:
             return False
@@ -158,10 +162,7 @@ class CloudstackResourceProvider(ResourceProvider):
 
     def validate_access_token(self, access_token, authorization):
         found_access_token = AccessToken.query.get(access_token)
-        if (
-            found_access_token is not None and
-            found_access_token.data != 'false'
-        ):
+        if found_access_token is not None and found_access_token.data != 'false':
             access_token_data = json.loads(found_access_token.data)
             client = Client.query.get(access_token_data.get('client_id'))
 
