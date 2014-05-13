@@ -58,7 +58,15 @@ Install the package
 python ./setup.py install
 ```
 
-This will install a `gstack` binary in your path. Check the `gstack/data/config.cfg` and enter the endpoint of your cloud.
+This will install a `gstack` and a `gstack-configure` binary in your path. 
+
+Before running `gstack` you must configure it. To do so run
+
+```bash
+gstack-configure
+```
+
+And enter your configuration information as prompted. 
 
 Install [gcutil](https://developers.google.com/compute/docs/gcutil/)
 
@@ -70,7 +78,9 @@ This is far from ideal and we opened a feature request with google to pass the `
 
 Start gstack:
 
-    gstack
+```bash
+gstack
+```
 
 Create a cached parameters file for gcutil:
 
