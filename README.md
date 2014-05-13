@@ -1,6 +1,7 @@
-![Build Status](https://api.travis-ci.org/NOPping/gstack.svg?branch=master)
-
 # Google Compute Engine Interface For Cloudstack
+
+[![PyPi package](https://badge.fury.io/py/gstack.svg)](https://pypi.python.org/pypi/gstack)
+[![Build Status](https://api.travis-ci.org/NOPping/gstack.svg?branch=master)](https://travis-ci.org/NOPping/gstack)
 
 ## Proposal
 
@@ -49,7 +50,7 @@ Caveat: There exists some semantic differences between the two APIs, for example
 Clone the repository
 
 ```bash
-git clone https://github.com/NOPping/gCloud.git
+git clone https://github.com/NOPping/gstack.git
 ```
 
 Install the package
@@ -57,19 +58,19 @@ Install the package
 python ./setup.py install
 ```
 
-This will install a `gcloud` binary in your path. Check the `gcloud/data/config.cfg` and enter the endpoint of your cloud.
+This will install a `gstack` binary in your path. Check the `gstack/data/config.cfg` and enter the endpoint of your cloud.
 
 Install [gcutil](https://developers.google.com/compute/docs/gcutil/)
 
-gcloud comes with a self-signed certificate for the local endpoint `gcloud/data/server.crt`, copy the certificate to the gcutil certificates file `gcutil/lib/httplib2/httplib2/cacerts.txt`
+gstack comes with a self-signed certificate for the local endpoint `gstack/data/server.crt`, copy the certificate to the gcutil certificates file `gcutil/lib/httplib2/httplib2/cacerts.txt`
 
 At this stage your CloudStack apikey and secretkey need to be entered in the gcutil auth_helper.py file at `gcutil/lib/google_compute_engine/gcutil/auth_helper.py`
 
 This is far from ideal and we opened a feature request with google to pass the `client_id` and `client_secret` as options to gcutil, hopefully future release of gcutil will allow us to do so.
 
-Start gcloud:
+Start gstack:
 
-    gcloud
+    gstack
 
 Create a cached parameters file for gcutil:
 
@@ -93,7 +94,7 @@ gcutil will issues requests to the local Flask application, get an OAuth token a
 You can grab the package from Pypi
 
 ```bash
-pip install gcloud
+pip install gstack
 ```
 
 Then follow the same instructions as the Developers.
@@ -294,3 +295,4 @@ For more information about CloudStack check the official [website](http://clouds
 
 Copyright © 2013 The Apache Software Foundation, Licensed under the Apache License, Version 2.0.
 "Apache", "CloudStack", "Apache CloudStack", and the Apache feather logos are registered trademarks or trademarks of The Apache Software Foundation.
+g
