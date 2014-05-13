@@ -59,6 +59,7 @@ setup(
     zip_safe=False,
     entry_points="""
         [console_scripts]
+        gstack-configure = gstack.configure:main
         gstack = gstack.appserver:main
     """,
 )

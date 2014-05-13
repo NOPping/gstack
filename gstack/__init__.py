@@ -22,21 +22,31 @@ import os
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 
+def _load_config_file():
+    config_file = os.path.join(
+        os.path.expanduser('~'),
+        '.gstack/gstack.conf'
+    )
+
+    if not os.path.exists(config_file):
+        sys.exit('No configuration found, please run gstack-configure')
+
+    return config_file
+
 app = Flask(__name__)
+db = SQLAlchemy(app)
+publickey_storage = {}
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# Configuration Options
-app.config['DATA'] = basedir + '/data'
-app.config.from_pyfile(app.config['DATA'] + '/config.cfg')
+config_file = _load_config_file()
+app.config.from_pyfile(config_file)
 
-# Sqlite Options
+app.config['DATA'] = os.path.abspath(os.path.dirname(__file__)) + '/data'
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-    os.path.join(app.config['DATA'], 'app.db')
-
-db = SQLAlchemy(app)
-
-publickey_storage = {}
+	os.path.join(app.config['DATA'], 'app.db')
 
 from gstack.controllers import *
 

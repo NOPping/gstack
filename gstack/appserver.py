@@ -18,6 +18,7 @@
 # under the License.
 
 from gstack import app
+
 from OpenSSL import SSL
 
 
@@ -25,9 +26,10 @@ def main():
     context = SSL.Context(SSL.SSLv23_METHOD)
     context.use_privatekey_file(app.config['DATA'] + '/server.key')
     context.use_certificate_file(app.config['DATA'] + '/server.crt')
+
     app.run(
-        host=app.config['LISTEN_ADDRESS'],
-        port=int(app.config['LISTEN_PORT']),
+        host=app.config['GSTACK_BIND_ADDRESS'],
+        port=int(app.config['GSTACK_PORT']),
         debug=app.config['DEBUG'],
         ssl_context=context
     )
