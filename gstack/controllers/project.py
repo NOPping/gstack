@@ -178,7 +178,10 @@ def getproject(authorization, projectid):
 
 
 @app.route(
-    '/' + app.config['PATH'] + '<projectid>/setCommonInstanceMetadata', methods=['POST'])
+    '/' +
+    app.config['PATH'] +
+    '<projectid>/setCommonInstanceMetadata',
+    methods=['POST'])
 @authentication.required
 def setglobalmetadata(projectid, authorization):
     data = json.loads(request.data)

@@ -146,7 +146,10 @@ def listnetworks(projectid, authorization):
 
 
 @app.route(
-    '/' + app.config['PATH'] + '<projectid>/global/networks/<network>', methods=['GET'])
+    '/' +
+    app.config['PATH'] +
+    '<projectid>/global/networks/<network>',
+    methods=['GET'])
 @authentication.required
 def getnetwork(projectid, authorization, network):
     response = get_network_by_name(
@@ -210,7 +213,10 @@ def addnetwork(authorization, projectid):
 
 
 @app.route(
-    '/' + app.config['PATH'] + '<projectid>/global/networks/<network>', methods=['DELETE'])
+    '/' +
+    app.config['PATH'] +
+    '<projectid>/global/networks/<network>',
+    methods=['DELETE'])
 @authentication.required
 def deletenetwork(projectid, authorization, network):
     _delete_network(authorization, projectid, network)

@@ -35,12 +35,19 @@ def make_request(command, args, client_id, client_secret):
     request = zip(args.keys(), args.values())
     request.sort(key=lambda x: x[0].lower())
 
-    request_url = "&".join(["=".join([r[0], urllib.quote_plus(str(r[1]))]) for r in request])
+    request_url = "&".join(
+        ["=".join([r[0], urllib.quote_plus(str(r[1]))]) for r in request])
 
-    hashStr = "&".join(["=".join([r[0].lower(), str.lower(urllib.quote_plus(str(r[1]))).replace("+", "%20")])
-                        for r in request])
+    hashStr = "&".join(["=".join([r[0].lower(),
+                                  str.lower(urllib.quote_plus(str(r[1]))).replace("+",
+                                                                                  "%20")]) for r in request])
 
-    sig = urllib.quote_plus(base64.encodestring(hmac.new(client_secret, hashStr, hashlib.sha1).digest()).strip())
+    sig = urllib.quote_plus(
+        base64.encodestring(
+            hmac.new(
+                client_secret,
+                hashStr,
+                hashlib.sha1).digest()).strip())
 
     request_url += "&signature=%s" % sig
 

@@ -33,4 +33,5 @@ class UtilsTest(unittest.TestCase):
 
         # Note param ordering and correct new value for b
         self.assertEquals(
-            result, 'https://www.grapheffect.com/some/path;hello?a=10&c=30&b=20')
+            result,
+            'https://www.grapheffect.com/some/path;hello?a=10&c=30&b=20')

@@ -19,6 +19,7 @@
 
 import os
 
+
 def main():
     config_folder = _create_config_folder()
     _create_config_file(config_folder)
@@ -28,7 +29,7 @@ def _create_config_folder():
     config_folder = os.path.join(os.path.expanduser('~'), '.gstack')
     if not os.path.exists(config_folder):
         os.makedirs(config_folder)
-    os.chmod(config_folder, 0700)
+    os.chmod(config_folder, 0o700)
     return config_folder
 
 

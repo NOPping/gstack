@@ -168,7 +168,10 @@ def listdisks(projectid, authorization, zone):
 
 
 @app.route(
-    '/' + app.config['PATH'] + '<projectid>/zones/<zone>/disks/<disk>', methods=['GET'])
+    '/' +
+    app.config['PATH'] +
+    '<projectid>/zones/<zone>/disks/<disk>',
+    methods=['GET'])
 @authentication.required
 def getdisk(projectid, authorization, zone, disk):
     response = get_disk_by_name(

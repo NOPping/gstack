@@ -60,17 +60,20 @@ def _delete_instance_response(async_result, projectid):
     elif async_result['jobstatus'] is 1:
         # handle successful case
         populated_response['status'] = 'DONE'
-        populated_response['zone'] = urllib.unquote_plus(helper.get_root_url() + url_for(
-            'getzone',
-            projectid=projectid,
-            zone=async_result['jobresult']['virtualmachine']['zonename'],
-        ))
-        populated_response['targetLink'] = urllib.unquote_plus(helper.get_root_url() + url_for(
-            'getinstance',
-            projectid=projectid,
-            zone=async_result['jobresult']['virtualmachine']['zonename'],
-            instance=async_result['jobresult']['virtualmachine']['displayname']
-        ))
+        populated_response['zone'] = urllib.unquote_plus(
+            helper.get_root_url() +
+            url_for(
+                'getzone',
+                projectid=projectid,
+                zone=async_result['jobresult']['virtualmachine']['zonename'],
+            ))
+        populated_response['targetLink'] = urllib.unquote_plus(
+            helper.get_root_url() +
+            url_for(
+                'getinstance',
+                projectid=projectid,
+                zone=async_result['jobresult']['virtualmachine']['zonename'],
+                instance=async_result['jobresult']['virtualmachine']['displayname']))
 
     # need to add a case here for error handling, its job status 2
 
@@ -134,17 +137,20 @@ def _create_instance_response(async_result, projectid, authorization):
     elif async_result['jobstatus'] is 1:
         # handle successful case
         populated_response['status'] = 'DONE'
-        populated_response['zone'] = urllib.unquote_plus(helper.get_root_url() + url_for(
-            'getzone',
-            projectid=projectid,
-            zone=async_result['jobresult']['virtualmachine']['zonename'],
-        ))
-        populated_response['targetLink'] = urllib.unquote_plus(helper.get_root_url() + url_for(
-            'getinstance',
-            projectid=projectid,
-            zone=async_result['jobresult']['virtualmachine']['zonename'],
-            instance=async_result['jobresult']['virtualmachine']['displayname']
-        ))
+        populated_response['zone'] = urllib.unquote_plus(
+            helper.get_root_url() +
+            url_for(
+                'getzone',
+                projectid=projectid,
+                zone=async_result['jobresult']['virtualmachine']['zonename'],
+            ))
+        populated_response['targetLink'] = urllib.unquote_plus(
+            helper.get_root_url() +
+            url_for(
+                'getinstance',
+                projectid=projectid,
+                zone=async_result['jobresult']['virtualmachine']['zonename'],
+                instance=async_result['jobresult']['virtualmachine']['displayname']))
         _add_sshkey_metadata(
             authorization=authorization,
             publickey=publickey_storage[projectid],
@@ -185,7 +191,10 @@ def create_response(authorization, projectid, operationid):
 
 
 @app.route(
-    '/' + app.config['PATH'] + '<projectid>/global/operations/<operationid>', methods=['GET'])
+    '/' +
+    app.config['PATH'] +
+    '<projectid>/global/operations/<operationid>',
+    methods=['GET'])
 @authentication.required
 def getoperations(authorization, operationid, projectid):
     return helper.create_response(create_response(

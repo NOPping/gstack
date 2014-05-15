@@ -18,9 +18,11 @@
 # under the License.
 
 import os
+import sys
 
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
+
 
 def _load_config_file():
     config_file = os.path.join(
@@ -46,7 +48,7 @@ app.config.from_pyfile(config_file)
 app.config['DATA'] = os.path.abspath(os.path.dirname(__file__)) + '/data'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-	os.path.join(app.config['DATA'], 'app.db')
+    os.path.join(app.config['DATA'], 'app.db')
 
 from gstack.controllers import *
 

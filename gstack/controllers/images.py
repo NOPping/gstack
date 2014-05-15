@@ -130,7 +130,10 @@ def listimages(projectid, authorization):
 
 
 @app.route(
-    '/' + app.config['PATH'] + '<projectid>/global/images/<image>', methods=['GET'])
+    '/' +
+    app.config['PATH'] +
+    '<projectid>/global/images/<image>',
+    methods=['GET'])
 @authentication.required
 def getimage(projectid, authorization, image):
     response = get_template_by_name(

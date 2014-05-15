@@ -8,11 +8,12 @@ class ClientTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.client = Client(client_id='some.client',
-                             client_secret='ASDFGHJKL',
-                             redirect_uri='https://example.com/pyoauth2redirect',
-                             authorization_uri='https://grapheffect.com/pyoauth2/auth',
-                             token_uri='https://grapheffect.com/pyoauth2/token')
+        self.client = Client(
+            client_id='some.client',
+            client_secret='ASDFGHJKL',
+            redirect_uri='https://example.com/pyoauth2redirect',
+            authorization_uri='https://grapheffect.com/pyoauth2/auth',
+            token_uri='https://grapheffect.com/pyoauth2/token')
 
     def test_get_authorization_code_uri(self):
         """Test client generation of authorization code uri."""
