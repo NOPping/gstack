@@ -23,9 +23,9 @@ from gstack.controllers import helper
 import json
 
 
-@app.route('/discovery/v1/apis/compute/v1beta15/rest', methods=['GET'])
+@app.route('/discovery/v1/apis/compute/v1/rest', methods=['GET'])
 def discovery():
-    with open(app.config['DATA'] + '/v1beta15.json') as template:
+    with open(app.config['DATA'] + '/v1.json') as template:
         discovery_template = json.loads(template.read())
 
     discovery_template[

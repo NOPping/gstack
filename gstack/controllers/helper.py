@@ -48,4 +48,4 @@ def filter_by_name(data, name):
 
 def get_root_url():
     return 'https://' + \
-        app.config['LISTEN_ADDRESS'] + ':' + app.config['LISTEN_PORT']
+        app.config['GSTACK_BIND_ADDRESS'] + ':' + app.config['GSTACK_PORT']
