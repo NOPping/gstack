@@ -112,6 +112,8 @@ Create a cached parameters file for gcutil:
     
     `--api_host=https://localhost:5000/`
     
+    `--nocheck_for_new_version`
+    
 
 gcutil will issue auth requests to the local Flask application, get an OAuth token and then issue requests to the CloudStack endpoint you specified when cofiguring gstack. 
 
