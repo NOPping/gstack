@@ -20,30 +20,30 @@ The GCE APIs for Cloudstack is supplied as a layer over the current Cloudstack A
 
 It is written in Python, using `Flask <http://flask.pocoo.org/>`_ to expose a GCE compliant REST API. Requests, Pycrypto, Pyopenssl and Flask-sqlachemy are dependencies. A custom version of pyoauth2 is included in the source.
 
- - Disks
-    - listdisks
-    - getdisk
- - Firewalls
-    - addfirewall
-    - deletefirewall
-    - listfirewalls
-    - getfirewall
- - Images
-    - listimages
-    - getimage
- - Instances
-    - addinstance
-    - deleteinstance
-    - listinstances
-    - getinstance
- - Machinetypes
-    - listmachinetypes
-    - getmachinetype
- - Project
-    - getproject
- - Zones
-    - listzones
-    - getzone
+- Disks
+   - listdisks
+   - getdisk
+- Firewalls
+   - addfirewall
+   - deletefirewall
+   - listfirewalls
+   - getfirewall
+- Images
+   - listimages
+   - getimage
+- Instances
+   - addinstance
+   - deleteinstance
+   - listinstances
+   - getinstance
+- Machinetypes
+   - listmachinetypes
+   - getmachinetype
+- Project
+   - getproject
+- Zones
+   - listzones
+   - getzone
 
 
 Installation
@@ -127,7 +127,6 @@ You can start issuing standard gcutil commands.
 name                  status   next-maintenance 
 ==================   ========  ====================
 Sandbox-simulator     UP       None scheduled   
-basic                 DOWN     None scheduled   
 ==================   ========  ====================
 
 
