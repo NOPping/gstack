@@ -50,11 +50,11 @@ setup(
         "gstack", "gstack.controllers", "gstack.models",
         "gstack.services", "gstack.data", "pyoauth2"],
     install_requires=[
-        "flask",
         "requests==0.14",
         "pycrypto==2.6",
         "pyopenssl",
         "Flask-SQLAlchemy",
+        "flask",
     ],
     zip_safe=False,
     entry_points="""
