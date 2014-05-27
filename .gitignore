@@ -1,4 +1,4 @@
-gstack/data/app.db
+*.db
 
 *.py[cod]
 *~

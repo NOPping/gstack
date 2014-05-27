@@ -18,7 +18,7 @@
 # under the License.
 
 import urllib
-from gstack import app, publickey_storage, jobid_storage
+from gstack import app, publickey_storage
 from gstack import authentication
 from gstack.controllers import helper
 from gstack.services import requester
@@ -40,6 +40,7 @@ def _delete_instance_response(async_result, projectid):
     populated_response = {
         'kind': 'compute#operation',
         'insertTime': async_result['created'],
+        'name': async_result['jobid'],
         'startTime': async_result['created'],
         'selfLink': urllib.unquote_plus(helper.get_root_url() + url_for(
             'getoperations',
@@ -50,15 +51,11 @@ def _delete_instance_response(async_result, projectid):
 
     if async_result['jobstatus'] is 0:
         # handle pending case
-        jobid_storage['jobid'] = async_result['jobid']
-        populated_response['name'] = 'cloudstackasyncrequest'
         populated_response['targetLink'] = ''
         populated_response['status'] = 'PENDING'
         populated_response['progress'] = 0
     elif async_result['jobstatus'] is 1:
         # handle successful case
-        del jobid_storage['jobid']
-        populated_response['name'] = async_result['jobid'],
         populated_response['status'] = 'DONE'
         populated_response['zone'] = urllib.unquote_plus(
             helper.get_root_url() +
@@ -114,6 +111,7 @@ def _create_instance_response(async_result, projectid, authorization):
         'kind': 'compute#operation',
         'id': async_result['jobid'],
         'operationType': 'insert',
+        'name': async_result['jobid'],
         'user': async_result['userid'],
         'insertTime': async_result['created'],
         'startTime': async_result['created'],
@@ -126,15 +124,11 @@ def _create_instance_response(async_result, projectid, authorization):
 
     if async_result['jobstatus'] is 0:
         # handle pending case
-        jobid_storage['jobid'] = async_result['jobid']
-        populated_response['name'] = 'cloudstackasyncrequest'
         populated_response['targetLink'] = ''
         populated_response['status'] = 'PENDING'
         populated_response['progress'] = 0
     elif async_result['jobstatus'] is 1:
         # handle successful case
-        del jobid_storage['jobid']
-        populated_response['name'] = async_result['jobid']
         populated_response['status'] = 'DONE'
         populated_response['id'] = async_result['jobid']
         populated_response['zone'] = urllib.unquote_plus(
@@ -161,12 +155,9 @@ def _create_instance_response(async_result, projectid, authorization):
 
 
 def create_response(authorization, projectid, operationid):
-    jobid = operationid
-    if 'jobid' in jobid_storage:
-        jobid = jobid_storage['jobid']
     async_result = _get_async_result(
         authorization=authorization,
-        args={'jobId': jobid}
+        args={'jobId': operationid}
     )
 
     command_name = None
