@@ -164,6 +164,7 @@ def getproject(authorization, projectid):
     if project:
         metadata = {}
         metadata['sshKeys'] = _list_ssh_keys(authorization)
+        publickey_storage[projectid] = metadata['sshKeys']
 
         res = jsonify(_cloudstack_project_to_gce(project, metadata))
         res.status_code = 200
@@ -177,11 +178,7 @@ def getproject(authorization, projectid):
     return res
 
 
-@app.route(
-    '/' +
-    app.config['PATH'] +
-    '<projectid>/setCommonInstanceMetadata',
-    methods=['POST'])
+@app.route('/' + app.config['PATH'] + '<projectid>/setCommonInstanceMetadata', methods=['POST'])
 @authentication.required
 def setglobalmetadata(projectid, authorization):
     data = json.loads(request.data)

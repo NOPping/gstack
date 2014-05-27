@@ -18,7 +18,7 @@
 # under the License.
 
 import urllib
-from gstack import app, publickey_storage
+from gstack import app, publickey_storage, jobid_storage
 from gstack import authentication
 from gstack.controllers import helper
 from gstack.services import requester
@@ -39,10 +39,6 @@ def _get_async_result(authorization, args):
 def _delete_instance_response(async_result, projectid):
     populated_response = {
         'kind': 'compute#operation',
-        'id': async_result['jobid'],
-        'name': async_result['jobid'],
-        'operationType': 'delete',
-        'user': async_result['userid'],
         'insertTime': async_result['created'],
         'startTime': async_result['created'],
         'selfLink': urllib.unquote_plus(helper.get_root_url() + url_for(
@@ -54,11 +50,15 @@ def _delete_instance_response(async_result, projectid):
 
     if async_result['jobstatus'] is 0:
         # handle pending case
+        jobid_storage['jobid'] = async_result['jobid']
+        populated_response['name'] = 'cloudstackasyncrequest'
         populated_response['targetLink'] = ''
         populated_response['status'] = 'PENDING'
         populated_response['progress'] = 0
     elif async_result['jobstatus'] is 1:
         # handle successful case
+        del jobid_storage['jobid']
+        populated_response['name'] = async_result['jobid'],
         populated_response['status'] = 'DONE'
         populated_response['zone'] = urllib.unquote_plus(
             helper.get_root_url() +
@@ -88,11 +88,7 @@ def _add_sshkey_metadata(authorization, publickey, instanceid):
     for datasegment in split_publickey:
         print datasegment
         _add_sshkey_metadata_segment(
-            authorization,
-            str(i) +
-            '-sshkey-segment',
-            datasegment,
-            instanceid)
+            authorization, str(i) + '-sshkey-segment', datasegment, instanceid)
         i = i + 1
 
 
@@ -117,7 +113,6 @@ def _create_instance_response(async_result, projectid, authorization):
     populated_response = {
         'kind': 'compute#operation',
         'id': async_result['jobid'],
-        'name': async_result['jobid'],
         'operationType': 'insert',
         'user': async_result['userid'],
         'insertTime': async_result['created'],
@@ -131,12 +126,17 @@ def _create_instance_response(async_result, projectid, authorization):
 
     if async_result['jobstatus'] is 0:
         # handle pending case
+        jobid_storage['jobid'] = async_result['jobid']
+        populated_response['name'] = 'cloudstackasyncrequest'
         populated_response['targetLink'] = ''
         populated_response['status'] = 'PENDING'
         populated_response['progress'] = 0
     elif async_result['jobstatus'] is 1:
         # handle successful case
+        del jobid_storage['jobid']
+        populated_response['name'] = async_result['jobid']
         populated_response['status'] = 'DONE'
+        populated_response['id'] = async_result['jobid']
         populated_response['zone'] = urllib.unquote_plus(
             helper.get_root_url() +
             url_for(
@@ -157,15 +157,16 @@ def _create_instance_response(async_result, projectid, authorization):
             instanceid=async_result['jobresult']['virtualmachine']['id']
         )
 
-    # need to add a case here for error handling, its job status 2
-
     return populated_response
 
 
 def create_response(authorization, projectid, operationid):
+    jobid = operationid
+    if 'jobid' in jobid_storage:
+        jobid = jobid_storage['jobid']
     async_result = _get_async_result(
         authorization=authorization,
-        args={'jobId': operationid}
+        args={'jobId': jobid}
     )
 
     command_name = None
@@ -190,11 +191,7 @@ def create_response(authorization, projectid, operationid):
     return populated_response
 
 
-@app.route(
-    '/' +
-    app.config['PATH'] +
-    '<projectid>/global/operations/<operationid>',
-    methods=['GET'])
+@app.route('/' + app.config['PATH'] + '<projectid>/global/operations/<operationid>', methods=['GET'])
 @authentication.required
 def getoperations(authorization, operationid, projectid):
     return helper.create_response(create_response(

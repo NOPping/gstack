@@ -38,6 +38,7 @@ def _load_config_file():
 app = Flask(__name__)
 db = SQLAlchemy(app)
 publickey_storage = {}
+jobid_storage = {}
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
