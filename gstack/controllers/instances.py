@@ -178,9 +178,8 @@ def aggregatedlistinstances(authorization, projectid):
 
     items = {}
 
-    zone_instances = []
-
     for zone in zone_list:
+        zone_instances = []
         if instance:
             virtual_machine = _get_virtual_machine_by_name(
                 authorization=authorization,
