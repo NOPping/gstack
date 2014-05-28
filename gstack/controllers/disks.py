@@ -87,11 +87,31 @@ def aggregatedlistdisks(projectid, authorization):
     disk_list = _get_disks(authorization=authorization)
     zone_list = zones.get_zone_names(authorization=authorization)
 
+    disk = None
+    filter = helper.get_filter(request.args)
+
+    if 'name' in filter:
+        disk = filter['name']
+
     items = {}
 
     for zone in zone_list:
         zone_disks = []
-        if disk_list['listvolumesresponse']:
+        if disk:
+            disk = get_disk_by_name(
+                authorization=authorization,
+                disk=disk
+            )
+            if disk:
+                zone_disks.append(
+                    _cloudstack_volume_to_gce(
+                        cloudstack_response=disk,
+                        projectid=projectid,
+                        zone=zone,
+                    )
+                )
+
+        elif disk_list['listvolumesresponse']:
             for disk in disk_list['listvolumesresponse']['volume']:
                 zone_disks.append(
                     _cloudstack_volume_to_gce(
@@ -101,7 +121,6 @@ def aggregatedlistdisks(projectid, authorization):
                     )
                 )
         items['zone/' + zone] = {}
-        items['zone/' + zone]['zone'] = zone
         items['zone/' + zone]['disks'] = zone_disks
 
     populated_response = {
