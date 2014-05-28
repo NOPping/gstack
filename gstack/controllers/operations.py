@@ -40,6 +40,7 @@ def _delete_instance_response(async_result, projectid):
     populated_response = {
         'kind': 'compute#operation',
         'insertTime': async_result['created'],
+        'operationType': 'delete',
         'name': async_result['jobid'],
         'startTime': async_result['created'],
         'selfLink': urllib.unquote_plus(helper.get_root_url() + url_for(

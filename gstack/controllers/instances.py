@@ -170,13 +170,34 @@ def aggregatedlistinstances(authorization, projectid):
     zone_list = zones.get_zone_names(authorization=authorization)
     virtual_machine_list = _get_virtual_machines(authorization=authorization)
 
+    instance = None
+    filter = helper.get_filter(request.args)
+
+    if 'name' in filter:
+        instance = filter['name']
+
     items = {}
 
+    zone_instances = []
+
     for zone in zone_list:
-        zones_instances = []
-        if virtual_machine_list['listvirtualmachinesresponse']:
+        if instance:
+            virtual_machine = _get_virtual_machine_by_name(
+                authorization=authorization,
+                instance=instance
+            )
+            if virtual_machine:
+                zone_instances.append(
+                    _cloudstack_virtual_machine_to_gce(
+                        cloudstack_response=virtual_machine,
+                        projectid=projectid,
+                        zone=zone
+                    )
+                )
+
+        elif virtual_machine_list['listvirtualmachinesresponse']:
             for instance in virtual_machine_list['listvirtualmachinesresponse']['virtualmachine']:
-                zones_instances.append(
+                zone_instances.append(
                     _cloudstack_virtual_machine_to_gce(
                         cloudstack_response=instance,
                         projectid=projectid,
@@ -184,8 +205,7 @@ def aggregatedlistinstances(authorization, projectid):
                     )
                 )
         items['zone/' + zone] = {}
-        items['zone/' + zone]['zone'] = zone
-        items['zone/' + zone]['instances'] = zones_instances
+        items['zone/' + zone]['instances'] = zone_instances
 
     populated_response = {
         'kind': 'compute#instanceAggregatedList',
