@@ -39,11 +39,9 @@ def _get_async_result(authorization, args):
 def _delete_instance_response(async_result, projectid):
     populated_response = {
         'kind': 'compute#operation',
-        'id': async_result['jobid'],
-        'name': async_result['jobid'],
-        'operationType': 'delete',
-        'user': async_result['userid'],
         'insertTime': async_result['created'],
+        'operationType': 'delete',
+        'name': async_result['jobid'],
         'startTime': async_result['created'],
         'selfLink': urllib.unquote_plus(helper.get_root_url() + url_for(
             'getoperations',
@@ -88,11 +86,7 @@ def _add_sshkey_metadata(authorization, publickey, instanceid):
     for datasegment in split_publickey:
         print datasegment
         _add_sshkey_metadata_segment(
-            authorization,
-            str(i) +
-            '-sshkey-segment',
-            datasegment,
-            instanceid)
+            authorization, str(i) + '-sshkey-segment', datasegment, instanceid)
         i = i + 1
 
 
@@ -117,8 +111,8 @@ def _create_instance_response(async_result, projectid, authorization):
     populated_response = {
         'kind': 'compute#operation',
         'id': async_result['jobid'],
-        'name': async_result['jobid'],
         'operationType': 'insert',
+        'name': async_result['jobid'],
         'user': async_result['userid'],
         'insertTime': async_result['created'],
         'startTime': async_result['created'],
@@ -137,6 +131,7 @@ def _create_instance_response(async_result, projectid, authorization):
     elif async_result['jobstatus'] is 1:
         # handle successful case
         populated_response['status'] = 'DONE'
+        populated_response['id'] = async_result['jobid']
         populated_response['zone'] = urllib.unquote_plus(
             helper.get_root_url() +
             url_for(
@@ -156,8 +151,6 @@ def _create_instance_response(async_result, projectid, authorization):
             publickey=publickey_storage[projectid],
             instanceid=async_result['jobresult']['virtualmachine']['id']
         )
-
-    # need to add a case here for error handling, its job status 2
 
     return populated_response
 
@@ -190,11 +183,7 @@ def create_response(authorization, projectid, operationid):
     return populated_response
 
 
-@app.route(
-    '/' +
-    app.config['PATH'] +
-    '<projectid>/global/operations/<operationid>',
-    methods=['GET'])
+@app.route('/' + app.config['PATH'] + '<projectid>/global/operations/<operationid>', methods=['GET'])
 @authentication.required
 def getoperations(authorization, operationid, projectid):
     return helper.create_response(create_response(

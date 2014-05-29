@@ -100,8 +100,7 @@ def listzones(projectid, authorization):
     return helper.create_response(data=populated_response)
 
 
-@app.route(
-    '/' + app.config['PATH'] + '<projectid>/zones/<zone>', methods=['GET'])
+@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>', methods=['GET'])
 @authentication.required
 def getzone(projectid, authorization, zone):
     response = get_zone_by_name(
@@ -111,7 +110,7 @@ def getzone(projectid, authorization, zone):
 
     if response:
         return helper.create_response(
-            data=_cloudstack_zone_to_gce(zone)
+            data=_cloudstack_zone_to_gce(response)
         )
     else:
         func_route = url_for('getzone', projectid=projectid, zone=zone)

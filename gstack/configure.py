@@ -36,7 +36,7 @@ def _create_config_folder():
 def _create_config_file(config_folder):
     config_file = open(config_folder + '/gstack.conf', 'w+')
 
-    config_file.write('PATH = \'%s\'\n' % 'compute/v1beta15/projects/')
+    config_file.write('PATH = \'%s\'\n' % 'compute/v1/projects/')
 
     gstack_address = raw_input('gstack bind address [0.0.0.0]: ')
     if gstack_address == '':
