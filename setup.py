@@ -27,7 +27,7 @@ except ImportError:
         raise RuntimeError(
             "python setuptools is required to build gstack")
 
-VERSION = '0.0.3'
+VERSION = '0.1.0'
 
 import os
 
