@@ -43,7 +43,7 @@ setup(
     author_email="ian@ianduffy.ie, brogand93@darrenbrogan.ie, runseb@gmail.com",
     long_description="A Google Compute Engine compliant interface to the Apache CloudStack API",
     url="https://github.com/NOPping/gstack",
-    platforms=("Any",),
+    platforms=("Any"),
     license="LICENSE.txt",
     package_data={'': ['LICENSE.txt', 'data/*']},
     packages=[
