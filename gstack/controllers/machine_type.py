@@ -76,11 +76,7 @@ def _cloudstack_machinetype_to_gce(cloudstack_response, projectid, zone):
     return response
 
 
-@app.route(
-    '/' +
-    app.config['PATH'] +
-    '<projectid>/aggregated/machineTypes',
-    methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/aggregated/machineTypes', methods=['GET'])
 @authentication.required
 def aggregatedlistmachinetypes(projectid, authorization):
     machine_types = _get_machinetypes(authorization)
@@ -114,11 +110,7 @@ def aggregatedlistmachinetypes(projectid, authorization):
     return helper.create_response(data=populated_response)
 
 
-@app.route(
-    '/' +
-    app.config['PATH'] +
-    '<projectid>/zones/<zone>/machineTypes',
-    methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/zones/<zone>/machineTypes', methods=['GET'])
 @authentication.required
 def listmachinetype(projectid, authorization, zone):
     machinetype = None
@@ -170,11 +162,7 @@ def listmachinetype(projectid, authorization, zone):
     return helper.create_response(data=populated_response)
 
 
-@app.route(
-    '/' +
-    app.config['PATH'] +
-    '<projectid>/zones/<zone>/machineTypes/<machinetype>',
-    methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/zones/<zone>/machineTypes/<machinetype>', methods=['GET'])
 @authentication.required
 def getmachinetype(projectid, authorization, zone, machinetype):
     response = get_machinetype_by_name(

@@ -80,7 +80,7 @@ def _cloudstack_zone_to_gce(response_item):
     })
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones', methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/zones', methods=['GET'])
 @authentication.required
 def listzones(projectid, authorization):
     zone_list = _get_zones(authorization)
@@ -100,7 +100,7 @@ def listzones(projectid, authorization):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>', methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/zones/<zone>', methods=['GET'])
 @authentication.required
 def getzone(projectid, authorization, zone):
     response = get_zone_by_name(

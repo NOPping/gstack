@@ -124,7 +124,7 @@ def _create_populated_network_response(projectid, networks=None):
 
 
 @app.route(
-    '/' + app.config['PATH'] + '<projectid>/global/networks', methods=['GET'])
+    '/compute/v1/projects/<projectid>/global/networks', methods=['GET'])
 @authentication.required
 def listnetworks(projectid, authorization):
     securitygroup_list = _get_networks(
@@ -145,11 +145,7 @@ def listnetworks(projectid, authorization):
     return helper.create_response(data=populated_response)
 
 
-@app.route(
-    '/' +
-    app.config['PATH'] +
-    '<projectid>/global/networks/<network>',
-    methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/global/networks/<network>', methods=['GET'])
 @authentication.required
 def getnetwork(projectid, authorization, network):
     response = get_network_by_name(
@@ -169,8 +165,7 @@ def getnetwork(projectid, authorization, network):
         return errors.resource_not_found(func_route)
 
 
-@app.route(
-    '/' + app.config['PATH'] + '<projectid>/global/networks', methods=['POST'])
+@app.route('/compute/v1/projects/<projectid>/global/networks', methods=['POST'])
 @authentication.required
 def addnetwork(authorization, projectid):
     data = json.loads(request.data)
@@ -212,11 +207,7 @@ def addnetwork(authorization, projectid):
     return helper.create_response(data=populated_response)
 
 
-@app.route(
-    '/' +
-    app.config['PATH'] +
-    '<projectid>/global/networks/<network>',
-    methods=['DELETE'])
+@app.route('/compute/v1/projects/<projectid>/global/networks/<network>', methods=['DELETE'])
 @authentication.required
 def deletenetwork(projectid, authorization, network):
     _delete_network(authorization, projectid, network)

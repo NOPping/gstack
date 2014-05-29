@@ -183,7 +183,7 @@ def create_response(authorization, projectid, operationid):
     return populated_response
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/global/operations/<operationid>', methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/global/operations/<operationid>', methods=['GET'])
 @authentication.required
 def getoperations(authorization, operationid, projectid):
     return helper.create_response(create_response(

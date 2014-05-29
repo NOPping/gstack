@@ -35,21 +35,23 @@ def _load_config_file():
 
     return config_file
 
+
+def configure_app():
+    config_file = _load_config_file()
+    app.config.from_pyfile(config_file)
+    app.config['DATA'] = os.path.abspath(os.path.dirname(__file__)) + '/data'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+        os.path.join(app.config['DATA'], 'app.db')
+
+
 app = Flask(__name__)
+
 db = SQLAlchemy(app)
 publickey_storage = {}
 
+from gstack.controllers import *
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-
-config_file = _load_config_file()
-app.config.from_pyfile(config_file)
-
-app.config['DATA'] = os.path.abspath(os.path.dirname(__file__)) + '/data'
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-    os.path.join(app.config['DATA'], 'app.db')
-
-from gstack.controllers import *
 
 db.create_all()

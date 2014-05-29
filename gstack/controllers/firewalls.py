@@ -56,7 +56,7 @@ def _cloudstack_securitygroup_to_gce(response_item):
     })
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/global/firewalls',
+@app.route('/compute/v1/projects/<projectid>/global/firewalls',
            methods=['GET'])
 @authentication.required
 def listsecuritygroups(projectid, authorization):
@@ -99,9 +99,7 @@ def listsecuritygroups(projectid, authorization):
     return res
 
 
-@app.route('/' + app.config['PATH'] +
-           '<projectid>/global/firewalls/<firewall>',
-           methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/global/firewalls/<firewall>', methods=['GET'])
 @authentication.required
 def getsecuritygroup(projectid, authorization, firewall):
     command = 'listSecurityGroups'
@@ -138,9 +136,7 @@ def getsecuritygroup(projectid, authorization, firewall):
     return res
 
 
-@app.route(
-    '/' + app.config['PATH'] + '<projectid>/global/firewalls/<firewall>',
-    methods=['DELETE'])
+@app.route('/compute/v1/projects/<projectid>/global/firewalls/<firewall>', methods=['DELETE'])
 @authentication.required
 def deletesecuritygroup(projectid, authorization, firewall):
     command = 'deleteSecurityGroup'
@@ -169,9 +165,7 @@ def deletesecuritygroup(projectid, authorization, firewall):
     return res
 
 
-@app.route(
-    '/' + app.config['PATH'] + '<projectid>/global/firewalls',
-    methods=['POST'])
+@app.route('/compute/v1/projects/<projectid>/global/firewalls', methods=['POST'])
 @authentication.required
 def createsecuritygroup(projectid, authorization):
     command = 'createSecurityGroup'

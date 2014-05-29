@@ -94,24 +94,21 @@ def _cloudstack_template_to_gce(cloudstack_response, selfLink=None):
     return response
 
 
-@app.route(
-    '/' + app.config['PATH'] + 'centos-cloud/global/images', methods=['GET'])
+@app.route('/compute/v1/projects/centos-cloud/global/images', methods=['GET'])
 @authentication.required
 def listnocentoscloudimages(authorization):
     populated_response = _create_populated_image_response('centos-cloud')
     return helper.create_response(data=populated_response)
 
 
-@app.route(
-    '/' + app.config['PATH'] + 'debian-cloud/global/images', methods=['GET'])
+@app.route('/compute/v1/projects/debian-cloud/global/images', methods=['GET'])
 @authentication.required
 def listnodebiancloudimages(authorization):
     populated_response = _create_populated_image_response('debian-cloud')
     return helper.create_response(data=populated_response)
 
 
-@app.route(
-    '/' + app.config['PATH'] + '<projectid>/global/images', methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/global/images', methods=['GET'])
 @authentication.required
 def listimages(projectid, authorization):
     image_list = _get_templates(
@@ -129,11 +126,7 @@ def listimages(projectid, authorization):
     return helper.create_response(data=populated_response)
 
 
-@app.route(
-    '/' +
-    app.config['PATH'] +
-    '<projectid>/global/images/<image>',
-    methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/global/images/<image>', methods=['GET'])
 @authentication.required
 def getimage(projectid, authorization, image):
     response = get_template_by_name(

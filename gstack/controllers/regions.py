@@ -48,7 +48,7 @@ def _cloudstack_region_to_gce(response_item):
     return response
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/regions', methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/regions', methods=['GET'])
 @authentication.required
 def listregions(projectid, authorization):
     cloudstack_response = _get_regions(authorization)
@@ -68,8 +68,7 @@ def listregions(projectid, authorization):
     return helper.create_response(data=populated_response)
 
 
-@app.route(
-    '/' + app.config['PATH'] + '<projectid>/regions/<region>', methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/regions/<region>', methods=['GET'])
 @authentication.required
 def getregion(projectid, authorization, region):
     cloudstack_response = _get_regions(

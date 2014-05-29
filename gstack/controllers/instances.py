@@ -164,7 +164,7 @@ def _get_virtual_machine_by_name(authorization, instance):
         return None
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/aggregated/instances', methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/aggregated/instances', methods=['GET'])
 @authentication.required
 def aggregatedlistinstances(authorization, projectid):
     zone_list = zones.get_zone_names(authorization=authorization)
@@ -215,7 +215,7 @@ def aggregatedlistinstances(authorization, projectid):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances', methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances', methods=['GET'])
 @authentication.required
 def listinstances(authorization, projectid, zone):
     instance = None
@@ -262,7 +262,7 @@ def listinstances(authorization, projectid, zone):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
 @authentication.required
 def getinstance(projectid, authorization, zone, instance):
     response = _get_virtual_machine_by_name(
@@ -286,7 +286,7 @@ def getinstance(projectid, authorization, zone, instance):
         return errors.resource_not_found(function_route)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances', methods=['POST'])
+@app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances', methods=['POST'])
 @authentication.required
 def addinstance(authorization, projectid, zone):
     data = json.loads(request.data)
@@ -329,7 +329,7 @@ def addinstance(authorization, projectid, zone):
     return helper.create_response(data=populated_response)
 
 
-@app.route('/' + app.config['PATH'] + '<projectid>/zones/<zone>/instances/<instance>', methods=['DELETE'])
+@app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['DELETE'])
 @authentication.required
 def deleteinstance(projectid, authorization, zone, instance):
     deletion_result = _destroy_virtual_machine(authorization, instance)

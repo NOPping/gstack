@@ -17,12 +17,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gstack import app
+from gstack import app, configure_app
 
 from OpenSSL import SSL
 
 
 def main():
+    configure_app()
     context = SSL.Context(SSL.SSLv23_METHOD)
     context.use_privatekey_file(app.config['DATA'] + '/server.key')
     context.use_certificate_file(app.config['DATA'] + '/server.crt')
