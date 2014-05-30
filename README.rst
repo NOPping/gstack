@@ -11,7 +11,7 @@ A Google Compute Engine Interface For Cloudstack
 Proposal
 _________
 
-This project aims to provide a new compute API interface for Apache Cloudstack that is compatible with Google Compute Engine `GCE <https://cloud.google.com/products/compute-engine>`_  GCE is Google's Infrastructure-as-a-Service (IaaS) compute service that competes with Amazon Web Services EC2. In short, this is a mapping of the GCE `API <https://developers.google.com/compute/docs/reference/latest/>`_ and the CloudStack `API <http://cloudstack.apache.org/docs/api/index.html>`_
+This project aims to provide a new compute API interface for Apache Cloudstack that is compatible with Google Compute Engine `GCE <https://cloud.google.com/products/compute-engine>`_,  GCE is Google's Infrastructure-as-a-Service (IaaS) compute service that competes with Amazon Web Services EC2. In short, this is a mapping of the `GCE API <https://developers.google.com/compute/docs/reference/latest/>`_ and the `CloudStack API <http://cloudstack.apache.org/docs/api/index.html>`_
 
 Implementation
 ______________
@@ -92,9 +92,9 @@ Start gstack:
 
 Create a cached parameters file for gcutil:
 
-- Make a flagile, something like ``~/.gcutil_params``
-- Insert required flags to ease usage. Something like:
+- Make a flagfile to store required flags, something like ``~/.gcutil_params``
 
+- An example of what to put in here would be:
 
     `--auth_local_webserver`
     
@@ -144,4 +144,4 @@ For more information about CloudStack check the official `<website http://clouds
 
 Copyright © 2013 The Apache Software Foundation, Licensed under the Apache License, Version 2.0.
 "Apache", "CloudStack", "Apache CloudStack", and the Apache feather logos are registered trademarks or trademarks of The Apache Software Foundation.
-g
+
