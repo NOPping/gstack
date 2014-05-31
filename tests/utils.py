@@ -19,6 +19,9 @@ class FlaskTestCaseMixin(object):
             self._request(self.client.post, *args, **self._html_data(kwargs))
         )
 
+    def get(self, *args, **kwargs):
+        return self._request(self.client.get, *args, **kwargs)
+
     def assert_status_code(self, response, status_code):
         self.assertEquals(status_code, response.status_code)
         return response
