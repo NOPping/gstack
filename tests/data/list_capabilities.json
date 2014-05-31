@@ -1,0 +1,15 @@
+{
+    "listcapabilitiesresponse": {
+        "capability": {
+            "customdiskofferingmaxsize": 1024,
+            "cloudstackversion": "4.3.0",
+            "projectinviterequired": false,
+            "securitygroupsenabled": true,
+            "regionsecondaryenabled": false,
+            "userpublictemplateenabled": false,
+            "supportELB": "false",
+            "allowusercreateprojects": false,
+            "kvmsnapshotenabled": true
+        }
+    }
+}
