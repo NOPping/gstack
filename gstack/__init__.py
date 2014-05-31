@@ -44,8 +44,9 @@ def configure_app(settings=None):
     else:
         config_file = _load_config_file()
         app.config.from_pyfile(config_file)
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-            os.path.join(app.config['DATA'], 'app.db')
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+        os.path.join(app.config['DATA'], 'app.db')
 
 
 app = Flask(__name__)

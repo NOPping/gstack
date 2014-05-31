@@ -11,6 +11,13 @@
 class FlaskTestCaseMixin(object):
 
     @staticmethod
+    def _html_data(kwargs):
+        if not kwargs.get('content_type'):
+            kwargs['content_type'] = 'application/x-www-form-urlencoded'
+
+        return kwargs
+
+    @staticmethod
     def _request(method, *args, **kwargs):
         return method(*args, **kwargs)
 
