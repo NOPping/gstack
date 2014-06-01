@@ -4,7 +4,7 @@
         "zone": [
             {
                 "localstorageenabled": true,
-                "name": "CH-GV2",
+                "name": "zonename",
                 "zonetoken": "ccb0a60c-79c8-3230-ab8b-8bdbe8c45bb7",
                 "securitygroupsenabled": true,
                 "allocationstate": "Enabled",
