@@ -28,7 +28,7 @@
                 "affinitygroup": [],
                 "account": "admin",
                 "hostid": "e880bd0f-1597-4cec-b108-c61dd02d78fd",
-                "name": "43791f77-26f8-48ca-b557-3a9392f735ae",
+                "name": "instancename",
                 "networkkbsread": 42369024,
                 "created": "2014-02-21T17:28:40+0000",
                 "hypervisor": "Simulator",

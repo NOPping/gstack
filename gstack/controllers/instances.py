@@ -118,17 +118,17 @@ def _cloudstack_virtual_machine_to_gce(cloudstack_response, zone, projectid):
     response['disks'] = []
 
     networking = {}
-    if cloudstack_response['securitygroup']:
+    accessconfig = {}
+    if 'securitygroup' in cloudstack_response:
         networking['network'] = cloudstack_response['securitygroup'][0]['name']
         networking['networkIP'] = cloudstack_response['nic'][0]['ipaddress']
         networking['name'] = cloudstack_response['nic'][0]['id']
+        accessconfig['natIP'] = cloudstack_response['nic'][0]['ipaddress']
         networking['accessConfigs'] = []
 
-    accessconfig = {}
     accessconfig['kind'] = 'compute#accessConfig'
     accessconfig['type'] = 'ONE_TO_ONE_NAT'
     accessconfig['name'] = 'External NAT'
-    accessconfig['natIP'] = cloudstack_response['nic'][0]['ipaddress']
 
     networking['accessConfigs'] = accessconfig
 
@@ -282,6 +282,7 @@ def getinstance(projectid, authorization, zone, instance):
         function_route = url_for(
             'getinstance',
             projectid=projectid,
+            zone=zone,
             instance=instance)
         return errors.resource_not_found(function_route)
 

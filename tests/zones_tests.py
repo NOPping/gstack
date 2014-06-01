@@ -32,7 +32,7 @@ class ZonesTestCase(GStackAppTestCase):
 
         self.assert_ok(response)
 
-    def test_get_zone_not_found(self):
+    def test_get_zone_zone_not_found(self):
 
         get = mock.Mock()
         get.return_value.text = read_file('tests/data/empty_describe_zone.json')

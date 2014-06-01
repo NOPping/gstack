@@ -6,7 +6,7 @@ import mock
 from gstack.helpers import read_file
 from . import GStackAppTestCase
 
-class ZonesTestCase(GStackAppTestCase):
+class ImagesTestCase(GStackAppTestCase):
 
     def test_list_images(self):
 
@@ -32,7 +32,7 @@ class ZonesTestCase(GStackAppTestCase):
 
         self.assert_ok(response)
 
-    def test_get_zone_not_found(self):
+    def test_get_image_image_not_found(self):
 
         get = mock.Mock()
         get.return_value.text = read_file('tests/data/empty_describe_images.json')
