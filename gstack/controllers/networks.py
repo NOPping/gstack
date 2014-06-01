@@ -49,8 +49,7 @@ def get_network_by_name(authorization, securitygroup):
 
     if securitygroup_list['listsecuritygroupsresponse']:
         response = helper.filter_by_name(
-            data=securitygroup_list[
-                'listsecuritygroupsresponse']['securitygroup'],
+            data=securitygroup_list['listsecuritygroupsresponse']['securitygroup'],
             name=securitygroup
         )
         return response
@@ -62,6 +61,7 @@ def _get_network(authorization, args=None):
     command = 'createSecurityGroup'
     if not args:
         args = {}
+
     cloudstack_response = requester.make_request(
         command,
         args,
@@ -123,8 +123,7 @@ def _create_populated_network_response(projectid, networks=None):
     return populated_response
 
 
-@app.route(
-    '/compute/v1/projects/<projectid>/global/networks', methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/global/networks', methods=['GET'])
 @authentication.required
 def listnetworks(projectid, authorization):
     securitygroup_list = _get_networks(
@@ -185,7 +184,7 @@ def addnetwork(authorization, projectid):
             'error': {
                 'errors': [{
                     'code': 'RESOURCE_ALREADY_EXISTS',
-                    'message': 'the resource \'projects/\'' + projectid + '/global/networks/' + args['name']
+                    'message': 'The resource \'projects/\'' + projectid + '/global/networks/' + args['name']
                 }]
             }
         }

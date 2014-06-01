@@ -1,6 +1,6 @@
 {
     "listvirtualmachinesresponse": {
-        "count": 2,
+        "count": 1,
         "virtualmachine": [
             {
                 "domain": "ROOT",
