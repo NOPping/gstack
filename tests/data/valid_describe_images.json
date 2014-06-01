@@ -24,7 +24,7 @@
                 "sshkeyenabled": false,
                 "isextractable": false,
                 "account": "system",
-                "name": "CentOS 5.3(64-bit) no GUI (Simulator)",
+                "name": "imagename",
                 "created": "2014-02-15T02:50:13+0000",
                 "hypervisor": "Simulator",
                 "ispublic": true,
