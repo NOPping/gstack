@@ -58,6 +58,8 @@ def get_zone_by_name(authorization, zone):
 def get_zone_names(authorization):
     zone_list = _get_zones(authorization)
 
+    print zone_list
+
     zones = []
     if zone_list['listzonesresponse']:
         for zone in zone_list['listzonesresponse']['zone']:
