@@ -40,6 +40,20 @@ class InstancesTestCase(GStackAppTestCase):
 
         self.assert_ok(response)
 
+    def test_list_instances_with_name_filter(self):
+
+        get = mock.Mock()
+        get.return_value.text = read_file('tests/data/valid_describe_instance.json')
+        get.return_value.status_code = 200
+
+        with mock.patch('requests.get', get):
+            headers = {'authorization': 'Bearer ' + str(GStackAppTestCase.access_token)}
+            response = self.get(
+                '/compute/v1/projects/projectid/zones/zonename/instances?filter=name+eq+instancename',
+                headers=headers)
+
+        self.assert_ok(response)
+
     def test_aggregated_list_instances_with_name_filter(self):
 
         get = mock.Mock()
@@ -87,4 +101,19 @@ class InstancesTestCase(GStackAppTestCase):
         assert 'The resource \'/compute/v1/projects/exampleproject/zones/examplezone/instances/instancename\' was not found' \
                 in response.data
 
+    def test_delete_instance(self):
+
+        get = mock.Mock()
+        get.return_value.text = read_file('tests/data/valid_terminate_instance.json')
+        get.return_value.status_code = 200
+
+        get_instance_id = mock.Mock()
+        get_instance_id.return_value = {'id':'virtualmachineid'}
+
+        with mock.patch('requests.get', get):
+            with mock.patch('gstack.controllers.instances._get_virtual_machine_by_name',get_instance_id):
+                headers = {'authorization': 'Bearer ' + str(GStackAppTestCase.access_token)}
+                response = self.delete('/compute/v1/projects/exampleproject/zones/examplezone/instances/instancename', headers=headers)
+
+        self.assert_ok(response)
 

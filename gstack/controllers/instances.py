@@ -152,12 +152,10 @@ def _get_virtual_machine_by_name(authorization, instance):
             'keyword': instance
         }
     )
-    print virtual_machine_list
 
     if virtual_machine_list['listvirtualmachinesresponse']:
         response = helper.filter_by_name(
-            data=virtual_machine_list[
-                'listvirtualmachinesresponse']['virtualmachine'],
+            data=virtual_machine_list['listvirtualmachinesresponse']['virtualmachine'],
             name=instance
         )
         return response
@@ -338,7 +336,7 @@ def deleteinstance(projectid, authorization, zone, instance):
 
     populated_response = operations.create_response(
         projectid=projectid,
-        operationid=deletion_result['destroyvirtualmachineresponse']['jobid'],
+        operationid=deletion_result['queryasyncjobresultresponse']['jobid'],
         authorization=authorization
     )
 

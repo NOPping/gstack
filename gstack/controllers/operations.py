@@ -51,12 +51,10 @@ def _delete_instance_response(async_result, projectid):
     }
 
     if async_result['jobstatus'] is 0:
-        # handle pending case
         populated_response['targetLink'] = ''
         populated_response['status'] = 'PENDING'
         populated_response['progress'] = 0
     elif async_result['jobstatus'] is 1:
-        # handle successful case
         populated_response['status'] = 'DONE'
         populated_response['zone'] = urllib.unquote_plus(
             helper.get_root_url() +
@@ -71,9 +69,7 @@ def _delete_instance_response(async_result, projectid):
                 'getinstance',
                 projectid=projectid,
                 zone=async_result['jobresult']['virtualmachine']['zonename'],
-                instance=async_result['jobresult']['virtualmachine']['displayname']))
-
-    # need to add a case here for error handling, its job status 2
+                instance=async_result['jobresult']['virtualmachine']['name']))
 
     return populated_response
 

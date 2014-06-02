@@ -156,7 +156,7 @@ def _cloudstack_project_to_gce(cloudstack_response, metadata=None):
     return response
 
 
-@app.route('//compute/v1/projects/<projectid>', methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>', methods=['GET'])
 @authentication.required
 def getproject(authorization, projectid):
     project = _get_account_by_name(authorization, projectid)
@@ -178,7 +178,7 @@ def getproject(authorization, projectid):
     return res
 
 
-@app.route('//compute/v1/projects/<projectid>/setCommonInstanceMetadata', methods=['POST'])
+@app.route('/compute/v1/projects/<projectid>/setCommonInstanceMetadata', methods=['POST'])
 @authentication.required
 def setglobalmetadata(projectid, authorization):
     data = json.loads(request.data)

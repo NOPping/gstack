@@ -58,7 +58,7 @@ def _cloudstack_securitygroup_to_gce(response_item):
         })
 
 
-@app.route('/compute/v1/projects/<projectid>/global/firewalls',  methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/global/firewalls', methods=['GET'])
 @authentication.required
 def listsecuritygroups(projectid, authorization):
     command = 'listSecurityGroups'
