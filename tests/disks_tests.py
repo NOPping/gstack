@@ -7,24 +7,24 @@ import json
 from gstack.helpers import read_file
 from . import GStackAppTestCase
 
-class InstancesTestCase(GStackAppTestCase):
+class DisksTestCase(GStackAppTestCase):
 
-    def test_list_instances(self):
+    def test_list_disks(self):
 
         get = mock.Mock()
-        get.return_value.text = read_file('tests/data/valid_describe_instances.json')
+        get.return_value.text = read_file('tests/data/valid_describe_volumes.json')
         get.return_value.status_code = 200
 
         with mock.patch('requests.get', get):
             headers = {'authorization': 'Bearer ' + str(GStackAppTestCase.access_token)}
-            response = self.get('/compute/v1/projects/exampleproject/zones/examplezone/instances', headers=headers)
+            response = self.get('/compute/v1/projects/exampleproject/zones/examplezone/disks', headers=headers)
 
         self.assert_ok(response)
 
-    def test_aggregated_list_instances(self):
+    def test_aggregated_list_disks(self):
 
         get = mock.Mock()
-        get.return_value.text = read_file('tests/data/valid_describe_instances.json')
+        get.return_value.text = read_file('tests/data/valid_describe_volumes.json')
         get.return_value.status_code = 200
 
         get_zones = mock.Mock()
@@ -36,14 +36,14 @@ class InstancesTestCase(GStackAppTestCase):
                 get_zones
             ):
                 headers = {'authorization': 'Bearer ' + str(GStackAppTestCase.access_token)}
-                response = self.get('/compute/v1/projects/projectid/aggregated/instances', headers=headers)
+                response = self.get('/compute/v1/projects/projectid/aggregated/disks', headers=headers)
 
         self.assert_ok(response)
 
-    def test_aggregated_list_instances_with_name_filter(self):
+    def test_aggregated_list_disks_with_name_filter(self):
 
         get = mock.Mock()
-        get.return_value.text = read_file('tests/data/valid_describe_instance.json')
+        get.return_value.text = read_file('tests/data/valid_describe_volume.json')
         get.return_value.status_code = 200
 
         get_zones = mock.Mock()
@@ -56,35 +56,36 @@ class InstancesTestCase(GStackAppTestCase):
             ):
                 headers = {'authorization': 'Bearer ' + str(GStackAppTestCase.access_token)}
                 response = self.get(
-                    '/compute/v1/projects/projectid/aggregated/instances?filter=name+eq+instancename',
+                    '/compute/v1/projects/projectid/aggregated/disks?filter=name+eq+volumename',
                     headers=headers)
 
         self.assert_ok(response)
 
-    def test_get_instance(self):
+    def test_get_disk(self):
 
         get = mock.Mock()
-        get.return_value.text = read_file('tests/data/valid_describe_instance.json')
+        get.return_value.text = read_file('tests/data/valid_describe_volume.json')
         get.return_value.status_code = 200
 
         with mock.patch('requests.get', get):
             headers = {'authorization': 'Bearer ' + str(GStackAppTestCase.access_token)}
-            response = self.get('/compute/v1/projects/exampleproject/zones/examplezone/instances/instancename', headers=headers)
+            response = self.get('/compute/v1/projects/exampleproject/zones/examplezone/disks/volumename', headers=headers)
 
         self.assert_ok(response)
 
-    def test_get_instance_instance_not_found(self):
+    def test_get_disk_disk_not_found(self):
 
         get = mock.Mock()
-        get.return_value.text = read_file('tests/data/empty_describe_instances.json')
+        get.return_value.text = read_file('tests/data/empty_describe_volumes.json')
         get.return_value.status_code = 200
 
         with mock.patch('requests.get', get):
             headers = {'authorization': 'Bearer ' + str(GStackAppTestCase.access_token)}
-            response = self.get('/compute/v1/projects/exampleproject/zones/examplezone/instances/instancename', headers=headers)
+            response = self.get('/compute/v1/projects/exampleproject/zones/examplezone/disks/volumename', headers=headers)
 
         self.assert_not_found(response)
-        assert 'The resource \'/compute/v1/projects/exampleproject/zones/examplezone/instances/instancename\' was not found' \
+
+        assert 'The resource \'/compute/v1/projects/exampleproject/zones/examplezone/disks/volumename\' was not found' \
                 in response.data
 
 

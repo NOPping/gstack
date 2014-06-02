@@ -204,6 +204,7 @@ def getdisk(projectid, authorization, zone, disk):
         func_route = url_for(
             'getdisk',
             projectid=projectid,
+            zone=zone,
             disk=disk
         )
         return errors.resource_not_found(func_route)

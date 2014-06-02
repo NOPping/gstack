@@ -26,38 +26,39 @@ import json
 
 
 def _cloudstack_securitygroup_to_gce(response_item):
-    rules = response_item['ingressrule']
-    allowed = []
-    sourceranges = []
-    for rule in rules:
-        ports = []
-        for i in range(rule['startport'], rule['endport'] + 1):
-            ports.append(str(i))
-        allowed.append({
-            "IPProtocol": rule['protocol'],
-            "ports": ports
+    if 'ingressrule' in response_item:
+        rules = response_item['ingressrule']
+        allowed = []
+        sourceranges = []
+        for rule in rules:
+            ports = []
+            if 'startport' in rule:
+                for i in range(rule['startport'], rule['endport'] + 1):
+                    ports.append(str(i))
+            allowed.append({
+                "IPProtocol": rule['protocol'],
+                "ports": ports
+            })
+            if 'cidr' in rule.keys():
+                sourceranges.append(rule['cidr'])
+        return ({
+            "kind": "compute#firewall",
+            "selfLink": '',
+            "id": response_item['id'],
+            "creationTimestamp": '',
+            "name": response_item['name'],
+            "description": response_item['description'],
+            "network": '',
+            "sourceRanges": sourceranges,
+            "sourceTags": [
+                ''
+            ],
+            "targetTags": response_item['tags'],
+            "allowed": allowed
         })
-        if 'cidr' in rule.keys():
-            sourceranges.append(rule['cidr'])
-    return ({
-        "kind": "compute#firewall",
-        "selfLink": '',
-        "id": response_item['id'],
-        "creationTimestamp": '',
-        "name": response_item['name'],
-        "description": response_item['description'],
-        "network": '',
-        "sourceRanges": sourceranges,
-        "sourceTags": [
-            ''
-        ],
-        "targetTags": response_item['tags'],
-        "allowed": allowed
-    })
 
 
-@app.route('/compute/v1/projects/<projectid>/global/firewalls',
-           methods=['GET'])
+@app.route('/compute/v1/projects/<projectid>/global/firewalls',  methods=['GET'])
 @authentication.required
 def listsecuritygroups(projectid, authorization):
     command = 'listSecurityGroups'
@@ -121,7 +122,7 @@ def getsecuritygroup(projectid, authorization, firewall):
         json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
     )
 
-    if cloudstack_response['listsecuritygroupsresponse']:
+    if cloudstack_response['listsecuritygroupsresponse']['securitygroup']:
         response_item = cloudstack_response[
             'listsecuritygroupsresponse']['securitygroup'][0]
         firewall = _cloudstack_securitygroup_to_gce(response_item)

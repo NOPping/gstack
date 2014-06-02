@@ -152,6 +152,7 @@ def _get_virtual_machine_by_name(authorization, instance):
             'keyword': instance
         }
     )
+    print virtual_machine_list
 
     if virtual_machine_list['listvirtualmachinesresponse']:
         response = helper.filter_by_name(
