@@ -336,7 +336,7 @@ def deleteinstance(projectid, authorization, zone, instance):
 
     populated_response = operations.create_response(
         projectid=projectid,
-        operationid=deletion_result['queryasyncjobresultresponse']['jobid'],
+        operationid=deletion_result['destroyvirtualmachineresponse']['jobid'],
         authorization=authorization
     )
 
