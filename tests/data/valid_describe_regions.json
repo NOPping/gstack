@@ -7,7 +7,7 @@
                 "gslbserviceenabled": true,
                 "endpoint": "http://localhost:8080/client/",
                 "id": 1,
-                "name": "Local"
+                "name": "regionname"
             }
         ]
     }

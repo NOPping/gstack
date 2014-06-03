@@ -76,10 +76,12 @@ def getregion(projectid, authorization, region):
         args={'name': region}
     )
 
-    if cloudstack_response['listregionsresponse']:
-        cloudstack_response = _cloudstack_region_to_gce(
-            cloudstack_response['listregionsresponse']['region'][0])
-        return helper.create_response(data=cloudstack_response)
-
-    function_route = url_for('getimage', projectid=projectid, image=region)
-    return errors.resource_not_found(function_route)
+    if region == cloudstack_response['listregionsresponse']['region'][0]['name']:
+        return helper.create_response(
+            data=_cloudstack_region_to_gce(
+                cloudstack_response['listregionsresponse']['region'][0]
+            )
+        )
+    else:
+        function_route = url_for('getregion', projectid=projectid, region=region)
+        return errors.resource_not_found(function_route)
