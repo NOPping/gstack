@@ -131,6 +131,43 @@ name                  status   next-maintenance
 Sandbox-simulator     UP       None scheduled   
 ==================   ========  ====================
 
+Running The Tests
+##################
+
+To run the included tests the following software is required:
+
+   pep8
+   
+   pylint
+   
+   nose
+   
+   mock
+   
+   coverage
+
+These can be installed via the Python Package Index:
+
+   pip install pep8 pylint nose mock coverage
+
+Tests can be executed from the root of the code base as follows:
+
+Style Check
+___________
+
+   pep8 --ignore=E501 *.py gstack
+
+Lint
+____
+
+   pylint --rcfile=pylint.rc *.py gstack
+
+Unit Tests
+___________
+
+   nosetests --with-coverage  --cover-erase --cover-package=gstack --cover-html
+
+A HTML base coverage report will be placed in ./cover
 
 Trouble shooting
 #################
