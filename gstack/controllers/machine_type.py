@@ -126,7 +126,7 @@ def listmachinetype(projectid, authorization, zone):
             authorization=authorization,
             args={'keyword': machinetype}
         )
-        if machinetype_list['listvolumesresponse']:
+        if machinetype_list['listserviceofferingsresponse']:
             machinetype = helper.filter_by_name(
                 data=machinetype_list['listserviceofferingsresponse'][
                     'serviceoffering'],
