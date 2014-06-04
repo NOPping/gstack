@@ -1,5 +1,4 @@
 import json
-import logging
 from requests import Response
 from cStringIO import StringIO
 try:
@@ -7,7 +6,7 @@ try:
 except ImportError:
     Unauthorized = Exception
 from . import utils
-
+from gstack import app
 
 class Provider(object):
 
@@ -19,8 +18,7 @@ class Provider(object):
         :param exc: Exception to process.
         :type exc: Exception
         """
-        logger = logging.getLogger(__name__)
-        logger.exception(exc)
+        app.logger.debug(exc)
 
     def _make_response(self, body='', headers=None, status_code=200):
         """Return a response object from the given parameters.
