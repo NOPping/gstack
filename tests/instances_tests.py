@@ -102,21 +102,33 @@ class InstancesTestCase(GStackAppTestCase):
         assert 'The resource \'/compute/v1/projects/exampleproject/zones/examplezone/instances/instancename\' was not found' \
                 in response.data
 
-    #def test_delete_instance(self):
+    def test_delete_instance(self):
 
-    #    get = mock.Mock()
-    #    get.return_value.text = read_file('tests/data/valid_terminate_instance.json')
-    #    get.return_value.status_code = 200
+        get = mock.Mock()
+        get.return_value.text = read_file('tests/data/valid_async_destroy_vm.json')
+        get.return_value.status_code = 200
 
-    #    get_instance_id = mock.Mock()
-    #    get_instance_id.return_value = {'id':'virtualmachineid'}
+        get_instance_id = mock.Mock()
+        get_instance_id.return_value = {'id':'virtualmachineid'}
 
-    #    with mock.patch('requests.get', get):
-    #        with mock.patch('gstack.controllers.instances._get_virtual_machine_by_name',get_instance_id):
-    #            headers = {'authorization': 'Bearer ' + str(GStackAppTestCase.access_token)}
-    #            response = self.delete('/compute/v1/projects/exampleproject/zones/examplezone/instances/instancename', headers=headers)
+        get_async_result = mock.Mock()
+        get_async_result.return_value = json.loads(read_file('tests/data/valid_run_instance.json'))
 
-    #    self.assert_ok(response)
+        publickey_storage['admin'] = 'testkey'
+
+        with mock.patch('requests.get', get):
+            with mock.patch(
+                    'gstack.controllers.instances._get_virtual_machine_by_name',
+                    get_instance_id
+                ):
+                with mock.patch(
+                    'gstack.controllers.operations._get_async_result',
+                    get_async_result
+                ):
+                    headers = {'authorization': 'Bearer ' + str(GStackAppTestCase.access_token)}
+                    response = self.delete('/compute/v1/projects/admin/zones/examplezone/instances/instancename', headers=headers)
+
+        self.assert_ok(response)
 
     def test_add_instance(self):
         data = {
