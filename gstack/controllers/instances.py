@@ -290,10 +290,10 @@ def getinstance(projectid, authorization, zone, instance):
 @authentication.required
 def addinstance(authorization, projectid, zone):
     data = json.loads(request.data)
-    print data
     args = {}
     args['name'] = data['name']
     args['serviceoffering'] = data['machineType'].rsplit('/', 1)[1]
+    print args['serviceoffering']
     args['template'] = data['disks'][0]['initializeParams']['sourceImage'].rsplit('/', 1)[1]
     args['zone'] = zone
 
@@ -321,8 +321,7 @@ def addinstance(authorization, projectid, zone):
     else:
         populated_response = operations.create_response(
             projectid=projectid,
-            operationid=deployment_result[
-                'deployvirtualmachineresponse']['jobid'],
+            operationid=deployment_result['deployvirtualmachineresponse']['jobid'],
             authorization=authorization
         )
 

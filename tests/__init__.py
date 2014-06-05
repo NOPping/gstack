@@ -36,7 +36,7 @@ class GStackAppTestCase(FlaskTestCaseMixin, GStackTestCase):
 
         with mock.patch('requests.get', get):
             self.get('/oauth2/auth?scope=example&redirect_uri=http://127.0.0.1:9999&response_type=code&client_id=ExampleAPIKey&access_type=offline')
-            response = self.post('/oauth2/token', data=data)
+            response = self.post_html('/oauth2/token', data=data)
 
         GStackAppTestCase.access_token = json.loads(response.data)['access_token']
 
