@@ -176,12 +176,13 @@ Trouble shooting
 CertificateHostnameMismatch
 ____________________________
 
-Ensure that the addresses you enter for ``--authorization_uri_base``, ``api_host`` and ``auth_host_name`` match the address you binded ``gstack`` to earlier when configuring with ``gstac-configure``
+- Ensure that the addresses you entered for ``authorization_uri_base``, ``api_host`` and ``auth_host_name`` are the exact same as the address you binded ``gstack`` to earlier when configuring with ``gstack-configure``.
 
 Authentication/authorization issues
 ____________________________________
 
-Clean up your gcutil authentication information ``rm -rf ~/.gcutil_auth``, make sure that you set your ``client_id`` and ``client_secret`` in ``gcutil/lib/google_compute_engine/gcutil/auth_helper.py``
+- Clean up your gcutil authentication information ``rm -rf ~/.gcutil_auth``.
+- Ensure that you set your ``client_id`` and ``client_secret`` in ``gcutil/lib/google_compute_engine/gcutil/auth_helper.py``.
 
 
 
