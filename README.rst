@@ -115,7 +115,6 @@ Create a cached parameters file for gcutil:
     `--api_host=https://localhost:5000/`
     
     `--nocheck_for_new_version`
-    
 
 gcutil will issue auth requests to the local Flask application, get an OAuth token and then issue requests to the CloudStack endpoint you specified when cofiguring gstack. 
 
@@ -174,7 +173,17 @@ A HTML base coverage report will be placed in ./cover
 Trouble shooting
 #################
 
-If you encounter authentication/authorization issues, clean up your gcutil authentication information ``rm -rf ~/.gcutil_auth``, make sure that you set your ``client_id`` and ``client_secret`` in ``gcutil/lib/google_compute_engine/gcutil/auth_helper.py``
+CertificateHostnameMismatch
+____________________________
+
+Ensure that the addresses you enter for ``--authorization_uri_base``, ``api_host`` and ``auth_host_name`` match the address you binded ``gstack`` to earlier when configuring with ``gstac-configure``
+
+Authentication/authorization issues
+____________________________________
+
+Clean up your gcutil authentication information ``rm -rf ~/.gcutil_auth``, make sure that you set your ``client_id`` and ``client_secret`` in ``gcutil/lib/google_compute_engine/gcutil/auth_helper.py``
+
+
 
 Apache CloudStack
 ##################
