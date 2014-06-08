@@ -57,7 +57,7 @@ def get_network_by_name(authorization, securitygroup):
         return None
 
 
-def _get_network(authorization, args=None):
+def _add_network(authorization, args=None):
     command = 'createSecurityGroup'
     if not args:
         args = {}
@@ -73,16 +73,12 @@ def _get_network(authorization, args=None):
 
 
 def _delete_network(authorization, projectid, network):
-    securitygroup_id = get_network_by_name(authorization, network)['id']
+    network_response = get_network_by_name(authorization, network)
 
-    if securitygroup_id is None:
-        func_route = url_for(
-            'getnetwork',
-            projectid=projectid,
-            network=network
-        )
+    if not network_response:
+        return None
 
-        return errors.resource_not_found(func_route)
+    securitygroup_id = network_response['id']
 
     args = {
         'id': securitygroup_id
@@ -114,6 +110,7 @@ def _cloudstack_network_to_gce(cloudstack_response, selfLink=None):
 def _create_populated_network_response(projectid, networks=None):
     if not networks:
         networks = []
+
     populated_response = {
         'kind': 'compute#networkList',
         'selfLink': request.base_url,
@@ -172,7 +169,7 @@ def addnetwork(authorization, projectid):
     args['name'] = data['name']
     args['description'] = data['description']
 
-    network_result = _get_network(authorization, args)
+    network_result = _add_network(authorization, args)
 
     if 'errortext' in network_result['createsecuritygroupresponse']:
         populated_response = {
@@ -209,7 +206,15 @@ def addnetwork(authorization, projectid):
 @app.route('/compute/v1/projects/<projectid>/global/networks/<network>', methods=['DELETE'])
 @authentication.required
 def deletenetwork(projectid, authorization, network):
-    _delete_network(authorization, projectid, network)
+    response = _delete_network(authorization, projectid, network)
+
+    if not response:
+        func_route = url_for(
+            'getnetwork',
+            projectid=projectid,
+            network=network
+        )
+        return errors.resource_not_found(func_route)
 
     populated_response = {
         'kind': 'compute#operation',
