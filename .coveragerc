@@ -3,6 +3,7 @@ source = gstack
 
 omit =
     *__init__*
+    *__main__*
     gstack/models/*.py
     gstack/configure.py
 
