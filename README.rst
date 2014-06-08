@@ -6,7 +6,11 @@ A Google Compute Engine Interface For Cloudstack
 ################################################
 
 .. image:: https://badge.fury.io/py/gstack.png
+       :target: https://pypi.python.org/pypi/gstack
 .. image:: https://api.travis-ci.org/NOPping/gstack.png
+       :target: https://travis-ci.org/NOPping/gstack
+.. image:: https://coveralls.io/repos/NOPping/gstack/badge.png
+       :target: https://coveralls.io/r/NOPping/gstack
 
 
 
