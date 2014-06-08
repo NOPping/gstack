@@ -24,4 +24,4 @@ __________________
 0.0.1 (24-9-2013)
 __________________
 
-* gcloud onception
+* gcloud conception
