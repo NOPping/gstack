@@ -19,10 +19,12 @@
 
 import urllib
 import json
+from gstack import helpers
+from gstack import controllers
 from flask import request, url_for
 from gstack import app, authentication
 from gstack.services import requester
-from gstack.controllers import helper, errors
+from gstack.controllers import errors
 
 
 def _get_networks(authorization, args=None):
@@ -48,7 +50,7 @@ def get_network_by_name(authorization, securitygroup):
     )
 
     if securitygroup_list['listsecuritygroupsresponse']:
-        response = helper.filter_by_name(
+        response = controllers.filter_by_name(
             data=securitygroup_list['listsecuritygroupsresponse']['securitygroup'],
             name=securitygroup
         )
@@ -138,7 +140,7 @@ def listnetworks(projectid, authorization):
         projectid,
         networks
     )
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/global/networks/<network>', methods=['GET'])
@@ -150,7 +152,7 @@ def getnetwork(projectid, authorization, network):
     )
 
     if response:
-        return helper.create_response(
+        return helpers.create_response(
             data=_cloudstack_network_to_gce(response)
         )
     else:
@@ -190,7 +192,7 @@ def addnetwork(authorization, projectid):
             'kind': 'compute#operation',
             'operationType': 'insert',
             'targetLink': urllib.unquote_plus(
-                helper.get_root_url() + url_for(
+                helpers.get_root_url() + url_for(
                     'getnetwork',
                     projectid=projectid,
                     network=data['name']
@@ -200,7 +202,7 @@ def addnetwork(authorization, projectid):
             'progress': 100
         }
 
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/global/networks/<network>', methods=['DELETE'])
@@ -224,4 +226,4 @@ def deletenetwork(projectid, authorization, network):
         'progress': 100
     }
 
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)

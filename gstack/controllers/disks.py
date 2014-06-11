@@ -21,7 +21,9 @@ import urllib
 from flask import request, url_for
 from gstack import app, authentication
 from gstack.services import requester
-from gstack.controllers import zones, helper, errors
+from gstack import helpers
+from gstack import controllers
+from gstack.controllers import zones, errors
 
 
 def _get_disks(authorization, args=None):
@@ -47,7 +49,7 @@ def get_disk_by_name(authorization, disk):
     )
 
     if disk_list['listvolumesresponse']:
-        response = helper.filter_by_name(
+        response = controllers.filter_by_name(
             data=disk_list['listvolumesresponse']['volume'],
             name=disk
         )
@@ -66,7 +68,7 @@ def _cloudstack_volume_to_gce(cloudstack_response, projectid, zone):
     response['description'] = cloudstack_response['name']
     response['sizeGb'] = cloudstack_response['size']
 
-    response['selfLink'] = urllib.unquote_plus(helper.get_root_url() + url_for(
+    response['selfLink'] = urllib.unquote_plus(helpers.get_root_url() + url_for(
         'getmachinetype',
         projectid=projectid,
         machinetype=cloudstack_response['name'],
@@ -88,7 +90,7 @@ def aggregatedlistdisks(projectid, authorization):
     zone_list = zones.get_zone_names(authorization=authorization)
 
     disk = None
-    filter = helper.get_filter(request.args)
+    filter = helpers.get_filter(request.args)
 
     if 'name' in filter:
         disk = filter['name']
@@ -130,14 +132,14 @@ def aggregatedlistdisks(projectid, authorization):
         'items': items
     }
 
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/disks', methods=['GET'])
 @authentication.required
 def listdisks(projectid, authorization, zone):
     disk = None
-    filter = helper.get_filter(request.args)
+    filter = helpers.get_filter(request.args)
 
     if 'name' in filter:
         disk = filter['name']
@@ -150,7 +152,7 @@ def listdisks(projectid, authorization, zone):
             args={'keyword': disk}
         )
         if disk_list['listvolumesresponse']:
-            disk = helper.filter_by_name(
+            disk = controllers.filter_by_name(
                 data=disk_list['listvolumesresponse']['volume'],
                 name=disk
             )
@@ -181,7 +183,7 @@ def listdisks(projectid, authorization, zone):
         'items': items
     }
 
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/disks/<disk>', methods=['GET'])
@@ -193,7 +195,7 @@ def getdisk(projectid, authorization, zone, disk):
     )
 
     if response:
-        return helper.create_response(
+        return helpers.create_response(
             data=_cloudstack_volume_to_gce(
                 cloudstack_response=response,
                 projectid=projectid,

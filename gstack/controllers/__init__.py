@@ -20,5 +20,12 @@
 import os
 import glob
 
-__all__ = [os.path.basename(
-    f)[:-3] for f in glob.glob(os.path.dirname(__file__) + '/*.py')]
+__all__ = [os.path.basename(f)[:-3] for f in glob.glob(os.path.dirname(__file__) + '/*.py')]
+
+
+def filter_by_name(data, name):
+    for item in data:
+        if item['name'] == name:
+            return item
+
+    return None

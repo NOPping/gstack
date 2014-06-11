@@ -45,7 +45,8 @@ setup(
     url="https://github.com/NOPping/gstack",
     platforms=("Any"),
     license="LICENSE.txt",
-    package_data={'': ['LICENSE.txt', 'data/*']},
+    package_data={'': ['LICENSE.txt', 'data/*'],
+                  'ec2stack': ['templates/*.json']},
     packages=[
         "gstack", "gstack.controllers", "gstack.models",
         "gstack.services", "gstack.data", "pyoauth2"],
@@ -55,6 +56,16 @@ setup(
         "pyopenssl",
         "Flask-SQLAlchemy",
         "flask",
+    ],
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: Console',
+        'Intended Audience :: System Administrators',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Topic :: Utilities',
+        'Programming Language :: Python :: 2.7',
     ],
     zip_safe=False,
     entry_points="""

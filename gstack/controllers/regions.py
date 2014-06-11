@@ -19,9 +19,10 @@
 
 
 from gstack import app
+from gstack import helpers
 from gstack import authentication
 from gstack.services import requester
-from gstack.controllers import errors, helper
+from gstack.controllers import errors
 from flask import request, url_for
 
 
@@ -65,7 +66,7 @@ def listregions(projectid, authorization):
         'selfLink': request.base_url,
         'items': regions
     }
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/regions/<region>', methods=['GET'])
@@ -77,7 +78,7 @@ def getregion(projectid, authorization, region):
     )
 
     if region == cloudstack_response['listregionsresponse']['region'][0]['name']:
-        return helper.create_response(
+        return helpers.create_response(
             data=_cloudstack_region_to_gce(
                 cloudstack_response['listregionsresponse']['region'][0]
             )

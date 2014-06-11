@@ -19,10 +19,12 @@
 
 import json
 import urllib
+from gstack import helpers
+from gstack import controllers
 from flask import request, url_for
 from gstack import app, authentication
 from gstack.services import requester
-from gstack.controllers import zones, helper, operations, images, errors, machine_type, networks
+from gstack.controllers import zones, operations, images, errors, machine_type, networks
 
 
 def _get_virtual_machines(authorization, args=None):
@@ -134,7 +136,7 @@ def _cloudstack_virtual_machine_to_gce(cloudstack_response, zone, projectid):
 
     response['networkInterfaces'].append(networking)
 
-    response['selfLink'] = urllib.unquote_plus(helper.get_root_url() + url_for(
+    response['selfLink'] = urllib.unquote_plus(helpers.get_root_url() + url_for(
         'getinstance',
         projectid=projectid,
         instance=cloudstack_response['name'],
@@ -154,7 +156,7 @@ def _get_virtual_machine_by_name(authorization, instance):
     )
 
     if virtual_machine_list['listvirtualmachinesresponse']:
-        response = helper.filter_by_name(
+        response = controllers.filter_by_name(
             data=virtual_machine_list['listvirtualmachinesresponse']['virtualmachine'],
             name=instance
         )
@@ -170,7 +172,7 @@ def aggregatedlistinstances(authorization, projectid):
     virtual_machine_list = _get_virtual_machines(authorization=authorization)
 
     instance = None
-    filter = helper.get_filter(request.args)
+    filter = helpers.get_filter(request.args)
 
     if 'name' in filter:
         instance = filter['name']
@@ -211,14 +213,14 @@ def aggregatedlistinstances(authorization, projectid):
         'selfLink': request.base_url,
         'items': items
     }
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances', methods=['GET'])
 @authentication.required
 def listinstances(authorization, projectid, zone):
     instance = None
-    filter = helper.get_filter(request.args)
+    filter = helpers.get_filter(request.args)
 
     if 'name' in filter:
         instance = filter['name']
@@ -258,7 +260,7 @@ def listinstances(authorization, projectid, zone):
         'items': items
     }
 
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
@@ -270,7 +272,7 @@ def getinstance(projectid, authorization, zone, instance):
     )
 
     if response:
-        return helper.create_response(
+        return helpers.create_response(
             data=_cloudstack_virtual_machine_to_gce(
                 cloudstack_response=response,
                 projectid=projectid,
@@ -325,7 +327,7 @@ def addinstance(authorization, projectid, zone):
             authorization=authorization
         )
 
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['DELETE'])
@@ -339,4 +341,4 @@ def deleteinstance(projectid, authorization, zone, instance):
         authorization=authorization
     )
 
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)

@@ -19,8 +19,10 @@
 
 from gstack import app, publickey_storage
 from gstack import authentication
+from gstack import helpers
+from gstack import controllers
 from gstack.services import requester
-from gstack.controllers import errors, helper
+from gstack.controllers import errors
 from flask import jsonify, request, url_for
 import json
 import urllib
@@ -87,7 +89,7 @@ def _get_account_by_name(authorization, projectid):
     )
 
     if account_list['listaccountsresponse']:
-        response = helper.filter_by_name(
+        response = controllers.filter_by_name(
             data=account_list['listaccountsresponse']['account'],
             name=projectid
         )
@@ -213,7 +215,7 @@ def setglobalmetadata(projectid, authorization):
     res = jsonify({
         "kind": "compute#operation",
         'operationType': 'setMetadata',
-        'targetLink': urllib.unquote_plus(helper.get_root_url() + url_for(
+        'targetLink': urllib.unquote_plus(helpers.get_root_url() + url_for(
             'getproject',
             projectid=projectid
         )),

@@ -18,6 +18,44 @@
 # under the License.
 
 import os
+import urllib
+from gstack import app
+from flask import jsonify, render_template, make_response
+
+
+def create_response(data):
+    res = jsonify(data)
+    res.status_code = 200
+
+    return res
+
+
+def successful_response(**kwargs):
+    content = render_template(**kwargs)
+    response = make_response(content)
+    print response
+    response.headers['Content-Type'] = 'application/json'
+    return _create_response(response, '200')
+
+
+def _create_response(response, code):
+    response.status_code = int(code)
+    return response
+
+
+def get_filter(data):
+    filter = {}
+
+    if 'filter' in data:
+        filter = urllib.unquote_plus(data['filter'])
+        filter = dict(filter.split(' eq ') for values in filter)
+
+    return filter
+
+
+def get_root_url():
+    return 'https://' + \
+        app.config['GSTACK_BIND_ADDRESS'] + ':' + app.config['GSTACK_PORT']
 
 
 def read_file(name):

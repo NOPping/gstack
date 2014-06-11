@@ -18,9 +18,11 @@
 # under the License.
 
 from flask import request, url_for
+from gstack import helpers
+from gstack import controllers
 from gstack import app, authentication
 from gstack.services import requester
-from gstack.controllers import helper, errors
+from gstack.controllers import errors
 
 
 def _get_zones(authorization, args=None):
@@ -46,7 +48,7 @@ def get_zone_by_name(authorization, zone):
     )
 
     if zone_list['listzonesresponse']:
-        response = helper.filter_by_name(
+        response = controllers.filter_by_name(
             data=zone_list['listzonesresponse']['zone'],
             name=zone
         )
@@ -99,7 +101,7 @@ def listzones(projectid, authorization):
         'items': items
     }
 
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>', methods=['GET'])
@@ -111,7 +113,7 @@ def getzone(projectid, authorization, zone):
     )
 
     if response:
-        return helper.create_response(
+        return helpers.create_response(
             data=_cloudstack_zone_to_gce(response)
         )
     else:

@@ -20,8 +20,10 @@
 import urllib
 from gstack import app
 from gstack import authentication
+from gstack import helpers
+from gstack import controllers
 from gstack.services import requester
-from gstack.controllers import errors, zones, helper
+from gstack.controllers import errors, zones
 from flask import request, url_for
 
 
@@ -45,7 +47,7 @@ def get_machinetype_by_name(authorization, machinetype):
     )
 
     if machinetype_list['listserviceofferingsresponse']:
-        response = helper.filter_by_name(
+        response = controllers.filter_by_name(
             data=machinetype_list['listserviceofferingsresponse'][
                 'serviceoffering'],
             name=machinetype
@@ -65,7 +67,7 @@ def _cloudstack_machinetype_to_gce(cloudstack_response, projectid, zone):
     response['guestCpus'] = cloudstack_response['cpunumber']
     response['memoryMb'] = cloudstack_response['memory']
 
-    response['selfLink'] = urllib.unquote_plus(helper.get_root_url() + url_for(
+    response['selfLink'] = urllib.unquote_plus(helpers.get_root_url() + url_for(
         'getmachinetype',
         projectid=projectid,
         machinetype=cloudstack_response['name'],
@@ -107,14 +109,14 @@ def aggregatedlistmachinetypes(projectid, authorization):
         'selfLink': urllib.unquote_plus(request.base_url),
         'items': items
     }
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/machineTypes', methods=['GET'])
 @authentication.required
 def listmachinetype(projectid, authorization, zone):
     machinetype = None
-    filter = helper.get_filter(request.args)
+    filter = helpers.get_filter(request.args)
 
     if 'name' in filter:
         machinetype = filter['name']
@@ -127,7 +129,7 @@ def listmachinetype(projectid, authorization, zone):
             args={'keyword': machinetype}
         )
         if machinetype_list['listserviceofferingsresponse']:
-            machinetype = helper.filter_by_name(
+            machinetype = controllers.filter_by_name(
                 data=machinetype_list['listserviceofferingsresponse'][
                     'serviceoffering'],
                 name=machinetype
@@ -159,7 +161,7 @@ def listmachinetype(projectid, authorization, zone):
         'items': items
     }
 
-    return helper.create_response(data=populated_response)
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/machineTypes/<machinetype>', methods=['GET'])
@@ -171,7 +173,7 @@ def getmachinetype(projectid, authorization, zone, machinetype):
     )
 
     if response:
-        return helper.create_response(
+        return helpers.create_response(
             data=_cloudstack_machinetype_to_gce(
                 cloudstack_response=response,
                 projectid=projectid,

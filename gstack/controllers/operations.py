@@ -20,7 +20,7 @@
 import urllib
 from gstack import app, publickey_storage
 from gstack import authentication
-from gstack.controllers import helper
+from gstack import helpers
 from gstack.services import requester
 from flask import url_for
 
@@ -43,7 +43,7 @@ def _delete_instance_response(async_result, projectid):
         'operationType': 'delete',
         'name': async_result['jobid'],
         'startTime': async_result['created'],
-        'selfLink': urllib.unquote_plus(helper.get_root_url() + url_for(
+        'selfLink': urllib.unquote_plus(helpers.get_root_url() + url_for(
             'getoperations',
             projectid=projectid,
             operationid=async_result['jobid']
@@ -57,14 +57,14 @@ def _delete_instance_response(async_result, projectid):
     elif async_result['jobstatus'] is 1:
         populated_response['status'] = 'DONE'
         populated_response['zone'] = urllib.unquote_plus(
-            helper.get_root_url() +
+            helpers.get_root_url() +
             url_for(
                 'getzone',
                 projectid=projectid,
                 zone=async_result['jobresult']['virtualmachine']['zonename'],
             ))
         populated_response['targetLink'] = urllib.unquote_plus(
-            helper.get_root_url() +
+            helpers.get_root_url() +
             url_for(
                 'getinstance',
                 projectid=projectid,
@@ -112,7 +112,7 @@ def _create_instance_response(async_result, projectid, authorization):
         'user': async_result['userid'],
         'insertTime': async_result['created'],
         'startTime': async_result['created'],
-        'selfLink': urllib.unquote_plus(helper.get_root_url() + url_for(
+        'selfLink': urllib.unquote_plus(helpers.get_root_url() + url_for(
             'getoperations',
             projectid=projectid,
             operationid=async_result['jobid']
@@ -129,14 +129,14 @@ def _create_instance_response(async_result, projectid, authorization):
         populated_response['status'] = 'DONE'
         populated_response['id'] = async_result['jobid']
         populated_response['zone'] = urllib.unquote_plus(
-            helper.get_root_url() +
+            helpers.get_root_url() +
             url_for(
                 'getzone',
                 projectid=projectid,
                 zone=async_result['jobresult']['virtualmachine']['zonename'],
             ))
         populated_response['targetLink'] = urllib.unquote_plus(
-            helper.get_root_url() +
+            helpers.get_root_url() +
             url_for(
                 'getinstance',
                 projectid=projectid,
@@ -182,7 +182,7 @@ def create_response(authorization, projectid, operationid):
 @app.route('/compute/v1/projects/<projectid>/global/operations/<operationid>', methods=['GET'])
 @authentication.required
 def getoperations(authorization, operationid, projectid):
-    return helper.create_response(create_response(
+    return helpers.create_response(create_response(
         authorization=authorization,
         operationid=operationid,
         projectid=projectid

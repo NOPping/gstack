@@ -1,0 +1,13 @@
+{% extends "response.json" %}{% block response_content %}
+    "items":[{% for image in response.template %}
+        {
+            "creationTimestamp":"{{response.template|length}}",
+            "description":"{{image.displaytext}}",
+            "id":"{{image.id}}",
+            "kind":"compute#image",
+            "name":"{{image.name}}",
+            "selfLink":"{{image.selflink}}",
+            "status":"{{image.isready}}"
+        }{% if loop.index < response.template|length %},{% endif %}{% endfor %}
+    ]
+{% endblock %}
