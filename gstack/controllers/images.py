@@ -126,7 +126,6 @@ def listimages(projectid, authorization):
         'template_name_or_list': 'images.json',
         'selflink': request.base_url,
         'request_id': 'projects/' + projectid + '/global/images',
-        'request_kind': 'compute#imageList',
         'response': image_list['listtemplatesresponse']
     }
     return helpers.successful_response(

@@ -1,6 +1,5 @@
 {
     {% if not error %}"id":"{{request_id}}",
-    "kind":"{{request_kind}}",
     "selfLink":"{{selflink}}",{% block response_content %}
     {% endblock %}{% endif %}
 }

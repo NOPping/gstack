@@ -1,0 +1,32 @@
+{% extends "response.json" %}{% block response_content %}
+    "kind": "compute#instanceList",
+    "items":[{% for instance in response.virtualmachine %}
+        {
+            "creationTimestamp":"{{instance.created}}",
+            "description":"{{instance.name}}",
+            "id":"{{instance.id}}",
+            "status":"{{instance.state}}",
+            "image":"{{instance.templatename}}",
+            "machineType":"{{instance.serviceofferingname}}",
+            "kind":"compute#instance",
+            "name":"{{instance.name}}",
+            "selfLink":"instances/{{instance.name}}",,
+            "canIpForward":"true",
+            "networkInterfaces": [{% if 'securitygroup' in instance %}
+                "network":"{{instance.securitygroup.0.name}}",
+                {% if 'nic' in instance %}
+                "networkIP":"{{instance.nic.0.ipaddress}}",
+                "name":"{{instance.nic.0.id}}",
+                "natIP":"{{instance.nic.0.ipaddress}}",
+                {% endif %}
+                "accessConfigs":[
+                    "kind": "compute#accessConfig",
+                    "type": "ONE_TO_ONE_NAT",
+                    "name": "External NAT"
+                ]{% endif %}
+            ],
+            "disks": [],
+            "zone": "{{zone}}"
+        }{% if loop.index < response.virtualmachine|length %},{% endif %}{% endfor %}
+    ]
+{% endblock %}

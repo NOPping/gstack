@@ -220,47 +220,29 @@ def aggregatedlistinstances(authorization, projectid):
 @authentication.required
 def listinstances(authorization, projectid, zone):
     instance = None
-    filter = helpers.get_filter(request.args)
 
+    filter = helpers.get_filter(request.args)
+    virtual_machines = {}
     if 'name' in filter:
         instance = filter['name']
 
-    items = []
-
     if instance:
-        virtual_machine = _get_virtual_machine_by_name(
+        virtual_machines['virtualmachine'] = _get_virtual_machine_by_name(
             authorization=authorization,
             instance=instance
         )
-        if virtual_machine:
-            items.append(
-                _cloudstack_virtual_machine_to_gce(
-                    cloudstack_response=virtual_machine,
-                    projectid=projectid,
-                    zone=zone
-                )
-            )
     else:
-        virtual_machine_list = _get_virtual_machines(
-            authorization=authorization)
-        if virtual_machine_list['listvirtualmachinesresponse']:
-            for instance in virtual_machine_list['listvirtualmachinesresponse']['virtualmachine']:
-                items.append(
-                    _cloudstack_virtual_machine_to_gce(
-                        cloudstack_response=instance,
-                        projectid=projectid,
-                        zone=zone,
-                    )
-                )
+        virtual_machines = _get_virtual_machines(authorization=authorization)
+        virtual_machines = virtual_machines['listvirtualmachinesresponse']
 
-    populated_response = {
-        'kind': 'compute#instance_list',
-        'id': 'projects/' + projectid + '/instances',
-        'selfLink': request.base_url,
-        'items': items
+    kwargs = {
+        'template_name_or_list': 'instances.json',
+        'selflink': request.base_url,
+        'zone':zone,
+        'request_id': 'projects/' + projectid + '/instances',
+        'response': virtual_machines
     }
-
-    return helpers.create_response(data=populated_response)
+    return helpers.successful_response(**kwargs)
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
