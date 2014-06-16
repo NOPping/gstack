@@ -1,5 +1,0 @@
-{
-    {% if not error %}"id":"{{request_id}}",
-    "selfLink":"{{selflink}}",{% block response_content %}
-    {% endblock %}{% endif %}
-}
