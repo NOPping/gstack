@@ -19,10 +19,14 @@
 
 import os
 
+from alembic import command
+from alembic.config import Config as AlembicConfig
+
 
 def main():
     config_folder = _create_config_folder()
     _create_config_file(config_folder)
+    _create_database()
 
 
 def _create_config_folder():
@@ -69,3 +73,12 @@ def _create_config_file(config_folder):
     config_file.write('CLOUDSTACK_PATH = \'%s\'\n' % cloudstack_path)
 
     config_file.close()
+
+def _create_database():
+    directory = os.path.join(os.path.dirname(__file__), '../migrations')
+    config = AlembicConfig(os.path.join(
+        directory,
+        'alembic.ini'
+    ))
+    config.set_main_option('script_location', directory)
+    command.upgrade(config, 'head', sql=False, tag=None)

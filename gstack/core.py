@@ -17,14 +17,33 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from gstack import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 
-class Client(db.Model):
-    __tablename__ = 'client'
-    client_id = db.Column(db.String(100), primary_key=True, unique=True)
-    client_secret = db.Column(db.String(100), unique=True)
+class Service(object):
+    __model__ = None
 
-    def __init__(self, client_id, client_secret):
-        self.client_id = client_id
-        self.client_secret = client_secret
+    def _isinstance(self, model, raise_error=True):
+        valid_type = isinstance(model, self.__model__)
+        if not valid_type and raise_error:
+            raise ValueError('%s is not of type %s' % (model, self.__model__))
+        return valid_type
+
+    def save(self, model):
+        self._isinstance(model)
+        db.session.add(model)
+        db.session.commit()
+        return model
+
+    def get(self, primarykey):
+        return self.__model__.query.get(primarykey)
+
+    def create(self, **kwargs):
+        return self.save(self.__model__(**kwargs))
+
+    def delete(self, model):
+        self._isinstance(model)
+        db.session.delete(model)
+        db.session.commit()

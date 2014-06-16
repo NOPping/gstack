@@ -21,7 +21,14 @@ from gstack import db
 
 
 class AccessToken(db.Model):
+    __tablename__ = 'accesstoken'
     access_token = db.Column(db.String(100), primary_key=True, unique=True)
     client_id = db.Column(db.String(100), unique=True)
     expires_in = db.Column(db.Integer)
     data = db.Column(db.String(500))
+
+    def __init__(self, access_token, client_id, expires_in, data):
+        self.access_token = access_token
+        self.client_id = client_id
+        self.expires_in = expires_in
+        self.data = data

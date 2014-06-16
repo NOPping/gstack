@@ -56,6 +56,7 @@ setup(
         "pyopenssl",
         "Flask-SQLAlchemy",
         "flask",
+        "alembic"
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

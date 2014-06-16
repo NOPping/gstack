@@ -21,6 +21,12 @@ from gstack import db
 
 
 class RefreshToken(db.Model):
+    __tablename__ = 'refreshtoken'
     refresh_token = db.Column(db.String(100), primary_key=True, unique=True)
     client_id = db.Column(db.String(100), unique=True)
     data = db.Column(db.String(500))
+
+    def __init__(self, refresh_token, client_id, data):
+        self.refresh_token = refresh_token
+        self.client_id = client_id
+        self.data = data

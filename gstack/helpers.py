@@ -33,7 +33,6 @@ def create_response(data):
 def successful_response(**kwargs):
     content = render_template(**kwargs)
     response = make_response(content)
-    print response
     response.headers['Content-Type'] = 'application/json'
     return _create_response(response, '200')
 

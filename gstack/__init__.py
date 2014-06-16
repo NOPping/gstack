@@ -21,6 +21,7 @@ import os
 import sys
 
 from flask import Flask
+from gstack.core import db
 from flask.ext.sqlalchemy import SQLAlchemy
 
 
@@ -35,9 +36,23 @@ def _load_config_file():
 
     return config_file
 
+def _load_database():
+    database_file = os.path.join(
+        os.path.expanduser('~'),
+        '.gstack/gstack.sqlite'
+    )
+
+    if not os.path.exists(database_file):
+        sys.exit('No database found, please run gstack-configure')
+
+    return 'sqlite:///' + database_file
+
 
 def configure_app(settings=None):
     app.config['DATA'] = os.path.abspath(os.path.dirname(__file__)) + '/data'
+
+    db.init_app(app)
+    database_uri = _load_database()
 
     if settings:
         app.config.from_object(settings)
@@ -45,18 +60,13 @@ def configure_app(settings=None):
         config_file = _load_config_file()
         app.config.from_pyfile(config_file)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-        os.path.join(app.config['DATA'], 'app.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 
 
 app = Flask(__name__)
 
-db = SQLAlchemy(app)
 publickey_storage = {}
 
 from gstack.controllers import *
 
-
 basedir = os.path.abspath(os.path.dirname(__file__))
-
-db.create_all()

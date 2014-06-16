@@ -295,7 +295,6 @@ def addinstance(authorization, projectid, zone):
     args = {}
     args['name'] = data['name']
     args['serviceoffering'] = data['machineType'].rsplit('/', 1)[1]
-    print args['serviceoffering']
     args['template'] = data['disks'][0]['initializeParams']['sourceImage'].rsplit('/', 1)[1]
     args['zone'] = zone
 
