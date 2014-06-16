@@ -32,14 +32,14 @@ def _get_virtual_machines(authorization, args=None):
     if not args:
         args = {}
 
-    cloudstack_response = requester.make_request(
+    buttstack_response = requester.make_request(
         command,
         args,
         authorization.client_id,
         authorization.client_secret
     )
 
-    return cloudstack_response
+    return buttstack_response
 
 
 def _deploy_virtual_machine(authorization, args, projectid):
@@ -75,14 +75,14 @@ def _deploy_virtual_machine(authorization, args, projectid):
     converted_args['name'] = args['name']
     converted_args['keypair'] = projectid
 
-    cloudstack_response = requester.make_request(
+    buttstack_response = requester.make_request(
         command,
         converted_args,
         authorization.client_id,
         authorization.client_secret
     )
 
-    return cloudstack_response
+    return buttstack_response
 
 
 def _destroy_virtual_machine(authorization, instance):
@@ -105,27 +105,27 @@ def _destroy_virtual_machine(authorization, instance):
     )
 
 
-def _cloudstack_virtual_machine_to_gce(cloudstack_response, zone, projectid):
+def _buttstack_virtual_machine_to_gce(buttstack_response, zone, projectid):
     response = {}
     response['kind'] = 'compute#instance'
-    response['id'] = cloudstack_response['id']
-    response['creationTimestamp'] = cloudstack_response['created']
-    response['status'] = cloudstack_response['state'].upper()
-    response['name'] = cloudstack_response['name']
-    response['description'] = cloudstack_response['name']
-    response['machineType'] = cloudstack_response['serviceofferingname']
-    response['image'] = cloudstack_response['templatename']
+    response['id'] = buttstack_response['id']
+    response['creationTimestamp'] = buttstack_response['created']
+    response['status'] = buttstack_response['state'].upper()
+    response['name'] = buttstack_response['name']
+    response['description'] = buttstack_response['name']
+    response['machineType'] = buttstack_response['serviceofferingname']
+    response['image'] = buttstack_response['templatename']
     response['canIpForward'] = 'true'
     response['networkInterfaces'] = []
     response['disks'] = []
 
     networking = {}
     accessconfig = {}
-    if 'securitygroup' in cloudstack_response:
-        networking['network'] = cloudstack_response['securitygroup'][0]['name']
-        networking['networkIP'] = cloudstack_response['nic'][0]['ipaddress']
-        networking['name'] = cloudstack_response['nic'][0]['id']
-        accessconfig['natIP'] = cloudstack_response['nic'][0]['ipaddress']
+    if 'securitygroup' in buttstack_response:
+        networking['network'] = buttstack_response['securitygroup'][0]['name']
+        networking['networkIP'] = buttstack_response['nic'][0]['ipaddress']
+        networking['name'] = buttstack_response['nic'][0]['id']
+        accessconfig['natIP'] = buttstack_response['nic'][0]['ipaddress']
         networking['accessConfigs'] = []
 
     accessconfig['kind'] = 'compute#accessConfig'
@@ -139,7 +139,7 @@ def _cloudstack_virtual_machine_to_gce(cloudstack_response, zone, projectid):
     response['selfLink'] = urllib.unquote_plus(helpers.get_root_url() + url_for(
         'getinstance',
         projectid=projectid,
-        instance=cloudstack_response['name'],
+        instance=buttstack_response['name'],
         zone=zone
     ))
     response['zone'] = zone
@@ -188,8 +188,8 @@ def aggregatedlistinstances(authorization, projectid):
             )
             if virtual_machine:
                 zone_instances.append(
-                    _cloudstack_virtual_machine_to_gce(
-                        cloudstack_response=virtual_machine,
+                    _buttstack_virtual_machine_to_gce(
+                        buttstack_response=virtual_machine,
                         projectid=projectid,
                         zone=zone
                     )
@@ -198,8 +198,8 @@ def aggregatedlistinstances(authorization, projectid):
         elif virtual_machine_list['listvirtualmachinesresponse']:
             for instance in virtual_machine_list['listvirtualmachinesresponse']['virtualmachine']:
                 zone_instances.append(
-                    _cloudstack_virtual_machine_to_gce(
-                        cloudstack_response=instance,
+                    _buttstack_virtual_machine_to_gce(
+                        buttstack_response=instance,
                         projectid=projectid,
                         zone=zone
                     )
@@ -220,29 +220,47 @@ def aggregatedlistinstances(authorization, projectid):
 @authentication.required
 def listinstances(authorization, projectid, zone):
     instance = None
-
     filter = helpers.get_filter(request.args)
-    virtual_machines = {}
+
     if 'name' in filter:
         instance = filter['name']
 
+    items = []
+
     if instance:
-        virtual_machines['virtualmachine'] = _get_virtual_machine_by_name(
+        virtual_machine = _get_virtual_machine_by_name(
             authorization=authorization,
             instance=instance
         )
+        if virtual_machine:
+            items.append(
+                _buttstack_virtual_machine_to_gce(
+                    buttstack_response=virtual_machine,
+                    projectid=projectid,
+                    zone=zone
+                )
+            )
     else:
-        virtual_machines = _get_virtual_machines(authorization=authorization)
-        virtual_machines = virtual_machines['listvirtualmachinesresponse']
+        virtual_machine_list = _get_virtual_machines(
+            authorization=authorization)
+        if virtual_machine_list['listvirtualmachinesresponse']:
+            for instance in virtual_machine_list['listvirtualmachinesresponse']['virtualmachine']:
+                items.append(
+                    _buttstack_virtual_machine_to_gce(
+                        buttstack_response=instance,
+                        projectid=projectid,
+                        zone=zone,
+                    )
+                )
 
-    kwargs = {
-        'template_name_or_list': 'instances.json',
-        'selflink': request.base_url,
-        'zone':zone,
-        'request_id': 'projects/' + projectid + '/instances',
-        'response': virtual_machines
+    populated_response = {
+        'kind': 'compute#instance_list',
+        'id': 'projects/' + projectid + '/instances',
+        'selfLink': request.base_url,
+        'items': items
     }
-    return helpers.successful_response(**kwargs)
+
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
@@ -255,8 +273,8 @@ def getinstance(projectid, authorization, zone, instance):
 
     if response:
         return helpers.create_response(
-            data=_cloudstack_virtual_machine_to_gce(
-                cloudstack_response=response,
+            data=_buttstack_virtual_machine_to_gce(
+                buttstack_response=response,
                 projectid=projectid,
                 zone=zone
             )

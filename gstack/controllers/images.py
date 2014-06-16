@@ -64,7 +64,6 @@ def get_template_by_name(authorization, image):
 def _create_populated_image_response(projectid, images=None):
     if not images:
         images = []
-
     populated_response = {
         'kind': 'compute#imageList',
         'selfLink': request.base_url,
@@ -118,19 +117,15 @@ def listimages(projectid, authorization):
         authorization=authorization
     )
 
+    images = []
     if image_list['listtemplatesresponse']:
         for image in image_list['listtemplatesresponse']['template']:
-            image['selflink'] = request.base_url + '/' + image['name']
+            images.append(_cloudstack_template_to_gce(
+                cloudstack_response=image,
+                selfLink=request.base_url + '/' + image['name']))
 
-    kwargs = {
-        'template_name_or_list': 'images.json',
-        'selflink': request.base_url,
-        'request_id': 'projects/' + projectid + '/global/images',
-        'response': image_list['listtemplatesresponse']
-    }
-    return helpers.successful_response(
-        **kwargs
-    )
+    populated_response = _create_populated_image_response(projectid, images)
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/global/images/<image>', methods=['GET'])
