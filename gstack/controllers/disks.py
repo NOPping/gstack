@@ -30,6 +30,7 @@ def _get_disks(authorization, args=None):
     command = 'listVolumes'
     if not args:
         args = {}
+
     cloudstack_response = requester.make_request(
         command,
         args,
@@ -41,10 +42,11 @@ def _get_disks(authorization, args=None):
 
 
 def get_disk_by_name(authorization, disk):
-    disk_list = _get_disks(
+    disk_list = helpers._get_items(
         authorization=authorization,
         args={
-            'keyword': disk
+            'keyword': disk,
+            'command': 'listVolumes'
         }
     )
 

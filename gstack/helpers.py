@@ -52,6 +52,8 @@ def get_filter(data):
     return filter
 
 
+
+
 def get_root_url():
     return 'https://' + \
         app.config['GSTACK_BIND_ADDRESS'] + ':' + app.config['GSTACK_PORT']
