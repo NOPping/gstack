@@ -68,7 +68,7 @@ def _get_item_with_name(authorization, name, args, type):
         return None
 
 
-def _get_requested_items(authorization, args, type, to_cloudstack, zone, projectid):
+def _get_requested_items(authorization, args, type, to_cloudstack, **kwargs):
     name = None
     filter = helpers.get_filter(request.args)
 
@@ -87,7 +87,7 @@ def _get_requested_items(authorization, args, type, to_cloudstack, zone, project
         if cloudstack_item:
             items.append(
                 to_cloudstack(
-                    cloudstack_response=cloudstack_item, zone=zone, projectid=projectid
+                    cloudstack_response=cloudstack_item, **kwargs
                 )
             )
     else:
@@ -96,20 +96,21 @@ def _get_requested_items(authorization, args, type, to_cloudstack, zone, project
             for cloudstack_item in cloudstack_items[type]:
                 items.append(
                     to_cloudstack(
-                        cloudstack_response=cloudstack_item, zone=zone, projectid=projectid)
+                        cloudstack_response=cloudstack_item, **kwargs)
                 )
 
     return items
 
 
-def describe_items_aggregated(authorization, args, type, gce_type, projectid, to_cloudstack):
+def describe_items_aggregated(authorization, args, type, gce_type, to_cloudstack, **kwargs):
     from gstack.controllers import zones
     items = {}
 
     zone_list = zones.get_zone_names(authorization=authorization)
 
     for zone in zone_list:
-        zone_items = _get_requested_items(authorization, args, type, to_cloudstack, zone, projectid)
+        kwargs['zone'] = zone
+        zone_items = _get_requested_items(authorization, args, type, to_cloudstack, **kwargs)
 
         items['zone/' + zone] = {}
         items['zone/' + zone][gce_type] = zone_items
@@ -117,7 +118,7 @@ def describe_items_aggregated(authorization, args, type, gce_type, projectid, to
     return items
 
 
-def describe_items(authorization, args, type, zone, projectid, to_cloudstack):
-    items = _get_requested_items(authorization, args, type, to_cloudstack, zone, projectid)
+def describe_items(authorization, args, type, to_cloudstack, **kwargs):
+    items = _get_requested_items(authorization, args, type, to_cloudstack, **kwargs)
 
     return items

@@ -105,7 +105,7 @@ def _destroy_virtual_machine(authorization, instance):
     )
 
 
-def _cloudstack_virtual_machine_to_gce(cloudstack_response, zone, projectid):
+def _cloudstack_virtual_machine_to_gce(cloudstack_response, projectid, zone, **kwargs):
     response = {}
     response['kind'] = 'compute#instance'
     response['id'] = cloudstack_response['id']
@@ -170,9 +170,10 @@ def _get_virtual_machine_by_name(authorization, instance):
 @authentication.required
 def aggregatedlistinstances(authorization, projectid):
     args = {'command':'listVirtualMachines'}
+    kwargs = {'projectid':projectid}
     items = controllers.describe_items_aggregated(
         authorization, args, 'virtualmachine', 'instances',
-        projectid, _cloudstack_virtual_machine_to_gce)
+        _cloudstack_virtual_machine_to_gce, **kwargs)
 
     populated_response = {
         'kind': 'compute#instanceAggregatedList',
@@ -187,9 +188,10 @@ def aggregatedlistinstances(authorization, projectid):
 @authentication.required
 def listinstances(authorization, projectid, zone):
     args = {'command':'listVirtualMachines'}
+    kwargs = {'projectid':projectid, 'zone':zone}
     items = controllers.describe_items(
         authorization, args, 'virtualmachine',
-        zone, projectid, _cloudstack_virtual_machine_to_gce)
+        _cloudstack_virtual_machine_to_gce, **kwargs)
 
     populated_response = {
         'kind': 'compute#instance_list',
