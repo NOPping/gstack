@@ -61,32 +61,10 @@ def _cloudstack_securitygroup_to_gce(response_item):
 @app.route('/compute/v1/projects/<projectid>/global/firewalls', methods=['GET'])
 @authentication.required
 def listsecuritygroups(projectid, authorization):
-    command = 'listSecurityGroups'
-    args = {}
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-
-    cloudstack_response = cloudstack_response
-
-    app.logger.debug(
-        'Processing request for aggregated list Firewalls\n'
-        'Project: ' + projectid + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
-    )
-
-    firewalls = []
-    if cloudstack_response['listsecuritygroupsresponse']:
-        res = cloudstack_response['listsecuritygroupsresponse']
-        for response_item in res['securitygroup']:
-            firewalls.append(response_item)
-
-    items = []
-    for fw in firewalls:
-        items.append(_cloudstack_securitygroup_to_gce(fw))
+    args = {'command':'listSecurityGroups'}
+    items = controllers.describe_items(
+        authorization, args, 'securitygroup',
+        projectid, zone, _cloudstack_securitygroup_to_gce)
 
     populated_response = {
         'kind': 'compute#firewallList',

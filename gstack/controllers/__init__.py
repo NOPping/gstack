@@ -32,6 +32,8 @@ def filter_by_name(data, name):
     for item in data:
         if item['name'] == name:
             return item
+        elif 'displayname' in item and item['displayname'] == name:
+            return item
 
     return None
 
@@ -66,7 +68,7 @@ def _get_item_with_name(authorization, name, args, type):
         return None
 
 
-def _get_requested_items(authorization, args, type, projectid, to_cloudstack, zone):
+def _get_requested_items(authorization, args, type, to_cloudstack, zone, projectid):
     name = None
     filter = helpers.get_filter(request.args)
 
@@ -85,8 +87,7 @@ def _get_requested_items(authorization, args, type, projectid, to_cloudstack, zo
         if cloudstack_item:
             items.append(
                 to_cloudstack(
-                    cloudstack_response=cloudstack_item,
-                    projectid=projectid, zone=zone
+                    cloudstack_response=cloudstack_item, zone=zone, projectid=projectid
                 )
             )
     else:
@@ -95,33 +96,28 @@ def _get_requested_items(authorization, args, type, projectid, to_cloudstack, zo
             for cloudstack_item in cloudstack_items[type]:
                 items.append(
                     to_cloudstack(
-                        cloudstack_response=cloudstack_item,
-                        projectid=projectid, zone=zone,
-                    )
+                        cloudstack_response=cloudstack_item, zone=zone, projectid=projectid)
                 )
 
     return items
 
 
-def describe_items_aggregated(authorization, args, type, projectid, to_cloudstack):
+def describe_items_aggregated(authorization, args, type, gce_type, projectid, to_cloudstack):
     from gstack.controllers import zones
-    args['listAll'] = 'true'
-
     items = {}
 
     zone_list = zones.get_zone_names(authorization=authorization)
 
     for zone in zone_list:
-        zone_items = _get_requested_items(authorization, args, type, projectid, to_cloudstack, zone)
-
+        zone_items = _get_requested_items(authorization, args, type, to_cloudstack, zone, projectid)
 
         items['zone/' + zone] = {}
-        items['zone/' + zone]['instances'] = zone_items
+        items['zone/' + zone][gce_type] = zone_items
 
     return items
 
 
-def describe_items(authorization, args, type, projectid, zone, to_cloudstack):
-    items = _get_requested_items(authorization, args, type, projectid, to_cloudstack, zone)
+def describe_items(authorization, args, type, zone, projectid, to_cloudstack):
+    items = _get_requested_items(authorization, args, type, to_cloudstack, zone, projectid)
 
     return items

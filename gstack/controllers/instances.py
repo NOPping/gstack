@@ -145,7 +145,6 @@ def _cloudstack_virtual_machine_to_gce(cloudstack_response, zone, projectid):
     ))
     response['zone'] = zone
 
-    print response
     return response
 
 
@@ -172,7 +171,7 @@ def _get_virtual_machine_by_name(authorization, instance):
 def aggregatedlistinstances(authorization, projectid):
     args = {'command':'listVirtualMachines'}
     items = controllers.describe_items_aggregated(
-        authorization, args, 'virtualmachine',
+        authorization, args, 'virtualmachine', 'instances',
         projectid, _cloudstack_virtual_machine_to_gce)
 
     populated_response = {
@@ -190,7 +189,7 @@ def listinstances(authorization, projectid, zone):
     args = {'command':'listVirtualMachines'}
     items = controllers.describe_items(
         authorization, args, 'virtualmachine',
-        projectid, zone, _cloudstack_virtual_machine_to_gce)
+        zone, projectid, _cloudstack_virtual_machine_to_gce)
 
     populated_response = {
         'kind': 'compute#instance_list',

@@ -88,44 +88,10 @@ def _cloudstack_volume_to_gce(cloudstack_response, projectid, zone):
 @app.route('/compute/v1/projects/<projectid>/aggregated/disks', methods=['GET'])
 @authentication.required
 def aggregatedlistdisks(projectid, authorization):
-    disk_list = _get_disks(authorization=authorization)
-    zone_list = zones.get_zone_names(authorization=authorization)
-
-    disk = None
-    filter = helpers.get_filter(request.args)
-
-    if 'name' in filter:
-        disk = filter['name']
-
-    items = {}
-
-    for zone in zone_list:
-        zone_disks = []
-        if disk:
-            disk = get_disk_by_name(
-                authorization=authorization,
-                disk=disk
-            )
-            if disk:
-                zone_disks.append(
-                    _cloudstack_volume_to_gce(
-                        cloudstack_response=disk,
-                        projectid=projectid,
-                        zone=zone,
-                    )
-                )
-
-        elif disk_list['listvolumesresponse']:
-            for disk in disk_list['listvolumesresponse']['volume']:
-                zone_disks.append(
-                    _cloudstack_volume_to_gce(
-                        cloudstack_response=disk,
-                        projectid=projectid,
-                        zone=zone,
-                    )
-                )
-        items['zone/' + zone] = {}
-        items['zone/' + zone]['disks'] = zone_disks
+    args = {'command':'listVolumes'}
+    items = controllers.describe_items_aggregated(
+        authorization, args, 'volume',
+        projectid, _cloudstack_volume_to_gce)
 
     populated_response = {
         'kind': 'compute#diskAggregatedList',
@@ -140,43 +106,10 @@ def aggregatedlistdisks(projectid, authorization):
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/disks', methods=['GET'])
 @authentication.required
 def listdisks(projectid, authorization, zone):
-    disk = None
-    filter = helpers.get_filter(request.args)
-
-    if 'name' in filter:
-        disk = filter['name']
-
-    items = []
-
-    if disk:
-        disk_list = _get_disks(
-            authorization=authorization,
-            args={'keyword': disk}
-        )
-        if disk_list['listvolumesresponse']:
-            disk = controllers.filter_by_name(
-                data=disk_list['listvolumesresponse']['volume'],
-                name=disk
-            )
-            if disk:
-                items.append(
-                    _cloudstack_volume_to_gce(
-                        cloudstack_response=disk,
-                        projectid=projectid,
-                        zone=zone
-                    )
-                )
-    else:
-        disk_list = _get_disks(authorization=authorization)
-        if disk_list['listvolumesresponse']:
-            for disk in disk_list['listvolumesresponse']['volume']:
-                items.append(
-                    _cloudstack_volume_to_gce(
-                        cloudstack_response=disk,
-                        projectid=projectid,
-                        zone=zone
-                    )
-                )
+    args = {'command':'listVolumes'}
+    items = controllers.describe_items(
+        authorization, args, 'volume',
+        projectid, zone, _cloudstack_volume_to_gce)
 
     populated_response = {
         'kind': 'compute#imageList',
