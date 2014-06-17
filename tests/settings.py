@@ -7,5 +7,6 @@ CLOUDSTACK_PROTOCOL = 'https'
 CLOUDSTACK_PATH = '/compute'
 
 DEBUG=False
-
 TESTING = True
+
+SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
