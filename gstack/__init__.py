@@ -22,7 +22,6 @@ import sys
 
 from flask import Flask
 from gstack.core import db
-from flask.ext.sqlalchemy import SQLAlchemy
 
 
 def _load_config_file():
@@ -52,15 +51,14 @@ def configure_app(settings=None):
     app.config['DATA'] = os.path.abspath(os.path.dirname(__file__)) + '/data'
 
     db.init_app(app)
-    database_uri = _load_database()
 
     if settings:
         app.config.from_object(settings)
     else:
         config_file = _load_config_file()
+        database_uri = _load_database()
         app.config.from_pyfile(config_file)
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
+        app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 
 
 app = Flask(__name__)

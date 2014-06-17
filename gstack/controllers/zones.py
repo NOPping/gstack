@@ -25,38 +25,6 @@ from gstack.services import requester
 from gstack.controllers import errors
 
 
-def _get_zones(authorization, args=None):
-    command = 'listZones'
-    if not args:
-        args = {}
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-
-    return cloudstack_response
-
-
-def get_zone_by_name(authorization, zone):
-    zone_list = _get_zones(
-        authorization=authorization,
-        args={
-            'keyword': zone
-        }
-    )
-
-    if zone_list['listzonesresponse']:
-        response = controllers.filter_by_name(
-            data=zone_list['listzonesresponse']['zone'],
-            name=zone
-        )
-        return response
-    else:
-        return None
-
-
 def get_zone_names(authorization):
     zone_list = _get_zones(authorization)
 

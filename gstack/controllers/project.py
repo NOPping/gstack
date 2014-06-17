@@ -65,39 +65,6 @@ def _list_ssh_keys(authorization):
     return sshkeys
 
 
-def _get_accounts(authorization, args=None):
-    command = 'listAccounts'
-    if not args:
-        args = {}
-
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-
-    return cloudstack_response
-
-
-def _get_account_by_name(authorization, projectid):
-    account_list = _get_accounts(
-        authorization=authorization,
-        args={
-            'keyword': projectid
-        }
-    )
-
-    if account_list['listaccountsresponse']:
-        response = controllers.filter_by_name(
-            data=account_list['listaccountsresponse']['account'],
-            name=projectid
-        )
-        return response
-    else:
-        return None
-
-
 def _format_quota(metric, limit, usage):
     quota = {}
     quota['metric'] = metric

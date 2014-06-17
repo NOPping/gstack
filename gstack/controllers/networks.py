@@ -27,38 +27,6 @@ from gstack.services import requester
 from gstack.controllers import errors
 
 
-def _get_networks(authorization, args=None):
-    command = 'listSecurityGroups'
-    if not args:
-        args = {}
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-
-    return cloudstack_response
-
-
-def get_network_by_name(authorization, securitygroup):
-    securitygroup_list = _get_networks(
-        authorization=authorization,
-        args={
-            'keyword': securitygroup
-        }
-    )
-
-    if securitygroup_list['listsecuritygroupsresponse']:
-        response = controllers.filter_by_name(
-            data=securitygroup_list['listsecuritygroupsresponse']['securitygroup'],
-            name=securitygroup
-        )
-        return response
-    else:
-        return None
-
-
 def _add_network(authorization, args=None):
     command = 'createSecurityGroup'
     if not args:

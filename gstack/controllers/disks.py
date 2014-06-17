@@ -26,40 +26,6 @@ from gstack import controllers
 from gstack.controllers import zones, errors
 
 
-def _get_disks(authorization, args=None):
-    command = 'listVolumes'
-    if not args:
-        args = {}
-
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-
-    return cloudstack_response
-
-
-def get_disk_by_name(authorization, disk):
-    disk_list = helpers._get_items(
-        authorization=authorization,
-        args={
-            'keyword': disk,
-            'command': 'listVolumes'
-        }
-    )
-
-    if disk_list['listvolumesresponse']:
-        response = controllers.filter_by_name(
-            data=disk_list['listvolumesresponse']['volume'],
-            name=disk
-        )
-        return response
-    else:
-        return None
-
-
 def _cloudstack_volume_to_gce(cloudstack_response, projectid, zone):
     response = {}
     response['kind'] = 'compute#disk'

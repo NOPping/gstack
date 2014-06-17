@@ -21,23 +21,8 @@
 from gstack import app
 from gstack import helpers
 from gstack import authentication
-from gstack.services import requester
 from gstack.controllers import errors
 from flask import request, url_for
-
-
-def _get_regions(authorization, args=None):
-    command = 'listRegions'
-    if not args:
-        args = {}
-
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-    return cloudstack_response
 
 
 def _cloudstack_region_to_gce(response_item):

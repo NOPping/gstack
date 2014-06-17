@@ -19,15 +19,17 @@
 
 from gstack import app
 from gstack import authentication
+from gstack import controllers
+from gstack import helpers
 from gstack.services import requester
 from gstack.controllers import errors
 from flask import jsonify, request, url_for
 import json
 
 
-def _cloudstack_securitygroup_to_gce(response_item):
-    if 'ingressrule' in response_item:
-        rules = response_item['ingressrule']
+def _cloudstack_securitygroup_to_gce(cloudstack_response):
+    if 'ingressrule' in cloudstack_response:
+        rules = cloudstack_response['ingressrule']
         allowed = []
         sourceranges = []
         for rule in rules:
@@ -44,16 +46,16 @@ def _cloudstack_securitygroup_to_gce(response_item):
         return ({
             "kind": "compute#firewall",
             "selfLink": '',
-            "id": response_item['id'],
+            "id": cloudstack_response['id'],
             "creationTimestamp": '',
-            "name": response_item['name'],
-            "description": response_item['description'],
+            "name": cloudstack_response['name'],
+            "description": cloudstack_response['description'],
             "network": '',
             "sourceRanges": sourceranges,
             "sourceTags": [
                 ''
             ],
-            "targetTags": response_item['tags'],
+            "targetTags": cloudstack_response['tags'],
             "allowed": allowed
         })
 
@@ -64,7 +66,7 @@ def listsecuritygroups(projectid, authorization):
     args = {'command':'listSecurityGroups'}
     items = controllers.describe_items(
         authorization, args, 'securitygroup',
-        projectid, zone, _cloudstack_securitygroup_to_gce)
+        _cloudstack_securitygroup_to_gce, **{})
 
     populated_response = {
         'kind': 'compute#firewallList',
@@ -73,9 +75,7 @@ def listsecuritygroups(projectid, authorization):
         'items': items
     }
 
-    res = jsonify(populated_response)
-    res.status_code = 200
-    return res
+    return helpers.create_response(data=populated_response)
 
 
 @app.route('/compute/v1/projects/<projectid>/global/firewalls/<firewall>', methods=['GET'])

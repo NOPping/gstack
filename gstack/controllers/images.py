@@ -26,41 +26,6 @@ from gstack.controllers import errors
 from flask import request, url_for
 
 
-def _get_templates(authorization, args=None):
-    command = 'listTemplates'
-    if not args:
-        args = {}
-
-    if 'templatefilter' not in args:
-        args['templatefilter'] = 'executable'
-
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-    return cloudstack_response
-
-
-def get_template_by_name(authorization, image):
-    image_list = _get_templates(
-        authorization=authorization,
-        args={
-            'keyword': image
-        }
-    )
-
-    if image_list['listtemplatesresponse']:
-        response = controllers.filter_by_name(
-            data=image_list['listtemplatesresponse']['template'],
-            name=image
-        )
-        return response
-    else:
-        return None
-
-
 def _create_populated_image_response(projectid, images=None):
     if not images:
         images = []
@@ -91,7 +56,7 @@ def _cloudstack_template_to_gce(cloudstack_response, selfLink=None):
     if selfLink:
         response['selfLink'] = urllib.unquote_plus(selfLink)
     else:
-        response['selfLink'] = urllib.unquote_plus(request.base_url)
+        response['selfLink'] = urllib.unquote_plus(request.base_url) + '/' + response['name']
 
     return response
 
@@ -113,18 +78,12 @@ def listnodebiancloudimages(authorization):
 @app.route('/compute/v1/projects/<projectid>/global/images', methods=['GET'])
 @authentication.required
 def listimages(projectid, authorization):
-    image_list = _get_templates(
-        authorization=authorization
-    )
+    args = {'templatefilter': 'executable', 'command':'listTemplates'}
+    items = controllers.describe_items(
+        authorization, args, 'template',
+        _cloudstack_template_to_gce, **{})
 
-    images = []
-    if image_list['listtemplatesresponse']:
-        for image in image_list['listtemplatesresponse']['template']:
-            images.append(_cloudstack_template_to_gce(
-                cloudstack_response=image,
-                selfLink=request.base_url + '/' + image['name']))
-
-    populated_response = _create_populated_image_response(projectid, images)
+    populated_response = _create_populated_image_response(projectid, items)
     return helpers.create_response(data=populated_response)
 
 

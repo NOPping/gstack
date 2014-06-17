@@ -27,21 +27,6 @@ from gstack.services import requester
 from gstack.controllers import zones, operations, images, errors, machine_type, networks
 
 
-def _get_virtual_machines(authorization, args=None):
-    command = 'listVirtualMachines'
-    if not args:
-        args = {}
-
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-
-    return cloudstack_response
-
-
 def _deploy_virtual_machine(authorization, args, projectid):
     command = 'deployVirtualMachine'
 
@@ -146,24 +131,6 @@ def _cloudstack_virtual_machine_to_gce(cloudstack_response, projectid, zone, **k
     response['zone'] = zone
 
     return response
-
-
-def _get_virtual_machine_by_name(authorization, instance):
-    virtual_machine_list = _get_virtual_machines(
-        authorization=authorization,
-        args={
-            'keyword': instance
-        }
-    )
-
-    if virtual_machine_list['listvirtualmachinesresponse']:
-        response = controllers.filter_by_name(
-            data=virtual_machine_list['listvirtualmachinesresponse']['virtualmachine'],
-            name=instance
-        )
-        return response
-    else:
-        return None
 
 
 @app.route('/compute/v1/projects/<projectid>/aggregated/instances', methods=['GET'])

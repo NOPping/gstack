@@ -22,42 +22,11 @@ from gstack import app
 from gstack import authentication
 from gstack import helpers
 from gstack import controllers
-from gstack.services import requester
 from gstack.controllers import errors, zones
 from flask import request, url_for
 
 
-def _get_machinetypes(authorization, args=None):
-    command = 'listServiceOfferings'
-    if not args:
-        args = {}
-
-    cloudstack_response = requester.make_request(
-        command,
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-    return cloudstack_response
-
-
-def get_machinetype_by_name(authorization, machinetype):
-    machinetype_list = _get_machinetypes(
-        authorization=authorization
-    )
-
-    if machinetype_list['listserviceofferingsresponse']:
-        response = controllers.filter_by_name(
-            data=machinetype_list['listserviceofferingsresponse'][
-                'serviceoffering'],
-            name=machinetype
-        )
-        return response
-    else:
-        return None
-
-
-def _cloudstack_machinetype_to_gce(cloudstack_response, projectid, zone):
+def _cloudstack_service_offering_to_gce(cloudstack_response, projectid, zone):
     response = {}
     response['kind'] = 'compute#machineType'
     response['name'] = cloudstack_response['name']
@@ -81,27 +50,11 @@ def _cloudstack_machinetype_to_gce(cloudstack_response, projectid, zone):
 @app.route('/compute/v1/projects/<projectid>/aggregated/machineTypes', methods=['GET'])
 @authentication.required
 def aggregatedlistmachinetypes(projectid, authorization):
-    machine_types = _get_machinetypes(authorization)
-    zonelist = zones.get_zone_names(authorization)
-
-    items = {}
-    for zone in zonelist:
-        zone_machine_types = []
-        if machine_types['listserviceofferingsresponse']:
-            for machineType in machine_types['listserviceofferingsresponse']['serviceoffering']:
-                zone_machine_types.append(
-                    _cloudstack_machinetype_to_gce(
-                        cloudstack_response=machineType,
-                        projectid=projectid,
-                        zone=zone
-                    )
-                )
-        else:
-            zone_machine_types.append(errors.no_results_found(zone))
-
-        items['zone/' + zone] = {}
-        items['zone/' + zone]['zone'] = zone
-        items['zone/' + zone]['machineTypes'] = zone_machine_types
+    args = {'command':'listServiceOfferings'}
+    kwargs = {'projectid':projectid}
+    items = controllers.describe_items_aggregated(
+        authorization, args, 'serviceoffering', 'machineTypes',
+        _cloudstack_service_offering_to_gce, **kwargs)
 
     populated_response = {
         'kind': 'compute#machineTypeAggregatedList',
@@ -115,44 +68,11 @@ def aggregatedlistmachinetypes(projectid, authorization):
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/machineTypes', methods=['GET'])
 @authentication.required
 def listmachinetype(projectid, authorization, zone):
-    machinetype = None
-    filter = helpers.get_filter(request.args)
-
-    if 'name' in filter:
-        machinetype = filter['name']
-
-    items = []
-
-    if machinetype:
-        machinetype_list = _get_machinetypes(
-            authorization=authorization,
-            args={'keyword': machinetype}
-        )
-        if machinetype_list['listserviceofferingsresponse']:
-            machinetype = controllers.filter_by_name(
-                data=machinetype_list['listserviceofferingsresponse'][
-                    'serviceoffering'],
-                name=machinetype
-            )
-            if machinetype:
-                items.append(
-                    _cloudstack_machinetype_to_gce(
-                        cloudstack_response=machinetype,
-                        projectid=projectid,
-                        zone=zone
-                    )
-                )
-    else:
-        machinetype_list = _get_machinetypes(authorization=authorization)
-        if machinetype_list['listserviceofferingsresponse']:
-            for machinetype in machinetype_list['listserviceofferingsresponse']['serviceoffering']:
-                items.append(
-                    _cloudstack_machinetype_to_gce(
-                        cloudstack_response=machinetype,
-                        projectid=projectid,
-                        zone=zone
-                    )
-                )
+    args = {'command':'listServiceOfferings'}
+    kwargs = {'projectid':projectid, 'zone':zone}
+    items = controllers.describe_items(
+        authorization, args, 'serviceoffering',
+        _cloudstack_service_offering_to_gce, **kwargs)
 
     populated_response = {
         'kind': 'compute#imageList',
@@ -174,7 +94,7 @@ def getmachinetype(projectid, authorization, zone, machinetype):
 
     if response:
         return helpers.create_response(
-            data=_cloudstack_machinetype_to_gce(
+            data=_cloudstack_service_offering_to_gce(
                 cloudstack_response=response,
                 projectid=projectid,
                 zone=zone
