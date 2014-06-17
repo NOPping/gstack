@@ -72,7 +72,7 @@ def _cloudstack_network_to_gce(cloudstack_response, selfLink=None):
     if selfLink:
         response['selfLink'] = urllib.unquote_plus(selfLink)
     else:
-        response['selfLink'] = urllib.unquote_plus(request.base_url)
+        response['selfLink'] = urllib.unquote_plus(request.base_url) + '/' + response['name']
 
     return response
 
@@ -93,20 +93,15 @@ def _create_populated_network_response(projectid, networks=None):
 @app.route('/compute/v1/projects/<projectid>/global/networks', methods=['GET'])
 @authentication.required
 def listnetworks(projectid, authorization):
-    securitygroup_list = _get_networks(
-        authorization=authorization
-    )
-
-    networks = []
-    if securitygroup_list['listsecuritygroupsresponse']:
-        for network in securitygroup_list['listsecuritygroupsresponse']['securitygroup']:
-            networks.append(_cloudstack_network_to_gce(
-                cloudstack_response=network,
-                selfLink=request.base_url + '/' + network['name']))
+    args = {'command':'listSecurityGroups'}
+    kwargs = {}
+    items = controllers.describe_items(
+        authorization, args, 'securitygroup',
+        _cloudstack_network_to_gce, **kwargs)
 
     populated_response = _create_populated_network_response(
         projectid,
-        networks
+        items
     )
     return helpers.create_response(data=populated_response)
 

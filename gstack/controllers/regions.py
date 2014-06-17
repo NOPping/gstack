@@ -20,16 +20,18 @@
 
 from gstack import app
 from gstack import helpers
+from gstack import controllers
 from gstack import authentication
 from gstack.controllers import errors
 from flask import request, url_for
 
 
-def _cloudstack_region_to_gce(response_item):
+def _cloudstack_account_to_gce(cloudstack_response):
     response = {}
     response['kind'] = 'compute#region'
-    response['description'] = response_item['name']
-    response['id'] = response_item['id']
+    response['description'] = cloudstack_response['name']
+    response['name'] = cloudstack_response['name']
+    response['id'] = cloudstack_response['id']
     response['status'] = 'UP'
     return response
 
@@ -37,19 +39,17 @@ def _cloudstack_region_to_gce(response_item):
 @app.route('/compute/v1/projects/<projectid>/regions', methods=['GET'])
 @authentication.required
 def listregions(projectid, authorization):
-    cloudstack_response = _get_regions(authorization)
-
-    regions = []
-
-    if cloudstack_response['listregionsresponse']:
-        for region in cloudstack_response['listregionsresponse']['region']:
-            regions.append(_cloudstack_region_to_gce(region))
+    args = {'command':'listAccounts'}
+    kwargs = {}
+    items = controllers.describe_items(
+        authorization, args, 'account',
+        _cloudstack_account_to_gce, **kwargs)
 
     populated_response = {
         'kind': 'compute#regionList',
         'id': 'projects/' + projectid + '/regions',
         'selfLink': request.base_url,
-        'items': regions
+        'items': items
     }
     return helpers.create_response(data=populated_response)
 
@@ -64,7 +64,7 @@ def getregion(projectid, authorization, region):
 
     if region == cloudstack_response['listregionsresponse']['region'][0]['name']:
         return helpers.create_response(
-            data=_cloudstack_region_to_gce(
+            data=_cloudstack_account_to_gce(
                 cloudstack_response['listregionsresponse']['region'][0]
             )
         )

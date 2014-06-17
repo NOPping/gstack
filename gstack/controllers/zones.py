@@ -25,6 +25,20 @@ from gstack.services import requester
 from gstack.controllers import errors
 
 
+def _get_zones(authorization, args=None):
+    command = 'listZones'
+    if not args:
+        args = {}
+    cloudstack_response = requester.make_request(
+        command,
+        args,
+        authorization.client_id,
+        authorization.client_secret
+    )
+
+    return cloudstack_response
+
+
 def get_zone_names(authorization):
     zone_list = _get_zones(authorization)
 

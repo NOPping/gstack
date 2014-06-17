@@ -173,19 +173,14 @@ def listinstances(authorization, projectid, zone):
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
 @authentication.required
 def getinstance(projectid, authorization, zone, instance):
-    response = _get_virtual_machine_by_name(
-        authorization=authorization,
-        instance=instance
-    )
+    args = {'command':'listVirtualMachines'}
+    kwargs = {'projectid':projectid, 'zone':zone}
+    items = controllers.describe_items(
+        authorization, args, 'virtualmachine',
+        _cloudstack_virtual_machine_to_gce, name=instance, **kwargs)
 
-    if response:
-        return helpers.create_response(
-            data=_cloudstack_virtual_machine_to_gce(
-                cloudstack_response=response,
-                projectid=projectid,
-                zone=zone
-            )
-        )
+    if items:
+        helpers.create_response(items)
     else:
         function_route = url_for(
             'getinstance',
