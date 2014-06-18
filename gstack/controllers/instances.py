@@ -175,8 +175,9 @@ def listinstances(authorization, projectid, zone):
 def getinstance(projectid, authorization, zone, instance):
     func_route = url_for('getinstance', projectid=projectid, zone=zone, instance=instance)
     args = {'command':'listVirtualMachines'}
-    return controllers.get_item_with_name_or_error(authorization, zone, args, 'zone',
-                                errors.resource_not_found(func_route))
+    return controllers.get_item_with_name_or_error(
+        authorization, instance, args, 'zone', func_route,
+        _cloudstack_zone_to_gce, **{'projectid':projectid})
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances', methods=['POST'])

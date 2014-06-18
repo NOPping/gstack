@@ -28,6 +28,10 @@ import json
 import urllib
 import collections
 
+def _get_account_by_name(authorization, projectid):
+    args = {'command':'listAccounts'}
+    return controllers.get_item_with_name(authorization, projectid, args, 'account')
+
 
 def _list_ssh_keys(authorization):
     command = 'listTags'
@@ -129,6 +133,7 @@ def _cloudstack_project_to_gce(cloudstack_response, metadata=None):
 @authentication.required
 def getproject(authorization, projectid):
     project = _get_account_by_name(authorization, projectid)
+    print project
 
     if project:
         metadata = {}

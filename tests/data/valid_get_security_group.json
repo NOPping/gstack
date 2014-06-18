@@ -1,0 +1,33 @@
+{
+    "egressrule": [],
+    "account": "example-account",
+    "domainid": "66d69e46-a95b-437b-ac6c-bcaa5331999d",
+    "description": "Default Security Group",
+    "tags": [],
+    "domain": "example-account",
+    "ingressrule": [
+        {
+            "protocol": "tcp",
+            "cidr": "0.0.0.0/0",
+            "startport": 22,
+            "endport": 22,
+            "ruleid": "3d92cc70-8c84-4e8a-9989-6efcd7ff7905"
+        },
+        {
+            "protocol": "icmp",
+            "cidr": "0.0.0.0/0",
+            "ruleid": "2ba7dd7b-13b2-49ae-bf8e-26ffadd32c9e",
+            "icmpcode": 0,
+            "icmptype": 0
+        },
+        {
+            "protocol": "tcp",
+            "cidr": "0.0.0.0/0",
+            "startport": 8080,
+            "endport": 8080,
+            "ruleid": "c4562b3c-d1b0-4844-a771-3c3434e1a5d0"
+        }
+    ],
+    "id": "1f95ee9b-b291-48c1-9492-0eee632677e3",
+    "name": "networkname"
+}

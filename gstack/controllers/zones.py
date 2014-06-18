@@ -92,6 +92,6 @@ def getzone(projectid, authorization, zone):
     func_route = url_for('getzone', projectid=projectid, zone=zone)
     args = {'command':'listZones'}
     return controllers.get_item_with_name_or_error(
-        authorization, zone, args, 'zone', errors.resource_not_found, func_route,
+        authorization, zone, args, 'zone', func_route,
         _cloudstack_zone_to_gce, **{})
 

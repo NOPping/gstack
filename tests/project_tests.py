@@ -11,14 +11,14 @@ class ProjectsTestCase(GStackAppTestCase):
 
     def test_get_project(self):
         get = mock.Mock()
-        get.return_value = json.loads(read_file('tests/data/valid_describe_account.json'))
+        get.return_value = json.loads(read_file('tests/data/valid_get_account.json'))
 
         get_tags = mock.Mock()
         get_tags.return_value.text = read_file('tests/data/valid_describe_tags.json')
         get_tags.return_value.status_code = 200
 
         with mock.patch('requests.get', get_tags):
-            with(mock.patch('gstack.controllers.project._get_accounts', get)):
+            with(mock.patch('gstack.controllers.get_item_with_name', get)):
                 headers = {'authorization': 'Bearer ' + str(GStackAppTestCase.access_token)}
                 response = self.get('/compute/v1/projects/accountname', headers=headers)
 
@@ -33,7 +33,7 @@ class ProjectsTestCase(GStackAppTestCase):
         get_tags.return_value.status_code = 200
 
         with mock.patch('requests.get', get_tags):
-            with(mock.patch('gstack.controllers.project._get_accounts', get)):
+            with(mock.patch('gstack.controllers._get_items', get)):
                 headers = {'authorization': 'Bearer ' + str(GStackAppTestCase.access_token)}
                 response = self.get('/compute/v1/projects/invalidaccountname', headers=headers)
 

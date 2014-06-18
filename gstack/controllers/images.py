@@ -38,11 +38,10 @@ def _create_populated_image_response(projectid, images=None):
     return populated_response
 
 
-def _cloudstack_template_to_gce(cloudstack_response, selfLink=None):
+def _cloudstack_template_to_gce(cloudstack_response):
     translate_image_status = {
         'True': 'Ready',
-        'False': 'Failed'
-    }
+        'False': 'Failed'}
 
     response = {}
     response['kind'] = 'compute#image'
@@ -50,13 +49,8 @@ def _cloudstack_template_to_gce(cloudstack_response, selfLink=None):
     response['creationTimestamp'] = cloudstack_response['created']
     response['name'] = cloudstack_response['name']
     response['description'] = cloudstack_response['displaytext']
-    response['status'] = translate_image_status[
-        str(cloudstack_response['isready'])]
-
-    if selfLink:
-        response['selfLink'] = urllib.unquote_plus(selfLink)
-    else:
-        response['selfLink'] = urllib.unquote_plus(request.base_url) + '/' + response['name']
+    response['status'] = translate_image_status[str(cloudstack_response['isready'])]
+    response['selfLink'] = urllib.unquote_plus(request.base_url) + '/' + response['name']
 
     return response
 

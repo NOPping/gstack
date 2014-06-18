@@ -87,23 +87,9 @@ def listmachinetype(projectid, authorization, zone):
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/machineTypes/<machinetype>', methods=['GET'])
 @authentication.required
 def getmachinetype(projectid, authorization, zone, machinetype):
-    response = get_machinetype_by_name(
-        authorization=authorization,
-        machinetype=machinetype
-    )
-
-    if response:
-        return helpers.create_response(
-            data=_cloudstack_service_offering_to_gce(
-                cloudstack_response=response,
-                projectid=projectid,
-                zone=zone
-            )
-        )
-    else:
-        func_route = url_for(
-            'getmachinetype',
-            projectid=projectid,
-            machinetype=machinetype,
-            zone=zone)
-        return errors.resource_not_found(func_route)
+    func_route = url_for('getmachinetype', projectid=projectid, zone=zone, machinetype=machinetype)
+    args = {'command':'listServiceOfferings'}
+    kwargs = {'projectid':projectid, 'zone':zone}
+    return controllers.get_item_with_name_or_error(
+        authorization, machinetype, args, 'serviceoffering', func_route,
+        _cloudstack_service_offering_to_gce, **kwargs)

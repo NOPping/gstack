@@ -26,7 +26,6 @@ from gstack import app, authentication
 from gstack.services import requester
 from gstack.controllers import errors
 
-
 def _add_network(authorization, args=None):
     command = 'createSecurityGroup'
     if not args:
@@ -43,8 +42,8 @@ def _add_network(authorization, args=None):
 
 
 def _delete_network(authorization, projectid, network):
-    network_response = get_network_by_name(authorization, network)
-
+    args = {'command':'SecurityGroups'}
+    network_response = controllers.get_item_with_name(authorization, network, args, 'securitygroup')
     if not network_response:
         return None
 
@@ -62,17 +61,13 @@ def _delete_network(authorization, projectid, network):
     )
 
 
-def _cloudstack_network_to_gce(cloudstack_response, selfLink=None):
+def _cloudstack_network_to_gce(cloudstack_response):
     response = {}
     response['kind'] = 'compute#network'
     response['id'] = cloudstack_response['id']
     response['name'] = cloudstack_response['name']
     response['description'] = cloudstack_response['description']
-
-    if selfLink:
-        response['selfLink'] = urllib.unquote_plus(selfLink)
-    else:
-        response['selfLink'] = urllib.unquote_plus(request.base_url) + '/' + response['name']
+    response['selfLink'] = urllib.unquote_plus(request.base_url) + '/' + response['name']
 
     return response
 
@@ -109,21 +104,12 @@ def listnetworks(projectid, authorization):
 @app.route('/compute/v1/projects/<projectid>/global/networks/<network>', methods=['GET'])
 @authentication.required
 def getnetwork(projectid, authorization, network):
-    response = get_network_by_name(
-        authorization=authorization,
-        securitygroup=network
-    )
-
-    if response:
-        return helpers.create_response(
-            data=_cloudstack_network_to_gce(response)
-        )
-    else:
-        func_route = url_for(
-            'getnetwork',
-            projectid=projectid,
-            network=network)
-        return errors.resource_not_found(func_route)
+    func_route = url_for('getnetwork', projectid=projectid, network=network)
+    args = {'command':'listSecurityGroups'}
+    kwargs = {}
+    return controllers.get_item_with_name_or_error(
+        authorization, network, args, 'securitygroup', func_route,
+        _cloudstack_network_to_gce, **kwargs)
 
 
 @app.route('/compute/v1/projects/<projectid>/global/networks', methods=['POST'])

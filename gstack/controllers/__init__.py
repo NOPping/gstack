@@ -52,7 +52,7 @@ def _get_items(authorization, args=None):
     return response
 
 
-def _get_item_with_name(authorization, name, args, type):
+def get_item_with_name(authorization, name, args, type):
     response = _get_items(
         authorization=authorization,
         args=args
@@ -68,15 +68,15 @@ def _get_item_with_name(authorization, name, args, type):
         return None
 
 
-def get_item_with_name_or_error(authorization, name, args, type, error, func_route, to_cloudstack, **kwargs):
-    cloudstack_item = _get_item_with_name(authorization, name, args, type)
+def get_item_with_name_or_error(authorization, name, args, type, func_route, to_cloudstack, **kwargs):
+    cloudstack_item = get_item_with_name(authorization, name, args, type)
 
     if cloudstack_item:
         return helpers.create_response(to_cloudstack(
             cloudstack_response=cloudstack_item, **kwargs
         ))
     else:
-        return error(func_route)
+        return errors.resource_not_found(func_route)
 
 def _get_requested_items(authorization, args, type, to_cloudstack, **kwargs):
     name = None
@@ -88,7 +88,7 @@ def _get_requested_items(authorization, args, type, to_cloudstack, **kwargs):
     items = []
 
     if name:
-        cloudstack_item = _get_item_with_name(
+        cloudstack_item = get_item_with_name(
             authorization=authorization,
             name=name,
             args=args,

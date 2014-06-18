@@ -100,10 +100,10 @@ class NetworksTestCase(GStackAppTestCase):
         get.return_value.status_code = 200
 
         get_networks = mock.Mock()
-        get_networks.return_value = json.loads(read_file('tests/data/valid_describe_security_group.json'))
+        get_networks.return_value = None
 
         with mock.patch('requests.get', get):
-            with mock.patch('gstack.controllers.networks._get_networks', get_networks):
+            with mock.patch('gstack.controllers.get_item_with_name', get_networks):
              headers = {
                  'authorization': 'Bearer ' + str(GStackAppTestCase.access_token),
              }
@@ -119,10 +119,10 @@ class NetworksTestCase(GStackAppTestCase):
         get.return_value.status_code = 200
 
         get_networks = mock.Mock()
-        get_networks.return_value = json.loads(read_file('tests/data/valid_describe_security_group.json'))
+        get_networks.return_value = json.loads(read_file('tests/data/valid_get_security_group.json'))
 
         with mock.patch('requests.get', get):
-            with mock.patch('gstack.controllers.networks._get_networks', get_networks):
+            with mock.patch('gstack.controllers.get_item_with_name', get_networks):
              headers = {
                  'authorization': 'Bearer ' + str(GStackAppTestCase.access_token),
              }

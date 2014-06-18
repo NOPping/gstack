@@ -42,7 +42,7 @@ def listregions(projectid, authorization):
     args = {'command':'listAccounts'}
     kwargs = {}
     items = controllers.describe_items(
-        authorization, args, 'account',
+        authorization, args, 'region',
         _cloudstack_account_to_gce, **kwargs)
 
     populated_response = {
@@ -57,17 +57,8 @@ def listregions(projectid, authorization):
 @app.route('/compute/v1/projects/<projectid>/regions/<region>', methods=['GET'])
 @authentication.required
 def getregion(projectid, authorization, region):
-    cloudstack_response = _get_regions(
-        authorization=authorization,
-        args={'name': region}
-    )
-
-    if region == cloudstack_response['listregionsresponse']['region'][0]['name']:
-        return helpers.create_response(
-            data=_cloudstack_account_to_gce(
-                cloudstack_response['listregionsresponse']['region'][0]
-            )
-        )
-    else:
-        function_route = url_for('getregion', projectid=projectid, region=region)
-        return errors.resource_not_found(function_route)
+    func_route = url_for('getregion', projectid=projectid, region=region)
+    args = {'command':'listAccounts'}
+    return controllers.get_item_with_name_or_error(
+        authorization, region, args, 'region', func_route,
+        _cloudstack_account_to_gce, **{})
