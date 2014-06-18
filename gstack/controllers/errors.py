@@ -19,6 +19,7 @@
 
 import urllib
 from gstack import app
+from gstack import helpers
 from flask import jsonify, Response
 
 
@@ -29,7 +30,7 @@ def not_found(e):
 
 @app.errorhandler(401)
 def unauthorized(e):
-    res = jsonify({
+    res = {
         'error': {
             'errors': [
                 {
@@ -43,14 +44,13 @@ def unauthorized(e):
         },
         'code': 401,
         'message': 'Login Required',
-    })
+    }
 
-    res.status_code = 401
-    return res
+    return helpers.create_errored_response(res, 401)
 
 
 def resource_not_found(func_url):
-    res = jsonify({
+    res = {
         'error': {
             'errors': [
                 {
@@ -62,9 +62,9 @@ def resource_not_found(func_url):
             'code': 404,
             'message': 'The resource \'' + urllib.unquote_plus(func_url) + '\' was not found'
         }
-    })
-    res.status_code = 404
-    return res
+    }
+
+    return helpers.create_errored_response(res, 404)
 
 
 def no_results_found(scope):

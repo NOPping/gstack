@@ -4,12 +4,12 @@
 from unittest import TestCase
 
 import mock
-
 import json
 
 from gstack import app, configure_app
 from gstack.helpers import read_file
 from . import settings
+from gstack.core import db
 from .utils import FlaskTestCaseMixin
 
 class GStackTestCase(TestCase):
@@ -21,6 +21,7 @@ class GStackAppTestCase(FlaskTestCaseMixin, GStackTestCase):
 
     def _configure_app(self):
         configure_app(settings=settings)
+
 
     def _auth_example_user(self):
         data = {}
@@ -49,11 +50,13 @@ class GStackAppTestCase(FlaskTestCaseMixin, GStackTestCase):
         self._configure_app()
         self.app = app
         self.client = self.app.test_client()
-        self._auth_example_user()
         self.app_context = self.app.app_context()
         self.app_context.push()
+        db.create_all()
+        self._auth_example_user()
+
 
     def tearDown(self):
         super(GStackTestCase, self).tearDown()
+        db.drop_all()
         self.app_context.pop()
-

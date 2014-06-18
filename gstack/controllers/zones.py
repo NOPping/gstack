@@ -52,17 +52,17 @@ def get_zone_names(authorization):
     return zones
 
 
-def _cloudstack_zone_to_gce(response_item):
+def _cloudstack_zone_to_gce(cloudstack_response):
     translate_zone_status = {
         'Enabled': 'UP',
         'Disabled': 'DOWN'
     }
     return ({
         'kind': 'compute#zone',
-        'name': response_item['name'],
-        'description': response_item['name'],
-        'id': response_item['id'],
-        'status': translate_zone_status[str(response_item['allocationstate'])]
+        'name': cloudstack_response['name'],
+        'description': cloudstack_response['name'],
+        'id': cloudstack_response['id'],
+        'status': translate_zone_status[str(cloudstack_response['allocationstate'])]
     })
 
 
@@ -89,15 +89,9 @@ def listzones(projectid, authorization):
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>', methods=['GET'])
 @authentication.required
 def getzone(projectid, authorization, zone):
-    response = get_zone_by_name(
-        authorization=authorization,
-        zone=zone
-    )
+    func_route = url_for('getzone', projectid=projectid, zone=zone)
+    args = {'command':'listZones'}
+    return controllers.get_item_with_name_or_error(
+        authorization, zone, args, 'zone', errors.resource_not_found, func_route,
+        _cloudstack_zone_to_gce, **{})
 
-    if response:
-        return helpers.create_response(
-            data=_cloudstack_zone_to_gce(response)
-        )
-    else:
-        func_route = url_for('getzone', projectid=projectid, zone=zone)
-        return errors.resource_not_found(func_route)

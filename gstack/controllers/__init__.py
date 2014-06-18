@@ -68,6 +68,16 @@ def _get_item_with_name(authorization, name, args, type):
         return None
 
 
+def get_item_with_name_or_error(authorization, name, args, type, error, func_route, to_cloudstack, **kwargs):
+    cloudstack_item = _get_item_with_name(authorization, name, args, type)
+
+    if cloudstack_item:
+        return helpers.create_response(to_cloudstack(
+            cloudstack_response=cloudstack_item, **kwargs
+        ))
+    else:
+        return error(func_route)
+
 def _get_requested_items(authorization, args, type, to_cloudstack, **kwargs):
     name = None
     filter = helpers.get_filter(request.args)

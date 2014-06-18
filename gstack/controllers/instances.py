@@ -173,21 +173,10 @@ def listinstances(authorization, projectid, zone):
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
 @authentication.required
 def getinstance(projectid, authorization, zone, instance):
+    func_route = url_for('getinstance', projectid=projectid, zone=zone, instance=instance)
     args = {'command':'listVirtualMachines'}
-    kwargs = {'projectid':projectid, 'zone':zone}
-    items = controllers.describe_items(
-        authorization, args, 'virtualmachine',
-        _cloudstack_virtual_machine_to_gce, name=instance, **kwargs)
-
-    if items:
-        helpers.create_response(items)
-    else:
-        function_route = url_for(
-            'getinstance',
-            projectid=projectid,
-            zone=zone,
-            instance=instance)
-        return errors.resource_not_found(function_route)
+    return controllers.get_item_with_name_or_error(authorization, zone, args, 'zone',
+                                errors.resource_not_found(func_route))
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances', methods=['POST'])

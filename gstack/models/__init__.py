@@ -16,3 +16,19 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+from gstack.core import Service
+from gstack.models.accesstoken import AccessToken
+from gstack.models.refreshtoken import RefreshToken
+from gstack.models.client import Client
+
+
+class AccessTokenService(Service):
+    __model__ = AccessToken
+
+class RefreshTokenService(Service):
+    __model__ = RefreshToken
+
+class ClientService(Service):
+    __model__ = Client
+

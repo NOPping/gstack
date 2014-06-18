@@ -29,17 +29,11 @@ def create_response(data):
 
     return res
 
+def create_errored_response(data, status_code):
+    res = jsonify(data)
+    res.status_code = status_code
 
-def successful_response(**kwargs):
-    content = render_template(**kwargs)
-    response = make_response(content)
-    response.headers['Content-Type'] = 'application/json'
-    return _create_response(response, '200')
-
-
-def _create_response(response, code):
-    response.status_code = int(code)
-    return response
+    return res
 
 
 def get_filter(data):
@@ -50,8 +44,6 @@ def get_filter(data):
         filter = dict(filter.split(' eq ') for values in filter)
 
     return filter
-
-
 
 
 def get_root_url():
