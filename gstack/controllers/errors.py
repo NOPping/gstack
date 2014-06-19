@@ -20,7 +20,7 @@
 import urllib
 from gstack import app
 from gstack import helpers
-from flask import jsonify, Response
+from flask import Response
 
 
 @app.errorhandler(404)

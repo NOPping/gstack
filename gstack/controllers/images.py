@@ -19,14 +19,13 @@
 
 import urllib
 from gstack import app, authentication
-from gstack.services import requester
 from gstack import helpers
 from gstack import controllers
-from gstack.controllers import errors
 from flask import request, url_for
 
+
 def get_template_by_name(authorization, image):
-    args = {'templatefilter': 'executable', 'command':'listTemplates'}
+    args = {'templatefilter': 'executable', 'command': 'listTemplates'}
     return controllers.get_item_with_name(authorization, image, args, 'template')
 
 
@@ -44,17 +43,13 @@ def _create_populated_image_response(projectid, images=None):
 
 
 def _cloudstack_template_to_gce(cloudstack_response):
-    translate_image_status = {
-        'True': 'Ready',
-        'False': 'Failed'}
-
     response = {}
     response['kind'] = 'compute#image'
     response['id'] = cloudstack_response['id']
     response['creationTimestamp'] = cloudstack_response['created']
     response['name'] = cloudstack_response['name']
     response['description'] = cloudstack_response['displaytext']
-    response['status'] = translate_image_status[str(cloudstack_response['isready'])]
+    response['status'] = cloudstack_response['isready']
     response['selfLink'] = urllib.unquote_plus(request.base_url) + '/' + response['name']
 
     return response
@@ -77,7 +72,7 @@ def listnodebiancloudimages(authorization):
 @app.route('/compute/v1/projects/<projectid>/global/images', methods=['GET'])
 @authentication.required
 def listimages(projectid, authorization):
-    args = {'templatefilter': 'executable', 'command':'listTemplates'}
+    args = {'templatefilter': 'executable', 'command': 'listTemplates'}
     items = controllers.describe_items(
         authorization, args, 'template',
         _cloudstack_template_to_gce, **{})
@@ -90,7 +85,7 @@ def listimages(projectid, authorization):
 @authentication.required
 def getimage(projectid, authorization, image):
     func_route = url_for('getimage', projectid=projectid, image=image)
-    args = {'templatefilter': 'executable', 'command':'listTemplates'}
+    args = {'templatefilter': 'executable', 'command': 'listTemplates'}
     return controllers.get_item_with_name_or_error(
         authorization, image, args, 'template', func_route,
         _cloudstack_template_to_gce, **{})

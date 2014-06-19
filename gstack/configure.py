@@ -74,6 +74,7 @@ def _create_config_file(config_folder):
 
     config_file.close()
 
+
 def _create_database():
     directory = os.path.join(os.path.dirname(__file__), '../migrations')
     config = AlembicConfig(os.path.join(

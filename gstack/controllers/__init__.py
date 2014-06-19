@@ -78,6 +78,7 @@ def get_item_with_name_or_error(authorization, name, args, type, func_route, to_
     else:
         return errors.resource_not_found(func_route)
 
+
 def _get_requested_items(authorization, args, type, to_cloudstack, **kwargs):
     name = None
     filter = helpers.get_filter(request.args)

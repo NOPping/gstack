@@ -55,8 +55,8 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
                 existing_client.client_secret = client_secret
             else:
                 client = Client(
-                    client_id=client_id,
-                    client_secret=client_secret
+                    client_id,
+                    client_secret
                 )
                 db.session.add(client)
 
@@ -77,15 +77,8 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
     def persist_authorization_code(self, client_id, code, scope):
         return
 
-    def persist_token_information(
-            self,
-            client_id,
-            scope,
-            access_token,
-            token_type,
-            expires_in,
-            refresh_token,
-            data):
+    def persist_token_information(self, client_id, scope, access_token, token_type,
+                                  expires_in, refresh_token, data):
         client = Client.query.get(client_id)
         if client is not None:
             existing_access_token = AccessToken.query.filter_by(
@@ -100,8 +93,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
             else:
                 db.session.add(
                     AccessToken(
-                        access_token=access_token, client_id=client_id,
-                        expires_in=expires_in, data=json.dumps(data)
+                        access_token, client_id, expires_in, json.dumps(data)
                     )
                 )
 
@@ -110,11 +102,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
                 existing_refresh_token.data = json.dumps(data)
             else:
                 db.session.add(
-                    RefreshToken(
-                        refresh_token=refresh_token, client_id=client_id,
-                        data=json.dumps(data)
-                    )
-                )
+                    RefreshToken(refresh_token, client_id, json.dumps(data)))
 
             db.session.commit()
             return True

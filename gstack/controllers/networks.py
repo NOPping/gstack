@@ -26,9 +26,11 @@ from gstack import app, authentication
 from gstack.services import requester
 from gstack.controllers import errors
 
+
 def get_network_by_name(authorization, network):
-    args = {'command':'SecurityGroups'}
+    args = {'command': 'SecurityGroups'}
     return controllers.get_item_with_name(authorization, network, args, 'securitygroup')
+
 
 def _add_network(authorization, args=None):
     command = 'createSecurityGroup'
@@ -46,7 +48,7 @@ def _add_network(authorization, args=None):
 
 
 def _delete_network(authorization, projectid, network):
-    args = {'command':'SecurityGroups'}
+    args = {'command': 'SecurityGroups'}
     network_response = controllers.get_item_with_name(authorization, network, args, 'securitygroup')
     if not network_response:
         return None
@@ -92,7 +94,7 @@ def _create_populated_network_response(projectid, networks=None):
 @app.route('/compute/v1/projects/<projectid>/global/networks', methods=['GET'])
 @authentication.required
 def listnetworks(projectid, authorization):
-    args = {'command':'listSecurityGroups'}
+    args = {'command': 'listSecurityGroups'}
     kwargs = {}
     items = controllers.describe_items(
         authorization, args, 'securitygroup',
@@ -109,7 +111,7 @@ def listnetworks(projectid, authorization):
 @authentication.required
 def getnetwork(projectid, authorization, network):
     func_route = url_for('getnetwork', projectid=projectid, network=network)
-    args = {'command':'listSecurityGroups'}
+    args = {'command': 'listSecurityGroups'}
     kwargs = {}
     return controllers.get_item_with_name_or_error(
         authorization, network, args, 'securitygroup', func_route,

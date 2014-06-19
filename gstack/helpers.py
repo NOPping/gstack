@@ -20,7 +20,7 @@
 import os
 import urllib
 from gstack import app
-from flask import jsonify, render_template, make_response
+from flask import jsonify
 
 
 def create_response(data):
@@ -28,6 +28,7 @@ def create_response(data):
     res.status_code = 200
 
     return res
+
 
 def create_errored_response(data, status_code):
     res = jsonify(data)

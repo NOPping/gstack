@@ -22,17 +22,16 @@ from gstack import helpers
 from gstack import controllers
 from gstack import app, authentication
 from gstack.services import requester
-from gstack.controllers import errors
+
 
 def get_zone_by_name(authorization, zone):
-    args = {'command':'listZones'}
+    args = {'command': 'listZones'}
     return controllers.get_item_with_name(authorization, zone, args, 'zone')
 
 
-def _get_zones(authorization, args=None):
+def _get_zones(authorization):
     command = 'listZones'
-    if not args:
-        args = {}
+    args = {}
     cloudstack_response = requester.make_request(
         command,
         args,
@@ -55,16 +54,12 @@ def get_zone_names(authorization):
 
 
 def _cloudstack_zone_to_gce(cloudstack_response):
-    translate_zone_status = {
-        'Enabled': 'UP',
-        'Disabled': 'DOWN'
-    }
     return ({
         'kind': 'compute#zone',
         'name': cloudstack_response['name'],
         'description': cloudstack_response['name'],
         'id': cloudstack_response['id'],
-        'status': translate_zone_status[str(cloudstack_response['allocationstate'])]
+        'status': cloudstack_response['allocationstate']
     })
 
 
@@ -92,8 +87,7 @@ def listzones(projectid, authorization):
 @authentication.required
 def getzone(projectid, authorization, zone):
     func_route = url_for('getzone', projectid=projectid, zone=zone)
-    args = {'command':'listZones'}
+    args = {'command': 'listZones'}
     return controllers.get_item_with_name_or_error(
         authorization, zone, args, 'zone', func_route,
         _cloudstack_zone_to_gce, **{})
-

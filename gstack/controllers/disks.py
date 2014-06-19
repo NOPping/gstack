@@ -20,10 +20,8 @@
 import urllib
 from flask import request, url_for
 from gstack import app, authentication
-from gstack.services import requester
 from gstack import helpers
 from gstack import controllers
-from gstack.controllers import zones, errors
 
 
 def _cloudstack_volume_to_gce(cloudstack_response, projectid, zone):
@@ -50,8 +48,8 @@ def _cloudstack_volume_to_gce(cloudstack_response, projectid, zone):
 @app.route('/compute/v1/projects/<projectid>/aggregated/disks', methods=['GET'])
 @authentication.required
 def aggregatedlistdisks(projectid, authorization):
-    args = {'command':'listVolumes'}
-    kwargs = {'projectid':projectid}
+    args = {'command': 'listVolumes'}
+    kwargs = {'projectid': projectid}
     items = controllers.describe_items_aggregated(
         authorization, args, 'volume', 'disk',
         _cloudstack_volume_to_gce, **kwargs)
@@ -69,8 +67,8 @@ def aggregatedlistdisks(projectid, authorization):
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/disks', methods=['GET'])
 @authentication.required
 def listdisks(projectid, authorization, zone):
-    args = {'command':'listVolumes'}
-    kwargs = {'projectid':projectid, 'zone':zone}
+    args = {'command': 'listVolumes'}
+    kwargs = {'projectid': projectid, 'zone': zone}
     items = controllers.describe_items(
         authorization, args, 'volume',
         _cloudstack_volume_to_gce, **kwargs)
@@ -89,8 +87,8 @@ def listdisks(projectid, authorization, zone):
 @authentication.required
 def getdisk(projectid, authorization, zone, disk):
     func_route = url_for('getdisk', projectid=projectid, zone=zone, disk=disk)
-    args = {'command':'listVolumes'}
-    kwargs = {'projectid':projectid, 'zone':zone}
+    args = {'command': 'listVolumes'}
+    kwargs = {'projectid': projectid, 'zone': zone}
     return controllers.get_item_with_name_or_error(
         authorization, disk, args, 'volume', func_route,
         _cloudstack_volume_to_gce, **kwargs)

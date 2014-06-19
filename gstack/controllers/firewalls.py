@@ -63,7 +63,7 @@ def _cloudstack_securitygroup_to_gce(cloudstack_response):
 @app.route('/compute/v1/projects/<projectid>/global/firewalls', methods=['GET'])
 @authentication.required
 def listsecuritygroups(projectid, authorization):
-    args = {'command':'listSecurityGroups'}
+    args = {'command': 'listSecurityGroups'}
     items = controllers.describe_items(
         authorization, args, 'securitygroup',
         _cloudstack_securitygroup_to_gce, **{})
@@ -136,7 +136,6 @@ def deletesecuritygroup(projectid, authorization, firewall):
         json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
     )
 
-    # return Global Operations
     populated_response = {}
 
     res = jsonify(populated_response)

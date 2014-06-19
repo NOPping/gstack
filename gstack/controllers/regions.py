@@ -22,7 +22,6 @@ from gstack import app
 from gstack import helpers
 from gstack import controllers
 from gstack import authentication
-from gstack.controllers import errors
 from flask import request, url_for
 
 
@@ -39,7 +38,7 @@ def _cloudstack_account_to_gce(cloudstack_response):
 @app.route('/compute/v1/projects/<projectid>/regions', methods=['GET'])
 @authentication.required
 def listregions(projectid, authorization):
-    args = {'command':'listAccounts'}
+    args = {'command': 'listAccounts'}
     kwargs = {}
     items = controllers.describe_items(
         authorization, args, 'region',
@@ -58,7 +57,7 @@ def listregions(projectid, authorization):
 @authentication.required
 def getregion(projectid, authorization, region):
     func_route = url_for('getregion', projectid=projectid, region=region)
-    args = {'command':'listAccounts'}
+    args = {'command': 'listAccounts'}
     return controllers.get_item_with_name_or_error(
         authorization, region, args, 'region', func_route,
         _cloudstack_account_to_gce, **{})

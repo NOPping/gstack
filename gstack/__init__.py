@@ -29,11 +29,11 @@ def _load_config_file():
         os.path.expanduser('~'),
         '.gstack/gstack.conf'
     )
-
     if not os.path.exists(config_file):
         sys.exit('No configuration found, please run gstack-configure')
 
     return config_file
+
 
 def _load_database():
     database_file = os.path.join(

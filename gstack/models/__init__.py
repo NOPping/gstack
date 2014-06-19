@@ -26,9 +26,10 @@ from gstack.models.client import Client
 class AccessTokenService(Service):
     __model__ = AccessToken
 
+
 class RefreshTokenService(Service):
     __model__ = RefreshToken
 
+
 class ClientService(Service):
     __model__ = Client
-

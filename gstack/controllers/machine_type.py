@@ -22,11 +22,11 @@ from gstack import app
 from gstack import authentication
 from gstack import helpers
 from gstack import controllers
-from gstack.controllers import errors, zones
 from flask import request, url_for
 
+
 def get_machinetype_by_name(authorization, machinetype):
-    args = {'command':'listServiceOfferings'}
+    args = {'command': 'listServiceOfferings'}
     return controllers.get_item_with_name(authorization, machinetype, args, 'serviceoffering')
 
 
@@ -54,8 +54,8 @@ def _cloudstack_service_offering_to_gce(cloudstack_response, projectid, zone):
 @app.route('/compute/v1/projects/<projectid>/aggregated/machineTypes', methods=['GET'])
 @authentication.required
 def aggregatedlistmachinetypes(projectid, authorization):
-    args = {'command':'listServiceOfferings'}
-    kwargs = {'projectid':projectid}
+    args = {'command': 'listServiceOfferings'}
+    kwargs = {'projectid': projectid}
     items = controllers.describe_items_aggregated(
         authorization, args, 'serviceoffering', 'machineTypes',
         _cloudstack_service_offering_to_gce, **kwargs)
@@ -72,8 +72,8 @@ def aggregatedlistmachinetypes(projectid, authorization):
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/machineTypes', methods=['GET'])
 @authentication.required
 def listmachinetype(projectid, authorization, zone):
-    args = {'command':'listServiceOfferings'}
-    kwargs = {'projectid':projectid, 'zone':zone}
+    args = {'command': 'listServiceOfferings'}
+    kwargs = {'projectid': projectid, 'zone': zone}
     items = controllers.describe_items(
         authorization, args, 'serviceoffering',
         _cloudstack_service_offering_to_gce, **kwargs)
@@ -92,8 +92,8 @@ def listmachinetype(projectid, authorization, zone):
 @authentication.required
 def getmachinetype(projectid, authorization, zone, machinetype):
     func_route = url_for('getmachinetype', projectid=projectid, zone=zone, machinetype=machinetype)
-    args = {'command':'listServiceOfferings'}
-    kwargs = {'projectid':projectid, 'zone':zone}
+    args = {'command': 'listServiceOfferings'}
+    kwargs = {'projectid': projectid, 'zone': zone}
     return controllers.get_item_with_name_or_error(
         authorization, machinetype, args, 'serviceoffering', func_route,
         _cloudstack_service_offering_to_gce, **kwargs)
