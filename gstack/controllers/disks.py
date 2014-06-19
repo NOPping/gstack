@@ -42,11 +42,7 @@ def _cloudstack_volume_to_gce(cloudstack_response, projectid, zone):
         machinetype=cloudstack_response['name'],
         zone=zone
     ))
-
-    if not zone:
-        response['zone'] = cloudstack_response['zonename']
-    else:
-        response['zone'] = zone
+    response['zone'] = zone
 
     return response
 
@@ -55,9 +51,10 @@ def _cloudstack_volume_to_gce(cloudstack_response, projectid, zone):
 @authentication.required
 def aggregatedlistdisks(projectid, authorization):
     args = {'command':'listVolumes'}
+    kwargs = {'projectid':projectid}
     items = controllers.describe_items_aggregated(
-        authorization, args, 'volume',
-        projectid, _cloudstack_volume_to_gce)
+        authorization, args, 'volume', 'disk',
+        _cloudstack_volume_to_gce, **kwargs)
 
     populated_response = {
         'kind': 'compute#diskAggregatedList',
@@ -73,9 +70,10 @@ def aggregatedlistdisks(projectid, authorization):
 @authentication.required
 def listdisks(projectid, authorization, zone):
     args = {'command':'listVolumes'}
+    kwargs = {'projectid':projectid, 'zone':zone}
     items = controllers.describe_items(
         authorization, args, 'volume',
-        projectid, zone, _cloudstack_volume_to_gce)
+        _cloudstack_volume_to_gce, **kwargs)
 
     populated_response = {
         'kind': 'compute#imageList',
@@ -90,24 +88,9 @@ def listdisks(projectid, authorization, zone):
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/disks/<disk>', methods=['GET'])
 @authentication.required
 def getdisk(projectid, authorization, zone, disk):
-    response = get_disk_by_name(
-        authorization=authorization,
-        disk=disk
-    )
-
-    if response:
-        return helpers.create_response(
-            data=_cloudstack_volume_to_gce(
-                cloudstack_response=response,
-                projectid=projectid,
-                zone=zone
-            )
-        )
-    else:
-        func_route = url_for(
-            'getdisk',
-            projectid=projectid,
-            zone=zone,
-            disk=disk
-        )
-        return errors.resource_not_found(func_route)
+    func_route = url_for('getdisk', projectid=projectid, zone=zone, disk=disk)
+    args = {'command':'listVolumes'}
+    kwargs = {'projectid':projectid, 'zone':zone}
+    return controllers.get_item_with_name_or_error(
+        authorization, disk, args, 'volume', func_route,
+        _cloudstack_volume_to_gce, **kwargs)

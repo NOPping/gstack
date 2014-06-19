@@ -6,6 +6,7 @@ omit =
     *__main__*
     gstack/models/*.py
     gstack/configure.py
+    gstack/core.py
 
 [report]
 exclude_lines =

@@ -26,6 +26,10 @@ from gstack import app, authentication
 from gstack.services import requester
 from gstack.controllers import errors
 
+def get_network_by_name(authorization, network):
+    args = {'command':'SecurityGroups'}
+    return controllers.get_item_with_name(authorization, network, args, 'securitygroup')
+
 def _add_network(authorization, args=None):
     command = 'createSecurityGroup'
     if not args:

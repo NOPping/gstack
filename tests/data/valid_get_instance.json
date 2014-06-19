@@ -1,0 +1,104 @@
+{
+                "domain": "brogand93@darrenbrogan.ie",
+                "domainid": "42f2b0d0-3953-485f-984d-b8d67185d358",
+                "haenable": false,
+                "templatename": "Linux CentOS 6.5 64-bit",
+                "securitygroup": [
+                    {
+                        "egressrule": [],
+                        "account": "brogand93@darrenbrogan.ie",
+                        "description": "Default Security Group",
+                        "tags": [],
+                        "ingressrule": [],
+                        "id": "6033ff41-53ff-4443-b0bb-f6c5c0191c34",
+                        "name": "default"
+                    }
+                ],
+                "zoneid": "1128bd56-b4d9-4ac6-a7b9-c715b187ce11",
+                "keypair": "brogand93@darrenbrogan.ie",
+                "cpunumber": 1,
+                "passwordenabled": true,
+                "id": "71f13c6d-1590-4e82-9cdd-22eb9bcad0db",
+                "displayvm": true,
+                "state": "Running",
+                "guestosid": "113038d0-a8cd-4d20-92be-ea313f87c3ac",
+                "memory": 1024,
+                "serviceofferingid": "b6cd1ff5-3a2f-4e9d-a4d1-8988c1191fe8",
+                "zonename": "ch-gva-2",
+                "isdynamicallyscalable": false,
+                "displayname": "foobar",
+                "tags": [
+                    {
+                        "account": "brogand93@darrenbrogan.ie",
+                        "domainid": "42f2b0d0-3953-485f-984d-b8d67185d358",
+                        "resourcetype": "UserVm",
+                        "resourceid": "71f13c6d-1590-4e82-9cdd-22eb9bcad0db",
+                        "domain": "brogand93@darrenbrogan.ie",
+                        "value": "root:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDqAuui+xCVPXaFD4cP2MuWnDlktg9vMT/SNzF17UiAzKEbxT/mNayTDAr",
+                        "key": "0-sshkey-segment"
+                    },
+                    {
+                        "account": "brogand93@darrenbrogan.ie",
+                        "domainid": "42f2b0d0-3953-485f-984d-b8d67185d358",
+                        "resourcetype": "UserVm",
+                        "resourceid": "71f13c6d-1590-4e82-9cdd-22eb9bcad0db",
+                        "domain": "brogand93@darrenbrogan.ie",
+                        "value": "DbY/BgGYC5bHuGlb/eE1r4EGpwSXZitGkTI4ThldrSp0Em7psO8AibdpYrFxlOmDFp9wKVD6xbY2HT1ySwvKi+ZwSR5yHcEKq15e",
+                        "key": "1-sshkey-segment"
+                    },
+                    {
+                        "account": "brogand93@darrenbrogan.ie",
+                        "domainid": "42f2b0d0-3953-485f-984d-b8d67185d358",
+                        "resourcetype": "UserVm",
+                        "resourceid": "71f13c6d-1590-4e82-9cdd-22eb9bcad0db",
+                        "domain": "brogand93@darrenbrogan.ie",
+                        "value": "V4eez/3qC1vIcssKmwu5+ZBneZAvWAfxHEKsQU0dsCVvHdn8g7tFXXtg4QCGtE4yzK5v3/+f1AdtIi4hvJoMyi8MV0KSa8e/ravd",
+                        "key": "2-sshkey-segment"
+                    },
+                    {
+                        "account": "brogand93@darrenbrogan.ie",
+                        "domainid": "42f2b0d0-3953-485f-984d-b8d67185d358",
+                        "resourcetype": "UserVm",
+                        "resourceid": "71f13c6d-1590-4e82-9cdd-22eb9bcad0db",
+                        "domain": "brogand93@darrenbrogan.ie",
+                        "value": "Hbgj44PncFBB8O6epVdXPbClZwtkz9D6GEQaOArxk9tX8YEgTFnmsnNuaoZgs7giMj2N7jQe2qXh5R0nsTTuH brogand@microv",
+                        "key": "3-sshkey-segment"
+                    },
+                    {
+                        "account": "brogand93@darrenbrogan.ie",
+                        "domainid": "42f2b0d0-3953-485f-984d-b8d67185d358",
+                        "resourcetype": "UserVm",
+                        "resourceid": "71f13c6d-1590-4e82-9cdd-22eb9bcad0db",
+                        "domain": "brogand93@darrenbrogan.ie",
+                        "value": "ac",
+                        "key": "4-sshkey-segment"
+                    }
+                ],
+                "nic": [
+                    {
+                        "networkid": "00304a04-c7ea-4e77-a786-18bc64347bf7",
+                        "macaddress": "06:b0:2e:00:01:04",
+                        "isolationuri": "ec2://untagged",
+                        "networkname": "guestNetworkForBasicZone",
+                        "gateway": "185.19.28.1",
+                        "traffictype": "Guest",
+                        "broadcasturi": "vlan://untagged",
+                        "netmask": "255.255.254.0",
+                        "type": "Shared",
+                        "ipaddress": "185.19.28.199",
+                        "id": "2b5cc781-d310-43cf-9d68-66719f43855d",
+                        "isdefault": true
+                    }
+                ],
+                "cpuspeed": 2198,
+                "templateid": "c34bf3f0-318b-4d77-b0ca-f20585d05d32",
+                "affinitygroup": [],
+                "account": "brogand93@darrenbrogan.ie",
+                "name": "instancename",
+                "created": "2014-06-02T21:11:52+0200",
+                "hypervisor": "KVM",
+                "rootdevicetype": "ROOT",
+                "rootdeviceid": 0,
+                "serviceofferingname": "Tiny",
+                "templatedisplaytext": "Linux CentOS 6.5 64-bit 10GB Disk"
+            }

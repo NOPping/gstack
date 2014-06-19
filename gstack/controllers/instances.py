@@ -70,26 +70,6 @@ def _deploy_virtual_machine(authorization, args, projectid):
     return cloudstack_response
 
 
-def _destroy_virtual_machine(authorization, instance):
-    virtual_machine_id = _get_virtual_machine_by_name(
-        authorization,
-        instance)['id']
-
-    if virtual_machine_id is None:
-        func_route = url_for('_destroy_virtual_machine', instance=instance)
-        return errors.resource_not_found(func_route)
-
-    args = {
-        'id': virtual_machine_id
-    }
-    return requester.make_request(
-        'destroyVirtualMachine',
-        args,
-        authorization.client_id,
-        authorization.client_secret
-    )
-
-
 def _cloudstack_virtual_machine_to_gce(cloudstack_response, projectid, zone, **kwargs):
     response = {}
     response['kind'] = 'compute#instance'
@@ -170,16 +150,6 @@ def listinstances(authorization, projectid, zone):
     return helpers.create_response(data=populated_response)
 
 
-@app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
-@authentication.required
-def getinstance(projectid, authorization, zone, instance):
-    func_route = url_for('getinstance', projectid=projectid, zone=zone, instance=instance)
-    args = {'command':'listVirtualMachines'}
-    return controllers.get_item_with_name_or_error(
-        authorization, instance, args, 'zone', func_route,
-        _cloudstack_zone_to_gce, **{'projectid':projectid})
-
-
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances', methods=['POST'])
 @authentication.required
 def addinstance(authorization, projectid, zone):
@@ -224,7 +194,21 @@ def addinstance(authorization, projectid, zone):
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['DELETE'])
 @authentication.required
 def deleteinstance(projectid, authorization, zone, instance):
-    deletion_result = _destroy_virtual_machine(authorization, instance)
+    args = {'command':'listVirtualMachines'}
+    virtual_machine = controllers.get_item_with_name(authorization, instance, args, 'virtualmachine')
+    if virtual_machine is None:
+        func_route = url_for('deleteinstance', projectid=projectid, zone=zone, instance=instance)
+        return errors.resource_not_found(func_route)
+
+    virtual_machine_id = virtual_machine['id']
+    args = {'id': virtual_machine_id}
+
+    deletion_result = requester.make_request(
+        'destroyVirtualMachine',
+        args,
+        authorization.client_id,
+        authorization.client_secret
+    )
 
     populated_response = operations.create_response(
         projectid=projectid,
@@ -233,3 +217,13 @@ def deleteinstance(projectid, authorization, zone, instance):
     )
 
     return helpers.create_response(data=populated_response)
+
+@app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
+@authentication.required
+def getinstance(projectid, authorization, zone, instance):
+    func_route = url_for('getinstance', projectid=projectid, zone=zone, instance=instance)
+    args = {'command':'listVirtualMachines'}
+    kwargs = {'projectid':projectid, 'zone':zone}
+    return controllers.get_item_with_name_or_error(
+        authorization, instance, args, 'virtualmachine', func_route,
+        _cloudstack_virtual_machine_to_gce, **kwargs)

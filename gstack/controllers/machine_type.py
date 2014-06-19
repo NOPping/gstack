@@ -25,6 +25,10 @@ from gstack import controllers
 from gstack.controllers import errors, zones
 from flask import request, url_for
 
+def get_machinetype_by_name(authorization, machinetype):
+    args = {'command':'listServiceOfferings'}
+    return controllers.get_item_with_name(authorization, machinetype, args, 'serviceoffering')
+
 
 def _cloudstack_service_offering_to_gce(cloudstack_response, projectid, zone):
     response = {}

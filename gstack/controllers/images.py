@@ -25,10 +25,15 @@ from gstack import controllers
 from gstack.controllers import errors
 from flask import request, url_for
 
+def get_template_by_name(authorization, image):
+    args = {'templatefilter': 'executable', 'command':'listTemplates'}
+    return controllers.get_item_with_name(authorization, image, args, 'template')
+
 
 def _create_populated_image_response(projectid, images=None):
     if not images:
         images = []
+
     populated_response = {
         'kind': 'compute#imageList',
         'selfLink': request.base_url,
@@ -84,15 +89,8 @@ def listimages(projectid, authorization):
 @app.route('/compute/v1/projects/<projectid>/global/images/<image>', methods=['GET'])
 @authentication.required
 def getimage(projectid, authorization, image):
-    response = get_template_by_name(
-        authorization=authorization,
-        image=image
-    )
-
-    if response:
-        return helpers.create_response(
-            data=_cloudstack_template_to_gce(response)
-        )
-    else:
-        func_route = url_for('getimage', projectid=projectid, image=image)
-        return errors.resource_not_found(func_route)
+    func_route = url_for('getimage', projectid=projectid, image=image)
+    args = {'templatefilter': 'executable', 'command':'listTemplates'}
+    return controllers.get_item_with_name_or_error(
+        authorization, image, args, 'template', func_route,
+        _cloudstack_template_to_gce, **{})

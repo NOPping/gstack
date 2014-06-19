@@ -24,6 +24,10 @@ from gstack import app, authentication
 from gstack.services import requester
 from gstack.controllers import errors
 
+def get_zone_by_name(authorization, zone):
+    args = {'command':'listZones'}
+    return controllers.get_item_with_name(authorization, zone, args, 'zone')
+
 
 def _get_zones(authorization, args=None):
     command = 'listZones'
@@ -41,8 +45,6 @@ def _get_zones(authorization, args=None):
 
 def get_zone_names(authorization):
     zone_list = _get_zones(authorization)
-
-    print zone_list
 
     zones = []
     if zone_list['listzonesresponse']:

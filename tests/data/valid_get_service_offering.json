@@ -1,0 +1,16 @@
+{
+    "iscustomized": false,
+    "name": "machinetypename",
+    "created": "2013-02-08T17:20:17+0100",
+    "storagetype": "local",
+    "limitcpuuse": false,
+    "cpuspeed": 2198,
+    "offerha": false,
+    "isvolatile": false,
+    "cpunumber": 1,
+    "memory": 512,
+    "displaytext": "Micro 512mb 1cpu",
+    "issystem": false,
+    "id": "71004023-bb72-4a97-b1e9-bc66dfce9470",
+    "defaultuse": false
+}
