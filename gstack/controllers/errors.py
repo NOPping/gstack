@@ -23,11 +23,6 @@ from gstack import helpers
 from flask import Response
 
 
-@app.errorhandler(404)
-def not_found(e):
-    return Response('Not Found', status=404, mimetype='text/html')
-
-
 @app.errorhandler(401)
 def unauthorized(e):
     res = {
@@ -71,7 +66,7 @@ def no_results_found(scope):
     return ({
         "warning": {
             "code": "NO_RESULTS_ON_PAGE",
-            "message": "There are no results for scope" + scope + " on this page.",
+            "message": "There are no results for scope " + scope + " on this page.",
             "data": [{
                 "key": "scope",
                 "value": scope

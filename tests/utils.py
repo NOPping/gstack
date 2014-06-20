@@ -55,3 +55,6 @@ class FlaskTestCaseMixin(object):
     def assert_not_found(self, response):
         return self.assert_status_code(response, 404)
 
+    def assert_unauthorized(self, response):
+        return self.assert_status_code(response, 401)
+

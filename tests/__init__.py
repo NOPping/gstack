@@ -22,6 +22,10 @@ class GStackAppTestCase(FlaskTestCaseMixin, GStackTestCase):
     def _configure_app(self):
         configure_app(settings=settings)
 
+    def _unauthed_user(self):
+        response = self.get('/compute/v1/projects/exampleproject/global/images')
+        self.assert_unauthorized(response)
+
 
     def _auth_example_user(self):
         data = {}
@@ -53,6 +57,7 @@ class GStackAppTestCase(FlaskTestCaseMixin, GStackTestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
+        self._unauthed_user()
         self._auth_example_user()
 
 

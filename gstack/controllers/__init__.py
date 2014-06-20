@@ -122,9 +122,11 @@ def describe_items_aggregated(authorization, args, type, gce_type, to_cloudstack
     for zone in zone_list:
         kwargs['zone'] = zone
         zone_items = _get_requested_items(authorization, args, type, to_cloudstack, **kwargs)
-
         items['zone/' + zone] = {}
-        items['zone/' + zone][gce_type] = zone_items
+        if zone_items:
+            items['zone/' + zone][gce_type] = zone_items
+        else:
+            items['zone/' + zone] = errors.no_results_found(zone)
 
     return items
 

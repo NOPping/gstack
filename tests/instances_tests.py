@@ -123,33 +123,6 @@ class InstancesTestCase(GStackAppTestCase):
 
         self.assert_ok(response)
 
-    def test_delete_instance_instance_not_found(self):
-        get = mock.Mock()
-        get.return_value.text = read_file('tests/data/valid_async_destroy_vm.json')
-        get.return_value.status_code = 200
-
-        get_instance = mock.Mock()
-        get_instance.return_value = None
-
-        get_async_result = mock.Mock()
-        get_async_result.return_value = json.loads(read_file('tests/data/valid_run_instance.json'))
-
-        publickey_storage['admin'] = 'testkey'
-
-        with mock.patch('requests.get', get):
-            with mock.patch(
-                    'gstack.controllers.get_item_with_name',
-                    get_instance
-                ):
-                with mock.patch(
-                    'gstack.controllers.operations._get_async_result',
-                    get_async_result
-                ):
-                    headers = {'authorization': 'Bearer ' + str(GStackAppTestCase.access_token)}
-                    response = self.delete('/compute/v1/projects/admin/zones/examplezone/instances/instancename', headers=headers)
-
-        self.assert_not_found(response)
-
     def test_add_instance(self):
         data = {
              'kind':  'compte#instance',

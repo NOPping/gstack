@@ -167,20 +167,9 @@ def addinstance(authorization, projectid, zone):
     deployment_result = _deploy_virtual_machine(authorization, args, projectid)
 
     if 'errortext' in deployment_result['deployvirtualmachineresponse']:
-        populated_response = {
-            'kind': 'compute#operation',
-            'operationType': 'insert',
-            'targetLink': '',
-            'status': 'DONE',
-            'progress': 100,
-            'error': {
-                'errors': [{
-                    'code': 'RESOURCE_ALREADY_EXISTS',
-                    'message': 'the resource \'projects/\'' + projectid +
-                               '/zones/' + zone + '/instances/' + args['name']
-                }]
-            }
-        }
+        func_route = url_for('addinstance', projectid=projectid, zone=zone)
+        return errors.resource_not_found(func_route)
+
     else:
         populated_response = operations.create_response(
             projectid=projectid,
@@ -196,9 +185,6 @@ def addinstance(authorization, projectid, zone):
 def deleteinstance(projectid, authorization, zone, instance):
     args = {'command': 'listVirtualMachines'}
     virtual_machine = controllers.get_item_with_name(authorization, instance, args, 'virtualmachine')
-    if virtual_machine is None:
-        func_route = url_for('deleteinstance', projectid=projectid, zone=zone, instance=instance)
-        return errors.resource_not_found(func_route)
 
     virtual_machine_id = virtual_machine['id']
     args = {'id': virtual_machine_id}
