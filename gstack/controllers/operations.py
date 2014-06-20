@@ -18,11 +18,13 @@
 # under the License.
 
 import urllib
+
+from flask import url_for
+
 from gstack import app, publickey_storage
 from gstack import authentication
 from gstack import helpers
 from gstack.services import requester
-from flask import url_for
 
 
 def _get_async_result(authorization, args):

@@ -20,8 +20,9 @@
 import os
 import glob
 
-from gstack import helpers
 from flask import request
+
+from gstack import helpers
 from gstack.services import requester
 from gstack.controllers import errors
 
@@ -50,33 +51,6 @@ def _get_items(authorization, args=None):
     response = response[response.keys()[0]]
 
     return response
-
-
-def get_item_with_name(authorization, name, args, type):
-    response = _get_items(
-        authorization=authorization,
-        args=args
-    )
-
-    if 'count' in response:
-        response = filter_by_name(
-            data=response[type],
-            name=name
-        )
-        return response
-    else:
-        return None
-
-
-def get_item_with_name_or_error(authorization, name, args, type, func_route, to_cloudstack, **kwargs):
-    cloudstack_item = get_item_with_name(authorization, name, args, type)
-
-    if cloudstack_item:
-        return helpers.create_response(to_cloudstack(
-            cloudstack_response=cloudstack_item, **kwargs
-        ))
-    else:
-        return errors.resource_not_found(func_route)
 
 
 def _get_requested_items(authorization, args, type, to_cloudstack, **kwargs):
@@ -111,6 +85,33 @@ def _get_requested_items(authorization, args, type, to_cloudstack, **kwargs):
                 )
 
     return items
+
+
+def get_item_with_name(authorization, name, args, type):
+    response = _get_items(
+        authorization=authorization,
+        args=args
+    )
+
+    if 'count' in response:
+        response = filter_by_name(
+            data=response[type],
+            name=name
+        )
+        return response
+    else:
+        return None
+
+
+def get_item_with_name_or_error(authorization, name, args, type, func_route, to_cloudstack, **kwargs):
+    cloudstack_item = get_item_with_name(authorization, name, args, type)
+
+    if cloudstack_item:
+        return helpers.create_response(to_cloudstack(
+            cloudstack_response=cloudstack_item, **kwargs
+        ))
+    else:
+        return errors.resource_not_found(func_route)
 
 
 def describe_items_aggregated(authorization, args, type, gce_type, to_cloudstack, **kwargs):

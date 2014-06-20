@@ -19,9 +19,11 @@
 
 import json
 import urllib
+
+from flask import request, url_for
+
 from gstack import helpers
 from gstack import controllers
-from flask import request, url_for
 from gstack import app, authentication
 from gstack.services import requester
 from gstack.controllers import zones, operations, images, errors, machine_type, networks
@@ -150,6 +152,17 @@ def listinstances(authorization, projectid, zone):
     return helpers.create_response(data=populated_response)
 
 
+@app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
+@authentication.required
+def getinstance(projectid, authorization, zone, instance):
+    func_route = url_for('getinstance', projectid=projectid, zone=zone, instance=instance)
+    args = {'command': 'listVirtualMachines'}
+    kwargs = {'projectid': projectid, 'zone': zone}
+    return controllers.get_item_with_name_or_error(
+        authorization, instance, args, 'virtualmachine', func_route,
+        _cloudstack_virtual_machine_to_gce, **kwargs)
+
+
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances', methods=['POST'])
 @authentication.required
 def addinstance(authorization, projectid, zone):
@@ -203,14 +216,3 @@ def deleteinstance(projectid, authorization, zone, instance):
     )
 
     return helpers.create_response(data=populated_response)
-
-
-@app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
-@authentication.required
-def getinstance(projectid, authorization, zone, instance):
-    func_route = url_for('getinstance', projectid=projectid, zone=zone, instance=instance)
-    args = {'command': 'listVirtualMachines'}
-    kwargs = {'projectid': projectid, 'zone': zone}
-    return controllers.get_item_with_name_or_error(
-        authorization, instance, args, 'virtualmachine', func_route,
-        _cloudstack_virtual_machine_to_gce, **kwargs)

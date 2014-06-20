@@ -17,12 +17,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from flask import request, url_for
 
 from gstack import app
 from gstack import helpers
 from gstack import controllers
 from gstack import authentication
-from flask import request, url_for
 
 
 def _cloudstack_account_to_gce(cloudstack_response):

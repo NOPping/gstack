@@ -19,17 +19,14 @@
 
 import urllib
 import json
+
+from flask import request, url_for
+
 from gstack import helpers
 from gstack import controllers
-from flask import request, url_for
 from gstack import app, authentication
 from gstack.services import requester
 from gstack.controllers import errors
-
-
-def get_network_by_name(authorization, network):
-    args = {'command': 'listSecurityGroups'}
-    return controllers.get_item_with_name(authorization, network, args, 'securitygroup')
 
 
 def _add_network(authorization, args=None):
@@ -89,6 +86,11 @@ def _create_populated_network_response(projectid, networks=None):
         'items': networks
     }
     return populated_response
+
+
+def get_network_by_name(authorization, network):
+    args = {'command': 'listSecurityGroups'}
+    return controllers.get_item_with_name(authorization, network, args, 'securitygroup')
 
 
 @app.route('/compute/v1/projects/<projectid>/global/networks', methods=['GET'])

@@ -18,16 +18,13 @@
 # under the License.
 
 import urllib
+
+from flask import request, url_for
+
 from gstack import app
 from gstack import authentication
 from gstack import helpers
 from gstack import controllers
-from flask import request, url_for
-
-
-def get_machinetype_by_name(authorization, machinetype):
-    args = {'command': 'listServiceOfferings'}
-    return controllers.get_item_with_name(authorization, machinetype, args, 'serviceoffering')
 
 
 def _cloudstack_service_offering_to_gce(cloudstack_response, projectid, zone):
@@ -49,6 +46,11 @@ def _cloudstack_service_offering_to_gce(cloudstack_response, projectid, zone):
     response['zone'] = zone
 
     return response
+
+
+def get_machinetype_by_name(authorization, machinetype):
+    args = {'command': 'listServiceOfferings'}
+    return controllers.get_item_with_name(authorization, machinetype, args, 'serviceoffering')
 
 
 @app.route('/compute/v1/projects/<projectid>/aggregated/machineTypes', methods=['GET'])

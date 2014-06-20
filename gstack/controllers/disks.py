@@ -18,7 +18,9 @@
 # under the License.
 
 import urllib
+
 from flask import request, url_for
+
 from gstack import app, authentication
 from gstack import helpers
 from gstack import controllers

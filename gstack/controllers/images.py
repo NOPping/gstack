@@ -18,15 +18,12 @@
 # under the License.
 
 import urllib
+
+from flask import request, url_for
+
 from gstack import app, authentication
 from gstack import helpers
 from gstack import controllers
-from flask import request, url_for
-
-
-def get_template_by_name(authorization, image):
-    args = {'templatefilter': 'executable', 'command': 'listTemplates'}
-    return controllers.get_item_with_name(authorization, image, args, 'template')
 
 
 def _create_populated_image_response(projectid, images=None):
@@ -53,6 +50,11 @@ def _cloudstack_template_to_gce(cloudstack_response):
     response['selfLink'] = urllib.unquote_plus(request.base_url) + '/' + response['name']
 
     return response
+
+
+def get_template_by_name(authorization, image):
+    args = {'templatefilter': 'executable', 'command': 'listTemplates'}
+    return controllers.get_item_with_name(authorization, image, args, 'template')
 
 
 @app.route('/compute/v1/projects/centos-cloud/global/images', methods=['GET'])

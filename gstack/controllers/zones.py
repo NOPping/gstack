@@ -18,15 +18,11 @@
 # under the License.
 
 from flask import request, url_for
+
 from gstack import helpers
 from gstack import controllers
 from gstack import app, authentication
 from gstack.services import requester
-
-
-def get_zone_by_name(authorization, zone):
-    args = {'command': 'listZones'}
-    return controllers.get_item_with_name(authorization, zone, args, 'zone')
 
 
 def _get_zones(authorization):
@@ -42,6 +38,21 @@ def _get_zones(authorization):
     return cloudstack_response
 
 
+def _cloudstack_zone_to_gce(cloudstack_response):
+    return ({
+        'kind': 'compute#zone',
+        'name': cloudstack_response['name'],
+        'description': cloudstack_response['name'],
+        'id': cloudstack_response['id'],
+        'status': cloudstack_response['allocationstate']
+    })
+
+
+def get_zone_by_name(authorization, zone):
+    args = {'command': 'listZones'}
+    return controllers.get_item_with_name(authorization, zone, args, 'zone')
+
+
 def get_zone_names(authorization):
     zone_list = _get_zones(authorization)
 
@@ -51,16 +62,6 @@ def get_zone_names(authorization):
             zones.append(zone['name'])
 
     return zones
-
-
-def _cloudstack_zone_to_gce(cloudstack_response):
-    return ({
-        'kind': 'compute#zone',
-        'name': cloudstack_response['name'],
-        'description': cloudstack_response['name'],
-        'id': cloudstack_response['id'],
-        'status': cloudstack_response['allocationstate']
-    })
 
 
 @app.route('/compute/v1/projects/<projectid>/zones', methods=['GET'])

@@ -17,14 +17,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import json
+
+from flask import jsonify, request, url_for
+
 from gstack import app
 from gstack import authentication
 from gstack import controllers
 from gstack import helpers
 from gstack.services import requester
 from gstack.controllers import errors
-from flask import jsonify, request, url_for
-import json
 
 
 def _cloudstack_securitygroup_to_gce(cloudstack_response):

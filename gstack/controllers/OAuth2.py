@@ -17,8 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import flask
-from flask import request
+from flask import request, make_response
+
 from gstack import app
 from gstack.oauth2provider import CloudstackAuthorizationProvider
 
@@ -30,7 +30,7 @@ def authorization_code():
 
     response = provider.get_authorization_code_from_uri(request.url)
 
-    res = flask.make_response(response.text, response.status_code)
+    res = make_response(response.text, response.status_code)
     for k, v in response.headers.iteritems():
         res.headers[k] = v
     return res
@@ -44,7 +44,7 @@ def token():
 
     response = provider.get_token_from_post_data(data)
 
-    res = flask.make_response(response.text, response.status_code)
+    res = make_response(response.text, response.status_code)
     for k, v in response.headers.iteritems():
         res.headers[k] = v
     return res

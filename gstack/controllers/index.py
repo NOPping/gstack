@@ -17,10 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import json
 
 from gstack import app
 from gstack import helpers
-import json
 
 
 @app.route('/discovery/v1/apis/compute/v1/rest', methods=['GET'])
