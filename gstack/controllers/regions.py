@@ -41,7 +41,7 @@ def listregions(projectid, authorization):
     args = {'command': 'listAccounts'}
     kwargs = {}
     items = controllers.describe_items(
-        authorization, args, 'region',
+        authorization, args, 'account',
         _cloudstack_account_to_gce, **kwargs)
 
     populated_response = {
@@ -59,5 +59,5 @@ def getregion(projectid, authorization, region):
     func_route = url_for('getregion', projectid=projectid, region=region)
     args = {'command': 'listAccounts'}
     return controllers.get_item_with_name_or_error(
-        authorization, region, args, 'region', func_route,
+        authorization, region, args, 'account', func_route,
         _cloudstack_account_to_gce, **{})

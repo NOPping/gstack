@@ -28,7 +28,7 @@ from gstack.controllers import errors
 
 
 def get_network_by_name(authorization, network):
-    args = {'command': 'SecurityGroups'}
+    args = {'command': 'listSecurityGroups'}
     return controllers.get_item_with_name(authorization, network, args, 'securitygroup')
 
 
@@ -48,7 +48,7 @@ def _add_network(authorization, args=None):
 
 
 def _delete_network(authorization, projectid, network):
-    args = {'command': 'SecurityGroups'}
+    args = {'command': 'listSecurityGroups'}
     network_response = controllers.get_item_with_name(authorization, network, args, 'securitygroup')
     if not network_response:
         return None
