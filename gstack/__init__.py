@@ -21,6 +21,8 @@ import os
 import sys
 
 from flask import Flask
+from ConfigParser import SafeConfigParser
+
 from gstack.core import db
 
 
@@ -47,6 +49,14 @@ def _load_database():
     return 'sqlite:///' + database_file
 
 
+def _config_from_config_profile(config_file, profile='initial'):
+    config = SafeConfigParser()
+    config.read(config_file)
+
+    for attribute in config.options(profile):
+        app.config[attribute.upper()] = config.get(profile, attribute)
+
+
 def configure_app(settings=None):
     app.config['DATA'] = os.path.abspath(os.path.dirname(__file__)) + '/data'
 
@@ -57,7 +67,7 @@ def configure_app(settings=None):
     else:
         config_file = _load_config_file()
         database_uri = _load_database()
-        app.config.from_pyfile(config_file)
+        _config_from_config_profile(config_file)
         app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 
 

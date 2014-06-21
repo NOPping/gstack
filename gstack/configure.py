@@ -18,6 +18,7 @@
 
 
 import os
+import ConfigParser
 
 from alembic import command
 from alembic.config import Config as AlembicConfig
@@ -38,48 +39,64 @@ def _create_config_folder():
 
 
 def _create_config_file(config_folder):
-    config_file = open(config_folder + '/gstack.conf', 'w+')
+    config_file_path = config_folder + '/gstack.conf'
+    config = _modify_config_profile(config_file_path)
+    config_file = open(config_file_path, 'w+')
+    config.write(config_file)
 
-    config_file.write('PATH = \'%s\'\n' % 'compute/v1/projects/')
 
-    gstack_address = raw_input('gstack bind address [0.0.0.0]: ')
-    if gstack_address == '':
-        gstack_address = '0.0.0.0'
-    config_file.write('GSTACK_BIND_ADDRESS = \'%s\'\n' % gstack_address)
+def _modify_config_profile(config_file, profile='initial'):
+    config = ConfigParser.SafeConfigParser()
+    config.read(config_file)
 
-    gstack_port = raw_input('gstack bind port [5000]: ')
-    if gstack_port == '':
-        gstack_port = '5000'
-    config_file.write('GSTACK_PORT = \'%s\'\n' % gstack_port)
+    if not config.has_section(profile):
+        config.add_section(profile)
 
-    cloudstack_host = raw_input('Cloudstack host [localhost]: ')
-    if cloudstack_host == '':
-        cloudstack_host = 'localhost'
-    config_file.write('CLOUDSTACK_HOST = \'%s\'\n' % cloudstack_host)
+    config = _set_attribute_of_profile(
+        config, profile, 'gstack_bind_address', 'gstack bind address', 'localhost'
+    )
+    config = _set_attribute_of_profile(
+        config, profile, 'gstack_port', 'gstack bind port', '5000'
+    )
+    config = _set_attribute_of_profile(
+        config, profile, 'cloudstack_host', 'Cloudstack host', 'localhost'
+    )
+    config = _set_attribute_of_profile(
+        config, profile, 'cloudstack_port', 'Cloudstack port', '8080'
+    )
+    config = _set_attribute_of_profile(
+        config, profile, 'cloudstack_protocol', 'Cloudstack protocol', 'http'
+    )
+    config = _set_attribute_of_profile(
+        config, profile, 'cloudstack_path', 'Cloudstack path', '/client/api'
+    )
 
-    cloudstack_port = raw_input('Cloudstack port [8080]: ')
-    if cloudstack_port == '':
-        cloudstack_port = '8080'
-    config_file.write('CLOUDSTACK_PORT = \'%s\'\n' % cloudstack_port)
+    return config
 
-    cloudstack_protocol = raw_input('Cloudstack protocol [http]: ')
-    if cloudstack_protocol == '':
-        cloudstack_protocol = 'http'
-    config_file.write('CLOUDSTACK_PROTOCOL = \'%s\'\n' % cloudstack_protocol)
 
-    cloudstack_path = raw_input('Cloudstack path [/client/api]: ')
-    if cloudstack_path == '':
-        cloudstack_path = '/client/api'
-    config_file.write('CLOUDSTACK_PATH = \'%s\'\n' % cloudstack_path)
+def _set_attribute_of_profile(config, profile, attribute, message, default):
+    if config.has_option(profile, attribute):
+        default = config.get(profile, attribute)
 
-    config_file.close()
+    attribute_value = _read_in_config_attribute_or_use_default(message, default)
+
+    config.set(profile, attribute, attribute_value)
+    return config
+
+
+def _read_in_config_attribute_or_use_default(message, default):
+    attribute = raw_input(message + ' [' + default + ']: ')
+    if attribute == '':
+        attribute = default
+
+    return attribute
 
 
 def _create_database():
     directory = os.path.join(os.path.dirname(__file__), '../migrations')
-    config = AlembicConfig(os.path.join(
+    database_config = AlembicConfig(os.path.join(
         directory,
         'alembic.ini'
     ))
-    config.set_main_option('script_location', directory)
-    command.upgrade(config, 'head', sql=False, tag=None)
+    database_config.set_main_option('script_location', directory)
+    command.upgrade(database_config, 'head', sql=False, tag=None)
