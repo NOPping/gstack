@@ -18,6 +18,7 @@
 
 
 import os
+import argparse
 import ConfigParser
 
 from alembic import command
@@ -39,13 +40,32 @@ def _create_config_folder():
 
 
 def _create_config_file(config_folder):
+    args = _generate_args()
+    profile = args.pop('profile')
     config_file_path = config_folder + '/gstack.conf'
-    config = _modify_config_profile(config_file_path)
+    config = _modify_config_profile(config_file_path, profile)
     config_file = open(config_file_path, 'w+')
     config.write(config_file)
 
 
-def _modify_config_profile(config_file, profile='initial'):
+def _generate_args():
+    parser = argparse.ArgumentParser(
+        'Command line utility for configuring gstack'
+    )
+
+    parser.add_argument(
+        'profile',
+        help='The profile to configure, default is initial',
+        default='initial',
+        nargs='?'
+    )
+
+    args = parser.parse_args()
+
+    return vars(args)
+
+
+def _modify_config_profile(config_file, profile):
     config = ConfigParser.SafeConfigParser()
     config.read(config_file)
 

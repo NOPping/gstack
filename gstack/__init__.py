@@ -19,11 +19,27 @@
 
 import os
 import sys
+import argparse
 
 from flask import Flask
 from ConfigParser import SafeConfigParser
 
 from gstack.core import db
+
+
+def _generate_args():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        'profile',
+        help='The profile to run gstack with, default is initial',
+        default='initial',
+        nargs='?'
+    )
+
+    args = parser.parse_args()
+
+    return vars(args)
 
 
 def _load_config_file():
@@ -49,7 +65,7 @@ def _load_database():
     return 'sqlite:///' + database_file
 
 
-def _config_from_config_profile(config_file, profile='initial'):
+def _config_from_config_profile(config_file, profile):
     config = SafeConfigParser()
     config.read(config_file)
 
@@ -65,9 +81,11 @@ def configure_app(settings=None):
     if settings:
         app.config.from_object(settings)
     else:
+        args = _generate_args()
+        profile = args.pop('profile')
         config_file = _load_config_file()
         database_uri = _load_database()
-        _config_from_config_profile(config_file)
+        _config_from_config_profile(config_file, profile)
         app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 
 
