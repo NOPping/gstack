@@ -38,40 +38,61 @@ def _get_async_result(authorization, args):
     return cloudstack_response
 
 
-def _delete_instance_response(async_result, projectid):
-    populated_response = {
-        'kind': 'compute#operation',
-        'insertTime': async_result['created'],
-        'operationType': 'delete',
-        'name': async_result['jobid'],
-        'startTime': async_result['created'],
-        'selfLink': urllib.unquote_plus(helpers.get_root_url() + url_for(
+def _get_instance_async_response(async_result, projectid, type):
+    response = {}
+    response['kind'] = 'compute#operation'
+    response['id'] = async_result['jobid']
+    response['operationType'] = type
+    response['name'] = async_result['jobid']
+    response['insertTime'] = async_result['created']
+    response['startTime'] = async_result['created']
+    response['selfLink'] = urllib.unquote_plus(
+        helpers.get_root_url() + url_for(
             'getoperations',
             projectid=projectid,
             operationid=async_result['jobid']
         ))
-    }
 
     if async_result['jobstatus'] is 0:
-        populated_response['targetLink'] = ''
-        populated_response['status'] = 'PENDING'
-        populated_response['progress'] = 0
+        response['targetLink'] = ''
+        response['status'] = 'PENDING'
+        response['progress'] = 0
     elif async_result['jobstatus'] is 1:
-        populated_response['status'] = 'DONE'
-        populated_response['zone'] = urllib.unquote_plus(
+        response['status'] = 'DONE'
+        response['zone'] = urllib.unquote_plus(
             helpers.get_root_url() +
             url_for(
                 'getzone',
                 projectid=projectid,
                 zone=async_result['jobresult']['virtualmachine']['zonename'],
             ))
-        populated_response['targetLink'] = urllib.unquote_plus(
+        response['targetLink'] = urllib.unquote_plus(
             helpers.get_root_url() +
             url_for(
                 'getinstance',
                 projectid=projectid,
                 zone=async_result['jobresult']['virtualmachine']['zonename'],
                 instance=async_result['jobresult']['virtualmachine']['name']))
+
+    return response
+
+
+def _delete_instance_response(async_result, projectid):
+    populated_response = _get_instance_async_response(async_result, projectid, 'delete')
+    return populated_response
+
+
+def _create_instance_response(async_result, projectid, authorization):
+    populated_response = _get_instance_async_response(async_result, projectid, 'insert')
+    populated_response['user'] = async_result['userid']
+
+    if async_result['jobstatus'] is 1:
+        _add_sshkey_metadata(
+            authorization=authorization,
+            publickey=publickey_storage[projectid],
+            instanceid=async_result['jobresult']['virtualmachine']['id']
+        )
+    print populated_response
 
     return populated_response
 
@@ -82,7 +103,6 @@ def _add_sshkey_metadata(authorization, publickey, instanceid):
     split_publickey = [l[i:i + n] for i in range(0, len(l), n)]
     i = 0
     for datasegment in split_publickey:
-        print datasegment
         _add_sshkey_metadata_segment(
             authorization, str(i) + '-sshkey-segment', datasegment, instanceid)
         i = i + 1
@@ -105,55 +125,7 @@ def _add_sshkey_metadata_segment(authorization, keyname, value, instanceid):
     )
 
 
-def _create_instance_response(async_result, projectid, authorization):
-    populated_response = {
-        'kind': 'compute#operation',
-        'id': async_result['jobid'],
-        'operationType': 'insert',
-        'name': async_result['jobid'],
-        'user': async_result['userid'],
-        'insertTime': async_result['created'],
-        'startTime': async_result['created'],
-        'selfLink': urllib.unquote_plus(helpers.get_root_url() + url_for(
-            'getoperations',
-            projectid=projectid,
-            operationid=async_result['jobid']
-        ))
-    }
-
-    if async_result['jobstatus'] is 0:
-        # handle pending case
-        populated_response['targetLink'] = ''
-        populated_response['status'] = 'PENDING'
-        populated_response['progress'] = 0
-    elif async_result['jobstatus'] is 1:
-        # handle successful case
-        populated_response['status'] = 'DONE'
-        populated_response['id'] = async_result['jobid']
-        populated_response['zone'] = urllib.unquote_plus(
-            helpers.get_root_url() +
-            url_for(
-                'getzone',
-                projectid=projectid,
-                zone=async_result['jobresult']['virtualmachine']['zonename'],
-            ))
-        populated_response['targetLink'] = urllib.unquote_plus(
-            helpers.get_root_url() +
-            url_for(
-                'getinstance',
-                projectid=projectid,
-                zone=async_result['jobresult']['virtualmachine']['zonename'],
-                instance=async_result['jobresult']['virtualmachine']['name']))
-        _add_sshkey_metadata(
-            authorization=authorization,
-            publickey=publickey_storage[projectid],
-            instanceid=async_result['jobresult']['virtualmachine']['id']
-        )
-
-    return populated_response
-
-
-def create_response(authorization, projectid, operationid):
+def create_async_response(authorization, projectid, operationid):
     async_result = _get_async_result(
         authorization=authorization,
         args={'jobId': operationid}
@@ -184,7 +156,7 @@ def create_response(authorization, projectid, operationid):
 @app.route('/compute/v1/projects/<projectid>/global/operations/<operationid>', methods=['GET'])
 @authentication.required
 def getoperations(authorization, operationid, projectid):
-    return helpers.create_response(create_response(
+    return helpers.create_response(create_async_response(
         authorization=authorization,
         operationid=operationid,
         projectid=projectid

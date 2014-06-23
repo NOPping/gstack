@@ -1,0 +1,14 @@
+{
+    "queryasyncjobresultresponse": {
+        "jobprocstatus": 0,
+        "created": "2014-06-23T22:24:21+0200",
+        "cmd": "org.apache.cloudstack.api.command.user.vm.DestroyVMCmd",
+        "userid": "26a772da-dc25-4f2b-b0f1-e095e3717a30",
+        "jobstatus": 0,
+        "jobid": "678bbff2-3e45-4c6a-af5c-0859b8ab8170",
+        "jobresultcode": 0,
+        "jobinstanceid": "35de6b8f-8155-4843-bd84-dec137ff784e",
+        "jobinstancetype": "VirtualMachine",
+        "accountid": "ddbdf378-e8d9-47e0-964b-661d0d8414b8"
+    }
+}

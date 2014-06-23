@@ -75,6 +75,7 @@ def _config_from_config_profile(config_file, profile):
 
 def configure_app(settings=None):
     app.config['DATA'] = os.path.abspath(os.path.dirname(__file__)) + '/data'
+    app.config['PATH'] = 'compute/v1/projects/'
 
     db.init_app(app)
 

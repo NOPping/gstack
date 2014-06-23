@@ -19,16 +19,16 @@
 
 import os
 import argparse
-import ConfigParser
 
 from alembic import command
+from ConfigParser import SafeConfigParser
 from alembic.config import Config as AlembicConfig
 
 
 def main():
     config_folder = _create_config_folder()
-    _create_config_file(config_folder)
     _create_database()
+    _create_config_file(config_folder)
 
 
 def _create_config_folder():
@@ -66,7 +66,7 @@ def _generate_args():
 
 
 def _modify_config_profile(config_file, profile):
-    config = ConfigParser.SafeConfigParser()
+    config = SafeConfigParser()
     config.read(config_file)
 
     if not config.has_section(profile):

@@ -184,13 +184,11 @@ def addinstance(authorization, projectid, zone):
         return errors.resource_not_found(func_route)
 
     else:
-        populated_response = operations.create_response(
+        return helpers.create_response(operations.create_async_response(
             projectid=projectid,
             operationid=deployment_result['deployvirtualmachineresponse']['jobid'],
             authorization=authorization
-        )
-
-    return helpers.create_response(data=populated_response)
+        ))
 
 
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['DELETE'])
@@ -209,10 +207,8 @@ def deleteinstance(projectid, authorization, zone, instance):
         authorization.client_secret
     )
 
-    populated_response = operations.create_response(
+    return helpers.create_response(operations.create_async_response(
         projectid=projectid,
         operationid=deletion_result['destroyvirtualmachineresponse']['jobid'],
         authorization=authorization
-    )
-
-    return helpers.create_response(data=populated_response)
+    ))
