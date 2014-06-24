@@ -1,6 +1,6 @@
-========
+======
 GSTACK
-========
+======
 
 A Google Compute Engine Interface For Cloudstack
 ################################################
@@ -76,15 +76,17 @@ Users can grab the package from Pypi
 Configuration
 #############
 
-Before running `gstack` you must configure it. To do so run
+Before running gstack you must configure it. To do so run
 
     $ gstack-configure
 
-You can configure a profile of your choice with the optional ``-p`` flag
+You can configure a profile of your choice with the optional ``-p`` or ``--profile`` flag
 
-    $ gstack-configure -p testprofile
+    $ gstack-configure -p exampleprofile
 
-And enter your configuration information as prompted. 
+If you don't specify a profile, ``gstack-configure`` will default to ``initial``
+
+Enter your configuration information as prompted.
 
 Install the stand alone `gcutil <https://developers.google.com/compute/docs/gcutil/#gcutilupgrade/>`_
 
@@ -93,18 +95,6 @@ gstack comes with a self-signed certificate for the local endpoint ``gstack/data
 At this stage your CloudStack apikey and secretkey need to be entered in the gcutil auth_helper.py file at ``gcutil/lib/google_compute_engine/gcutil/auth_helper.py``
 
 This is far from ideal and we opened a feature request with google to pass the ``client_id`` and ``client_secret`` as options to gcutil, hopefully future release of gcutil will allow us to do so.
-
-Start gstack:
-
-    $ gstack
-
-You can launch ``gstack`` using a configuration profile created earlier using the optional ``-p`` or ``--profile`` flag
-
-    $ gstack -p testprofile
-
-You can start ``gstack`` in debug mode using the optional ``-d`` or ``--debug`` flag
-
-    $ gstack -d True
 
 Create a cached parameters file for gcutil:
 
@@ -130,12 +120,28 @@ Create a cached parameters file for gcutil:
     
     `--nocheck_for_new_version`
 
+    `--permit_root_ssh`
+
 gcutil will issue auth requests to the local Flask application, get an OAuth token and then issue requests to the CloudStack endpoint you specified when cofiguring gstack. 
 
 Usage
 #####
 
-You can start issuing standard gcutil commands.
+Start gstack:
+
+    $ gstack
+
+You can launch gstack using a configuration profile created earlier using the optional ``-p`` or ``--profile`` flag
+
+    $ gstack -p exampleprofile
+
+If you don't specify a profile, gstack will default to ``initial``
+
+You can start gstack in debug mode using the optional ``-d`` or ``--debug`` flag
+
+    $ gstack -d True
+
+You can now start issuing standard gcutil commands to gstack.
 
     $ ./gcutil --flag_file=~/.gcutil_params --project=brogand93@darrenbrogan.ie listzones
 
