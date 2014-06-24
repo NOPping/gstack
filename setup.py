@@ -46,7 +46,7 @@ setup(
     platforms=('Any'),
     license='LICENSE.txt',
     package_data={'': ['LICENSE.txt', 'data/*'],
-                  'migrations': ['versions/*', '*.mako']},
+                  'migrations': ['versions/*', '*.mako', '*.ini']},
     packages=[
         'gstack',
         'gstack.controllers',
