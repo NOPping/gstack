@@ -93,9 +93,7 @@ def configure_app(settings=None):
     else:
         args = _generate_args()
         profile = args.pop('profile')
-        ha = args.pop('debug')
-        print ha
-        app.config['DEBUG'] = ha
+        app.config['DEBUG'] = args.pop('debug')
         config_file = _load_config_file()
         database_uri = _load_database()
         _config_from_config_profile(config_file, profile)

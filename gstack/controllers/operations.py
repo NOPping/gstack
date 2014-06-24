@@ -92,7 +92,6 @@ def _create_instance_response(async_result, projectid, authorization):
             publickey=publickey_storage[projectid],
             instanceid=async_result['jobresult']['virtualmachine']['id']
         )
-    print populated_response
 
     return populated_response
 

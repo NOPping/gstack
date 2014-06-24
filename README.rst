@@ -53,33 +53,36 @@ It is written in Python, using `Flask <http://flask.pocoo.org/>`_ to expose a GC
 
 
 Installation
-#############
+############
 
 Developers
-___________
+__________
 
 Clone the repository
 
-  git clone https://github.com/NOPping/gstack.git
+    $ git clone https://github.com/NOPping/gstack.git
 
 Install the package
 
-    python ./setup.py install
+    $ python ./setup.py install
 
 Users
 _____
 
 Users can grab the package from Pypi
 
-    pip install gstack
+    $ pip install gstack
 
 Configuration
 #############
 
 Before running `gstack` you must configure it. To do so run
 
-    gstack-configure
+    $ gstack-configure
 
+You can configure a profile of your choice with the optional ``-p`` flag
+
+    $ gstack-configure -p testprofile
 
 And enter your configuration information as prompted. 
 
@@ -93,8 +96,15 @@ This is far from ideal and we opened a feature request with google to pass the `
 
 Start gstack:
 
-    gstack
+    $ gstack
 
+You can launch ``gstack`` using a configuration profile created earlier using the optional ``-p`` or ``--profile`` flag
+
+    $ gstack -p testprofile
+
+You can start ``gstack`` in debug mode using the optional ``-d`` or ``--debug`` flag
+
+    $ gstack -d True
 
 Create a cached parameters file for gcutil:
 
@@ -123,7 +133,7 @@ Create a cached parameters file for gcutil:
 gcutil will issue auth requests to the local Flask application, get an OAuth token and then issue requests to the CloudStack endpoint you specified when cofiguring gstack. 
 
 Usage
-######
+#####
 
 You can start issuing standard gcutil commands.
 
@@ -137,7 +147,7 @@ Sandbox-simulator     UP       None scheduled
 ==================   ========  ====================
 
 Running The Tests
-##################
+#################
 
 To run the included tests the following software is required:
 
@@ -153,37 +163,37 @@ To run the included tests the following software is required:
 
 These can be installed via the Python Package Index:
 
-   pip install pep8 pylint nose mock coverage
+   $ pip install pep8 pylint nose mock coverage
 
 Tests can be executed from the root of the code base as follows:
 
 Style Check
 ___________
 
-   pep8 --ignore=E501 *.py gstack
+   $ pep8 --ignore=E501 *.py gstack
 
 Lint
 ____
 
-   pylint --rcfile=pylint.rc *.py gstack
+   $ pylint --rcfile=pylint.rc *.py gstack
 
 Unit Tests
-___________
+__________
 
-   nosetests --with-coverage  --cover-erase --cover-package=gstack --cover-html
+   $ nosetests --with-coverage  --cover-erase --cover-package=gstack --cover-html
 
 A HTML base coverage report will be placed in ./cover
 
 Trouble shooting
-#################
+################
 
 CertificateHostnameMismatch
-____________________________
+___________________________
 
 - Ensure that the addresses you entered for ``authorization_uri_base``, ``api_host`` and ``auth_host_name`` are the exact same as the address you binded ``gstack`` to earlier when configuring with ``gstack-configure``.
 
 Authentication/authorization issues
-____________________________________
+___________________________________
 
 - Clean up your gcutil authentication information ``rm -rf ~/.gcutil_auth``.
 - Ensure that you set your ``client_id`` and ``client_secret`` in ``gcutil/lib/google_compute_engine/gcutil/auth_helper.py``.
@@ -191,7 +201,7 @@ ____________________________________
 
 
 Apache CloudStack
-##################
+#################
 
 For more information about CloudStack check the official `<website http://cloudstack.apache.org>`_
 
