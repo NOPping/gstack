@@ -31,10 +31,19 @@ def _generate_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        'profile',
+        '-p',
+        '--profile',
+        required=False,
         help='The profile to run gstack with, default is initial',
-        default='initial',
-        nargs='?'
+        default='initial'
+    )
+
+    parser.add_argument(
+        '-d',
+        '--debug',
+        required=False,
+        help='Turn debug on for application',
+        default=False
     )
 
     args = parser.parse_args()
@@ -84,6 +93,9 @@ def configure_app(settings=None):
     else:
         args = _generate_args()
         profile = args.pop('profile')
+        ha = args.pop('debug')
+        print ha
+        app.config['DEBUG'] = ha
         config_file = _load_config_file()
         database_uri = _load_database()
         _config_from_config_profile(config_file, profile)

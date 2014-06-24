@@ -45,7 +45,8 @@ setup(
     url='https://github.com/NOPping/gstack',
     platforms=('Any'),
     license='LICENSE.txt',
-    package_data={'': ['LICENSE.txt', 'data/*', 'migrations/*']},
+    package_data={'': ['LICENSE.txt', 'data/*'],
+                  'migrations': ['versions/*', '*.mako']},
     packages=[
         'gstack',
         'gstack.controllers',

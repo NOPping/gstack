@@ -95,13 +95,6 @@ def getsecuritygroup(projectid, authorization, firewall):
     )
     cloudstack_response = cloudstack_response
 
-    app.logger.debug(
-        'Processing request for get Firewall\n'
-        'Project: ' + projectid + '\n' +
-        'Firewall: ' + firewall + '\n' +
-        json.dumps(cloudstack_response, indent=4, separators=(',', ': '))
-    )
-
     if cloudstack_response['listsecuritygroupsresponse']['securitygroup']:
         response_item = cloudstack_response[
             'listsecuritygroupsresponse']['securitygroup'][0]

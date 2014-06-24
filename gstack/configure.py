@@ -27,8 +27,8 @@ from alembic.config import Config as AlembicConfig
 
 def main():
     config_folder = _create_config_folder()
-    _create_database()
     _create_config_file(config_folder)
+    _create_database()
 
 
 def _create_config_folder():
@@ -54,10 +54,11 @@ def _generate_args():
     )
 
     parser.add_argument(
-        'profile',
-        help='The profile to configure, default is initial',
-        default='initial',
-        nargs='?'
+        '-p',
+        '--profile',
+        required=False,
+        help='The profile to run gstack with, default is initial',
+        default='initial'
     )
 
     args = parser.parse_args()
