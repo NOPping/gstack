@@ -1,5 +1,23 @@
 History
-========
+=======
+
+1.0.0 (24-06-14)
+________________
+
+* Extract database out of application folder, move into config folder
+* Upgrade database with alembic config
+* Major refactor in controllers, remove repeated code
+* Add support for configuration profiles
+
+    `$ gstack-configure --profile exampleprofile`
+    `$ gstack --profile exampleprofile`
+
+* Give user the ability to debug app
+
+    `$ gstack --debug True`
+
+* Add unittests
+* Improve coverage of response attributes
 
 0.1.0 (29-05-14)
 ________________
@@ -22,6 +40,6 @@ __________________
 
 
 0.0.1 (24-9-2013)
-__________________
+_________________
 
 * gcloud conception
