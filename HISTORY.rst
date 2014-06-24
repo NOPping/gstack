@@ -10,6 +10,7 @@ ________________
 * Add support for configuration profiles
 
     `$ gstack-configure --profile exampleprofile`
+
     `$ gstack --profile exampleprofile`
 
 * Give user the ability to debug app
