@@ -13,7 +13,7 @@ A Google Compute Engine Interface For Cloudstack
        :target: https://coveralls.io/r/NOPping/gstack
 
 Description
-===========
+-----------
 
 Apache Cloudstack is open source software designed to deploy and manage large networks of virtual machines, as highly available, highly scalable Infrastructure as a Service(laaS) cloud computing platform. Apache Cloudstack is used by a number of service providers to offer public cloud services, and by many companies to provide an on-premises (private) cloud offering.
 
@@ -24,6 +24,6 @@ Google Compute Engine is the Infrastructure as a Service (IaaS) component of Goo
 Bridging Apache Cloudstack with existing public cloud providers APIs is needed in order to help users work across clouds. Our project’s aim is to create an application that will sit above the Apache Cloudstack API. The application will take in common Google Compute Engine requests, execute the necessary Cloudstack Calls and parse the responses as required. This would allow utilities created for the Google Compute Engine API to be used against Apache Cloudstack. 
 
 Usage
-=====
+-----
 
 Please see the project wiki for usage instructions (`<https://github.com/NOPping/gstack/wiki>`_)
