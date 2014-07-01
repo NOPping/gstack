@@ -57,7 +57,7 @@ def _generate_args():
         '-p',
         '--profile',
         required=False,
-        help='The profile to run gstack with, default is initial',
+        help='The profile to configure, default is initial',
         default='initial'
     )
 
