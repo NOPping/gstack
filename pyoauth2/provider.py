@@ -181,6 +181,13 @@ class AuthorizationProvider(Provider):
         """
         return 3600
 
+    def generate_id_token(self):
+        """Generate a random authorization code.
+
+        :rtype: str
+        """
+        return 'ryJhbGciOiJSUzI1NiIsImtpZCI6IjRiODZiNDQxMmE2MmRiOWRmY2JkYjg2MWZlZmRjM2YwMzgzYjFlNDIifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiaWQiOiIxMTc1NTA3MTAxNzk0MTI2NTQxNzkiLCJzdWIiOiIxMTc1NTA3MTAxNzk0MTI2NTQxNzkiLCJhenAiOiIzMjU1NTk0MDU1OS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImVtYWlsIjoiYnJvZ2FuZDkzQGRhcnJlbmJyb2dhbi5pZSIsImF0X2hhc2giOiJzdmVrRzJlVmc3YnpiRW91a05xY3FRIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF1ZCI6IjMyNTU1OTQwNTU5LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiaGQiOiJkYXJyZW5icm9nYW4uaWUiLCJ0b2tlbl9oYXNoIjoic3Zla0cyZVZnN2J6YkVvdWtOcWNxUSIsInZlcmlmaWVkX2VtYWlsIjp0cnVlLCJjaWQiOiIzMjU1NTk0MDU1OS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImlhdCI6MTQwNjIzMTczOCwiZXhwIjoxNDA2MjM1NjM4fQ.QpvqKU_GWtqBdZsazpJs4UnuwkpVlOhYk6tYNNXhJSnbbLgpg847vbuMUEBM_vP03JB7Ot5P3AuSzSiBtXXB4hd8IU8puR4NYUMkrMfSNLYSGTyy1qf39v3LM10wsaUC4trw9eWPNHZoVimxhblfs-ocAyfiyFFizK8kdvWlM9w'
+
     def generate_authorization_code(self):
         """Generate a random authorization code.
 
@@ -317,6 +324,7 @@ class AuthorizationProvider(Provider):
         token_type = self.token_type
         expires_in = self.token_expires_in
         refresh_token = self.generate_refresh_token()
+        id_token = self.generate_id_token()
 
         # Save information to be used to validate later requests
         self.persist_token_information(client_id=client_id,
@@ -332,6 +340,7 @@ class AuthorizationProvider(Provider):
             'access_token': access_token,
             'token_type': token_type,
             'expires_in': expires_in,
+            'id_token': id_token,
             'refresh_token': refresh_token
         })
 
@@ -391,6 +400,7 @@ class AuthorizationProvider(Provider):
         token_type = self.token_type
         expires_in = self.token_expires_in
         refresh_token = self.generate_refresh_token()
+        id_token = self.generate_id_token()
 
         # Save information to be used to validate later requests
         self.persist_token_information(client_id=client_id,
@@ -405,8 +415,8 @@ class AuthorizationProvider(Provider):
         return self._make_json_response({
             'access_token': access_token,
             'token_type': token_type,
+            'id_token': id_token,
             'expires_in': expires_in,
-            'refresh_token': refresh_token
         })
 
     def get_authorization_code_from_uri(self, uri):
@@ -442,8 +452,7 @@ class AuthorizationProvider(Provider):
                 return self._invalid_redirect_uri_response()
         except Exception as exc:
             self._handle_exception(exc)
-            print exc.errno
-            print exc.strerror
+
             # Catch all other server errors
             err = 'server_error'
             u = params['redirect_uri']

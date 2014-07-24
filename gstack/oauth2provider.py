@@ -88,7 +88,6 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
 
             if existing_access_token is not None:
                 existing_access_token.access_token = access_token
-                existing_access_token.data = json.dumps(data)
                 existing_access_token.expires_in = expires_in
             else:
                 db.session.add(
