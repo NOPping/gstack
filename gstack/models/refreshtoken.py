@@ -25,8 +25,10 @@ class RefreshToken(db.Model):
     refresh_token = db.Column(db.String(100), primary_key=True, unique=True)
     client_id = db.Column(db.String(100), unique=True)
     data = db.Column(db.String(500))
+    id_token = db.Column(db.String(1000))
 
-    def __init__(self, refresh_token, client_id, data):
+    def __init__(self, refresh_token, client_id, id_token, data):
         self.refresh_token = refresh_token
         self.client_id = client_id
         self.data = data
+        self.id_token = id_token

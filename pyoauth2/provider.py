@@ -1,4 +1,5 @@
 import json
+import jwt
 from requests import Response
 from cStringIO import StringIO
 try:
@@ -100,61 +101,6 @@ class AuthorizationProvider(Provider):
     """OAuth 2.0 authorization provider. This class manages authorization
     codes and access tokens. Certain methods MUST be overridden in a
     subclass, thus this class cannot be directly used as a provider.
-
-    These are the methods that must be implemented in a subclass:
-
-        validate_client_id(self, client_id)
-            # Return True or False
-
-        validate_client_secret(self, client_id, client_secret)
-            # Return True or False
-
-        validate_scope(self, client_id, scope)
-            # Return True or False
-
-        validate_redirect_uri(self, client_id, redirect_uri)
-            # Return True or False
-
-        validate_access(self)  # Use this to validate your app session user
-            # Return True or False
-
-        from_authorization_code(self, client_id, code, scope)
-            # Return mixed data or None on invalid
-
-        from_refresh_token(self, client_id, refresh_token, scope)
-            # Return mixed data or None on invalid
-
-        persist_authorization_code(self, client_id, code, scope)
-            # Return value ignored
-
-        persist_token_information(self, client_id, scope, access_token,
-                                  token_type, expires_in, refresh_token,
-                                  data)
-            # Return value ignored
-
-        discard_authorization_code(self, client_id, code)
-            # Return value ignored
-
-        discard_refresh_token(self, client_id, refresh_token)
-            # Return value ignored
-
-    Optionally, the following may be overridden to acheive desired behavior:
-
-        @property
-        token_length(self)
-
-        @property
-        token_type(self)
-
-        @property
-        token_expires_in(self)
-
-        generate_authorization_code(self)
-
-        generate_access_token(self)
-
-        generate_refresh_token(self)
-
     """
 
     @property
@@ -179,14 +125,15 @@ class AuthorizationProvider(Provider):
 
         :rtype: int
         """
-        return 3600
+        return "3600"
 
-    def generate_id_token(self):
+    def generate_id_token(self, client_id, client_secret):
         """Generate a random authorization code.
 
         :rtype: str
         """
-        return 'ryJhbGciOiJSUzI1NiIsImtpZCI6IjRiODZiNDQxMmE2MmRiOWRmY2JkYjg2MWZlZmRjM2YwMzgzYjFlNDIifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiaWQiOiIxMTc1NTA3MTAxNzk0MTI2NTQxNzkiLCJzdWIiOiIxMTc1NTA3MTAxNzk0MTI2NTQxNzkiLCJhenAiOiIzMjU1NTk0MDU1OS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImVtYWlsIjoiYnJvZ2FuZDkzQGRhcnJlbmJyb2dhbi5pZSIsImF0X2hhc2giOiJzdmVrRzJlVmc3YnpiRW91a05xY3FRIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF1ZCI6IjMyNTU1OTQwNTU5LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiaGQiOiJkYXJyZW5icm9nYW4uaWUiLCJ0b2tlbl9oYXNoIjoic3Zla0cyZVZnN2J6YkVvdWtOcWNxUSIsInZlcmlmaWVkX2VtYWlsIjp0cnVlLCJjaWQiOiIzMjU1NTk0MDU1OS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImlhdCI6MTQwNjIzMTczOCwiZXhwIjoxNDA2MjM1NjM4fQ.QpvqKU_GWtqBdZsazpJs4UnuwkpVlOhYk6tYNNXhJSnbbLgpg847vbuMUEBM_vP03JB7Ot5P3AuSzSiBtXXB4hd8IU8puR4NYUMkrMfSNLYSGTyy1qf39v3LM10wsaUC4trw9eWPNHZoVimxhblfs-ocAyfiyFFizK8kdvWlM9w'
+        return  jwt.encode({"email": "user@gstack"}, client_secret)
+
 
     def generate_authorization_code(self):
         """Generate a random authorization code.
@@ -324,7 +271,7 @@ class AuthorizationProvider(Provider):
         token_type = self.token_type
         expires_in = self.token_expires_in
         refresh_token = self.generate_refresh_token()
-        id_token = self.generate_id_token()
+        id_token = self.generate_id_token(client_id, client_secret)
 
         # Save information to be used to validate later requests
         self.persist_token_information(client_id=client_id,
@@ -333,6 +280,7 @@ class AuthorizationProvider(Provider):
                                        token_type=token_type,
                                        expires_in=expires_in,
                                        refresh_token=refresh_token,
+                                       id_token=id_token,
                                        data=data)
 
         # Return json response
@@ -400,7 +348,7 @@ class AuthorizationProvider(Provider):
         token_type = self.token_type
         expires_in = self.token_expires_in
         refresh_token = self.generate_refresh_token()
-        id_token = self.generate_id_token()
+        id_token = self.generate_id_token(client_id, client_secret)
 
         # Save information to be used to validate later requests
         self.persist_token_information(client_id=client_id,
@@ -409,6 +357,7 @@ class AuthorizationProvider(Provider):
                                        token_type=token_type,
                                        expires_in=expires_in,
                                        refresh_token=refresh_token,
+                                       id_token=id_token,
                                        data=data)
 
         # Return json response
@@ -487,9 +436,7 @@ class AuthorizationProvider(Provider):
 
             # Catch missing parameters in request
             return self._make_json_error_response('invalid_request')
-        except Exception as exc:
-            self._handle_exception(exc)
-            print exc
+        except Exception:
             # Catch all other server errors
             return self._make_json_error_response('server_error')
 
@@ -527,7 +474,7 @@ class AuthorizationProvider(Provider):
 
     def persist_token_information(self, client_id, scope, access_token,
                                   token_type, expires_in, refresh_token,
-                                  data):
+                                  id_token, data):
         raise NotImplementedError('Subclasses must implement '
                                   'persist_token_information.')
 

@@ -23,11 +23,15 @@ def upgrade():
             nullable=True),
         sa.Column(
             'expires_in',
-            sa.String(length=255),
+            sa.String(length=10),
+            nullable=True),
+        sa.Column(
+            'id_token',
+            sa.String(length=1000),
             nullable=True),
         sa.Column(
             'data',
-            sa.String(length=255),
+            sa.String(length=500),
             nullable=True),
         sa.PrimaryKeyConstraint('access_token'),
         sa.UniqueConstraint('client_id')
@@ -48,8 +52,12 @@ def upgrade():
             sa.String(length=255),
             nullable=True),
         sa.Column(
+            'id_token',
+            sa.String(length=1000),
+            nullable=True),
+        sa.Column(
             'data',
-            sa.String(length=255),
+            sa.String(length=500),
             nullable=True),
         sa.PrimaryKeyConstraint('refresh_token'),
         sa.UniqueConstraint('client_id')

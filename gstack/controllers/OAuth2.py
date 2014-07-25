@@ -47,4 +47,5 @@ def token():
     res = make_response(response.text, response.status_code)
     for k, v in response.headers.iteritems():
         res.headers[k] = v
+
     return res

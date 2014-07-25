@@ -78,7 +78,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
         return
 
     def persist_token_information(self, client_id, scope, access_token, token_type,
-                                  expires_in, refresh_token, data):
+                                  expires_in, refresh_token, id_token, data):
         client = Client.query.get(client_id)
         if client is not None:
             existing_access_token = AccessToken.query.filter_by(
@@ -92,7 +92,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
             else:
                 db.session.add(
                     AccessToken(
-                        access_token, client_id, expires_in, json.dumps(data)
+                        access_token, client_id, expires_in, id_token, json.dumps(data)
                     )
                 )
 
@@ -101,7 +101,7 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
                 existing_refresh_token.data = json.dumps(data)
             else:
                 db.session.add(
-                    RefreshToken(refresh_token, client_id, json.dumps(data)))
+                    RefreshToken(refresh_token, client_id, id_token, json.dumps(data)))
 
             db.session.commit()
             return True

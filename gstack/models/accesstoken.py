@@ -24,11 +24,13 @@ class AccessToken(db.Model):
     __tablename__ = 'accesstoken'
     access_token = db.Column(db.String(100), primary_key=True, unique=True)
     client_id = db.Column(db.String(100), unique=True)
-    expires_in = db.Column(db.Integer)
+    expires_in = db.Column(db.String(10))
+    id_token = db.Column(db.String(1000))
     data = db.Column(db.String(500))
 
-    def __init__(self, access_token, client_id, expires_in, data):
+    def __init__(self, access_token, client_id, expires_in, id_token, data):
         self.access_token = access_token
         self.client_id = client_id
         self.expires_in = expires_in
+        self.id_token = id_token
         self.data = data
