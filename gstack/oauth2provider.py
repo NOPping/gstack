@@ -148,6 +148,7 @@ class CloudstackResourceProvider(ResourceProvider):
         return request.headers.get('Authorization')
 
     def validate_access_token(self, access_token, authorization):
+        print 'pp'
         found_access_token = AccessToken.query.get(access_token)
         if found_access_token is not None and found_access_token.data != 'false':
             access_token_data = json.loads(found_access_token.data)

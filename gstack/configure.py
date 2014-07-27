@@ -28,7 +28,7 @@ from alembic.config import Config as AlembicConfig
 def main():
     config_folder = _create_config_folder()
     _create_config_file(config_folder)
-    _create_database()
+    _upgrade_database()
 
 
 def _create_config_folder():
@@ -113,7 +113,7 @@ def _read_in_config_attribute_or_use_default(message, default):
     return attribute
 
 
-def _create_database():
+def _upgrade_database():
     directory = os.path.join(os.path.dirname(__file__), '../migrations')
     database_config = AlembicConfig(os.path.join(
         directory,

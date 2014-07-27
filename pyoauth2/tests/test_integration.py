@@ -57,7 +57,7 @@ class MockAuthorizationProvider(AuthorizationProvider):
 
     def persist_token_information(self, client_id, scope, access_token,
                                   token_type, expires_in, refresh_token,
-                                  data):
+                                  id_token, data):
         pass
 
     def discard_authorization_code(self, client_id, code):
@@ -105,6 +105,5 @@ class IntegrationTest(unittest.TestCase):
                                      scope='example')
 
         self.assertEquals(40, len(data['access_token']))
-        self.assertEquals(40, len(data['refresh_token']))
         self.assertEquals('Bearer', data['token_type'])
-        self.assertEquals(3600, data['expires_in'])
+        self.assertEquals('3600', data['expires_in'])
