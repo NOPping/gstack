@@ -62,7 +62,8 @@ setup(
         'pyopenssl',
         'Flask-SQLAlchemy',
         'flask',
-        'alembic'
+        'alembic',
+        'pyjwt'
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

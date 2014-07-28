@@ -127,8 +127,8 @@ class AuthorizationProvider(Provider):
         """
         return "3600"
 
-    def generate_id_token(self, client_id, client_secret):
-        """Generate a random authorization code.
+    def generate_id_token(self, client_secret):
+        """Generate a jwt id token, containing email.
 
         :rtype: str
         """
@@ -271,7 +271,7 @@ class AuthorizationProvider(Provider):
         token_type = self.token_type
         expires_in = self.token_expires_in
         refresh_token = self.generate_refresh_token()
-        id_token = self.generate_id_token(client_id, client_secret)
+        id_token = self.generate_id_token(client_secret)
 
         # Save information to be used to validate later requests
         self.persist_token_information(client_id=client_id,
@@ -348,7 +348,7 @@ class AuthorizationProvider(Provider):
         token_type = self.token_type
         expires_in = self.token_expires_in
         refresh_token = self.generate_refresh_token()
-        id_token = self.generate_id_token(client_id, client_secret)
+        id_token = self.generate_id_token(client_secret)
 
         # Save information to be used to validate later requests
         self.persist_token_information(client_id=client_id,
