@@ -1,6 +1,11 @@
 History
 =======
 
+1.1.0 (05-08-14)
+________________
+
+* Add support for google cloud sdk and latest version of gcutil
+
 1.0.0 (24-06-14)
 ________________
 
