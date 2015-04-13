@@ -46,7 +46,8 @@ def _add_network(authorization, args=None):
 
 def _delete_network(authorization, projectid, network):
     args = {'command': 'listSecurityGroups'}
-    network_response = controllers.get_item_with_name(authorization, network, args, 'securitygroup')
+    network_response = controllers.get_item_with_name(
+        authorization, network, args, 'securitygroup')
     if not network_response:
         return None
 
@@ -70,7 +71,8 @@ def _cloudstack_network_to_gce(cloudstack_response):
     response['id'] = cloudstack_response['id']
     response['name'] = cloudstack_response['name']
     response['description'] = cloudstack_response['description']
-    response['selfLink'] = urllib.unquote_plus(request.base_url) + '/' + response['name']
+    response['selfLink'] = urllib.unquote_plus(
+        request.base_url) + '/' + response['name']
 
     return response
 

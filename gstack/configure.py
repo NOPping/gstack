@@ -99,7 +99,8 @@ def _set_attribute_of_profile(config, profile, attribute, message, default):
     if config.has_option(profile, attribute):
         default = config.get(profile, attribute)
 
-    attribute_value = _read_in_config_attribute_or_use_default(message, default)
+    attribute_value = _read_in_config_attribute_or_use_default(
+        message, default)
 
     config.set(profile, attribute, attribute_value)
     return config

@@ -16,6 +16,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import os
+
 try:
     from setuptools import setup
 except ImportError:
@@ -28,8 +30,6 @@ except ImportError:
             "python setuptools is required to build gstack")
 
 VERSION = '1.1.1'
-
-import os
 
 
 def read(fname):

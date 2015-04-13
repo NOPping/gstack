@@ -47,7 +47,8 @@ def _cloudstack_template_to_gce(cloudstack_response):
     response['name'] = cloudstack_response['name']
     response['description'] = cloudstack_response['displaytext']
     response['status'] = cloudstack_response['isready']
-    response['selfLink'] = urllib.unquote_plus(request.base_url) + '/' + response['name']
+    response['selfLink'] = urllib.unquote_plus(
+        request.base_url) + '/' + response['name']
 
     return response
 

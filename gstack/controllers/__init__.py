@@ -26,7 +26,8 @@ from gstack import helpers
 from gstack.services import requester
 from gstack.controllers import errors
 
-__all__ = [os.path.basename(f)[:-3] for f in glob.glob(os.path.dirname(__file__) + '/*.py')]
+__all__ = [os.path.basename(f)[:-3]
+           for f in glob.glob(os.path.dirname(__file__) + '/*.py')]
 
 
 def filter_by_name(data, name):
@@ -122,7 +123,8 @@ def describe_items_aggregated(authorization, args, type, gce_type, to_cloudstack
 
     for zone in zone_list:
         kwargs['zone'] = zone
-        zone_items = _get_requested_items(authorization, args, type, to_cloudstack, **kwargs)
+        zone_items = _get_requested_items(
+            authorization, args, type, to_cloudstack, **kwargs)
         items['zone/' + zone] = {}
         if zone_items:
             items['zone/' + zone][gce_type] = zone_items
@@ -133,6 +135,7 @@ def describe_items_aggregated(authorization, args, type, gce_type, to_cloudstack
 
 
 def describe_items(authorization, args, type, to_cloudstack, **kwargs):
-    items = _get_requested_items(authorization, args, type, to_cloudstack, **kwargs)
+    items = _get_requested_items(
+        authorization, args, type, to_cloudstack, **kwargs)
 
     return items

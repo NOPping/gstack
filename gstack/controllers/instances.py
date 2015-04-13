@@ -155,7 +155,8 @@ def listinstances(authorization, projectid, zone):
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/instances/<instance>', methods=['GET'])
 @authentication.required
 def getinstance(projectid, authorization, zone, instance):
-    func_route = url_for('getinstance', projectid=projectid, zone=zone, instance=instance)
+    func_route = url_for(
+        'getinstance', projectid=projectid, zone=zone, instance=instance)
     args = {'command': 'listVirtualMachines'}
     kwargs = {'projectid': projectid, 'zone': zone}
     return controllers.get_item_with_name_or_error(
@@ -170,7 +171,8 @@ def addinstance(authorization, projectid, zone):
     args = {}
     args['name'] = data['name']
     args['serviceoffering'] = data['machineType'].rsplit('/', 1)[1]
-    args['template'] = data['disks'][0]['initializeParams']['sourceImage'].rsplit('/', 1)[1]
+    args['template'] = data['disks'][0][
+        'initializeParams']['sourceImage'].rsplit('/', 1)[1]
     args['zone'] = zone
 
     network = data['networkInterfaces'][0]['network'].rsplit('/', 1)[1]
@@ -186,7 +188,8 @@ def addinstance(authorization, projectid, zone):
     else:
         return helpers.create_response(operations.create_async_response(
             projectid=projectid,
-            operationid=deployment_result['deployvirtualmachineresponse']['jobid'],
+            operationid=deployment_result[
+                'deployvirtualmachineresponse']['jobid'],
             authorization=authorization
         ))
 
@@ -195,7 +198,8 @@ def addinstance(authorization, projectid, zone):
 @authentication.required
 def deleteinstance(projectid, authorization, zone, instance):
     args = {'command': 'listVirtualMachines'}
-    virtual_machine = controllers.get_item_with_name(authorization, instance, args, 'virtualmachine')
+    virtual_machine = controllers.get_item_with_name(
+        authorization, instance, args, 'virtualmachine')
 
     virtual_machine_id = virtual_machine['id']
     args = {'id': virtual_machine_id}

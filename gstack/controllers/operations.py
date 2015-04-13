@@ -78,12 +78,14 @@ def _get_instance_async_response(async_result, projectid, type):
 
 
 def _delete_instance_response(async_result, projectid):
-    populated_response = _get_instance_async_response(async_result, projectid, 'delete')
+    populated_response = _get_instance_async_response(
+        async_result, projectid, 'delete')
     return populated_response
 
 
 def _create_instance_response(async_result, projectid, authorization):
-    populated_response = _get_instance_async_response(async_result, projectid, 'insert')
+    populated_response = _get_instance_async_response(
+        async_result, projectid, 'insert')
     populated_response['user'] = async_result['userid']
 
     if async_result['jobstatus'] is 1:

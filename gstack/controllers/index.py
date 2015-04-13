@@ -28,7 +28,8 @@ def discovery():
     with open(app.config['DATA'] + '/v1.json') as template:
         discovery_template = json.loads(template.read())
 
-    discovery_template['baseUrl'] = helpers.get_root_url() + '/' + app.config['PATH']
+    discovery_template[
+        'baseUrl'] = helpers.get_root_url() + '/' + app.config['PATH']
     discovery_template['basePath'] = '/' + app.config['PATH']
     discovery_template['rootUrl'] = helpers.get_root_url() + '/'
     discovery_template['servicePath'] = app.config['PATH']

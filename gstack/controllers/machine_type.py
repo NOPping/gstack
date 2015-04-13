@@ -93,7 +93,8 @@ def listmachinetype(projectid, authorization, zone):
 @app.route('/compute/v1/projects/<projectid>/zones/<zone>/machineTypes/<machinetype>', methods=['GET'])
 @authentication.required
 def getmachinetype(projectid, authorization, zone, machinetype):
-    func_route = url_for('getmachinetype', projectid=projectid, zone=zone, machinetype=machinetype)
+    func_route = url_for(
+        'getmachinetype', projectid=projectid, zone=zone, machinetype=machinetype)
     args = {'command': 'listServiceOfferings'}
     kwargs = {'projectid': projectid, 'zone': zone}
     return controllers.get_item_with_name_or_error(

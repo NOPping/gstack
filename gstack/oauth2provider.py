@@ -92,7 +92,8 @@ class CloudstackAuthorizationProvider(AuthorizationProvider):
             else:
                 db.session.add(
                     AccessToken(
-                        access_token, client_id, expires_in, id_token, json.dumps(data)
+                        access_token, client_id, expires_in, id_token, json.dumps(
+                            data)
                     )
                 )
 
